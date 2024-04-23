@@ -1,0 +1,65 @@
+import type { Metadata } from "next";
+import createLocalFont from "next/font/local";
+import "./globals.css";
+import { ClerkProvider } from "@clerk/nextjs";
+
+const LGEI = createLocalFont({
+  src: [
+    {
+      path: "./fonts/LGEIText-Light.otf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "./fonts/LGEIText-Regular.otf",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "./fonts/LGEIText-SemiBold.otf",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "./fonts/LGEIText-Bold.otf",
+      weight: "700",
+      style: "normal",
+    },
+  ],
+});
+
+export const metadata: Metadata = {
+  title: "Workspace",
+  description:
+    "The connected workspace where better, faster work happens.",
+  icons: {
+    icon: [
+      {
+        media: "(prefers-color-scheme: light)",
+        url: "assets/logo.svg",
+        href: "assets/logo.svg",
+      },
+      {
+        media: "(prefers-color-scheme: dark)",
+        url: "assets/logo-dark.svg",
+        href: "assets/logo-dark.svg",
+      },
+    ],
+  },
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <ClerkProvider>
+      <html lang="en">
+        <body className={`${LGEI.className}`}>
+          {children}
+        </body>
+      </html>
+    </ClerkProvider>
+  );
+}

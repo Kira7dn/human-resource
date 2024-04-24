@@ -29,9 +29,9 @@ const LGEI = createLocalFont({
 });
 
 export const metadata: Metadata = {
-  title: "Workspace",
+  title: "Human resource",
   description:
-    "The connected workspace where better, faster work happens.",
+    "Manage human resources, employees, and more with our human resource management system.",
   icons: {
     icon: [
       {

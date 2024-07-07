@@ -29,7 +29,7 @@ const LGEI = createLocalFont({
 });
 
 export const metadata: Metadata = {
-  title: "Human resource",
+  title: "HRM - Human Resource Management",
   description:
     "Manage human resources, employees, and more with our human resource management system.",
   icons: {
@@ -56,9 +56,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={`${LGEI.className}`}>
-          {children}
-        </body>
+        <body className={`${LGEI.className}`}>{children}</body>
       </html>
     </ClerkProvider>
   );

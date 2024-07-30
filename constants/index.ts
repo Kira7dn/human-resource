@@ -1,3 +1,4 @@
+import exp from "constants";
 import {
   CalendarCheck,
   Folders,
@@ -5,16 +6,46 @@ import {
   Package,
   LayoutTemplateIcon,
   HomeIcon,
+  UsersRound,
+  Wallet,
+  Contact,
 } from "lucide-react";
 
-export const sidebarLinks = [
+export const mainLinks = [
+  {
+    route: "/dashboard",
+    label: "Dashboard",
+    component: LayoutTemplateIcon,
+  },
+  {
+    route: "/employee",
+    label: "Employee",
+    component: Contact,
+  },
+  {
+    route: "/candidate",
+    label: "Candidate",
+    component: Contact,
+  },
+  {
+    route: "/recruitment",
+    label: "Recruitment",
+    component: UsersRound,
+  },
+  {
+    route: "/events",
+    label: "Payroll",
+    component: Wallet,
+  },
+];
+export const otherLinks = [
   {
     route: "/",
     label: "Home",
     component: HomeIcon,
   },
   {
-    route: "/dashboard",
+    route: "/dashbod",
     label: "Dashboard",
     component: LayoutTemplateIcon,
   },
@@ -28,10 +59,17 @@ export const sidebarLinks = [
     label: "Events",
     component: CalendarCheck,
   },
+];
+export const preferenceLinks = [
   {
-    route: "/workspaces",
-    label: "WorkSpaces",
-    component: Package,
+    route: "/",
+    label: "Home",
+    component: HomeIcon,
+  },
+  {
+    route: "/sađá",
+    label: "Dashboard",
+    component: LayoutTemplateIcon,
   },
 ];
 
@@ -134,3 +172,8 @@ export const projecLinks = [
     route: "/workspaces",
   },
 ];
+
+export const department = ["HR", "IT", "Finance", "Marketing"];
+export const level = ["Fresher", "Junior", "Senior", "Manager"];
+export const status = ["Active", "Inactive"];
+export const gender = ["Male", "Female", "Other"];

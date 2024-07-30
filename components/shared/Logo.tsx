@@ -4,11 +4,16 @@ import Link from "next/link";
 
 type props = {
   expanded: boolean;
+  name?: boolean;
   size: number;
+  className?: string;
 };
-export const Logo = ({ expanded, size }: props) => {
+export const Logo = ({ expanded, name = true, size, className }: props) => {
   return (
-    <Link className="flex items-center justify-start gap-x-4" href="/dashboard">
+    <Link
+      className={clsx("flex items-center justify-start gap-x-4", className)}
+      href="/dashboard"
+    >
       <Image
         src="/assets/logo.svg"
         height={size}
@@ -25,14 +30,15 @@ export const Logo = ({ expanded, size }: props) => {
         className="hidden dark:block"
         priority
       />
-      <p
-        className={clsx(
-          "overflow-hidden text-heading4-bold transition-all duration-300 ease-out",
-          !expanded && "opacity-0",
-        )}
-      >
-        Human Resource Management
-      </p>
+      {name && (
+        <p
+          className={clsx(
+            "overflow-hidden text-large-bold text-secondary-foreground",
+          )}
+        >
+          HR Management
+        </p>
+      )}
     </Link>
   );
 };

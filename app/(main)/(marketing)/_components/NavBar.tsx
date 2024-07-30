@@ -12,8 +12,8 @@ import {
   SignedIn,
   SignedOut,
 } from "@clerk/nextjs";
-// import { UserItem } from "@/components/shared/TopBar/UserItem";
 import { Logo } from "./Logo";
+import { UserItem } from "@/components/shared/TopBar/UserItem";
 
 export default function NavBar() {
   const [open, setOpen] = useState(false);
@@ -24,7 +24,7 @@ export default function NavBar() {
           <Logo expanded size={40} />
           <button
             type="button"
-            className="block p-2 text-3xl text-white md:hidden"
+            className="text-3xl block p-2 text-white md:hidden"
             aria-expanded={open}
             onClick={() => setOpen(true)}
           >
@@ -41,7 +41,7 @@ export default function NavBar() {
         >
           <button
             type="button"
-            className="fixed right-4 top-4 mb-4 block p-2 text-3xl text-white md:hidden"
+            className="text-3xl fixed right-4 top-4 mb-4 block p-2 text-white md:hidden"
             aria-expanded={open}
             onClick={() => setOpen(false)}
           >
@@ -56,7 +56,7 @@ export default function NavBar() {
             <ClerkLoaded>
               <SignedIn>
                 <ButtonLink href="/dashboard">Dashboards</ButtonLink>
-                {/* <UserItem /> */}
+                <UserItem />
               </SignedIn>
               <SignedOut>
                 <SignInButton mode="modal" forceRedirectUrl="/dashboard">
@@ -77,7 +77,7 @@ export default function NavBar() {
           <ClerkLoaded>
             <SignedIn>
               <ButtonLink href="/dashboard">Dashboards</ButtonLink>
-              {/* <UserItem /> */}
+              <UserItem />
             </SignedIn>
             <SignedOut>
               <SignInButton mode="modal" forceRedirectUrl="/dashboard">

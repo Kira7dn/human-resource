@@ -1,63 +1,127 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-
-import { labels, priorities, statuses } from "../_data/data";
-import { Task } from "../_data/schema";
+import { levels, statuses } from "../_data/data";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { DataTableRowActions } from "./data-table-row-actions";
 import { Badge } from "@/components/ui/badge";
+import { Employee } from "@/lib/validations";
 
-export const columns: ColumnDef<Task>[] = [
+export const columns: ColumnDef<Employee>[] = [
+  // {
+  //   accessorKey: "id",
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title="Task" />
+  //   ),
+  //   cell: ({ row }) => <div className="w-[80px]">{row.getValue("id")}</div>,
+  //   enableSorting: false,
+  //   enableHiding: false,
+  // },
   {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-        className="translate-y-[2px]"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-        className="translate-y-[2px]"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "id",
+    accessorKey: "name",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Task" />
-    ),
-    cell: ({ row }) => <div className="w-[80px]">{row.getValue("id")}</div>,
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "title",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Title" />
+      <DataTableColumnHeader column={column} title="Name" />
     ),
     cell: ({ row }) => {
-      const label = labels.find((label) => label.value === row.original.label);
+      const level = levels.find((level) => level.value === row.original.level);
 
       return (
-        <div className="flex space-x-2">
-          {label && <Badge variant="outline">{label.label}</Badge>}
-          <span className="max-w-[500px] truncate font-medium">
-            {row.getValue("title")}
-          </span>
-        </div>
+        <span className="max-w-[200px] truncate font-medium">
+          {row.getValue("name")}
+        </span>
+      );
+    },
+  },
+  {
+    accessorKey: "gender",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Gender" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <span className="max-w-[200px] truncate font-medium">
+          {row.getValue("gender")}
+        </span>
+      );
+    },
+  },
+  {
+    accessorKey: "level",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Level" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <span className="max-w-[200px] truncate font-medium">
+          {row.getValue("level")}
+        </span>
+      );
+    },
+  },
+
+  {
+    accessorKey: "position",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Position" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <span className="max-w-[200px] truncate font-medium">
+          {row.getValue("position")}
+        </span>
+      );
+    },
+  },
+  {
+    accessorKey: "department",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Department" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <span className="max-w-[200px] truncate font-medium">
+          {row.getValue("department")}
+        </span>
+      );
+    },
+  },
+  {
+    accessorKey: "email",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Email" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <span className="max-w-[200px] truncate font-medium">
+          {row.getValue("email")}
+        </span>
+      );
+    },
+  },
+  {
+    accessorKey: "birthDate",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Birth date" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <span className="max-w-[200px] truncate font-medium">
+          {row.getValue("birthDate")}
+        </span>
+      );
+    },
+  },
+  {
+    accessorKey: "hired_date",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Hired date" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <span className="max-w-[200px] truncate font-medium">
+          {row.getValue("hired_date")}
+        </span>
       );
     },
   },
@@ -78,7 +142,7 @@ export const columns: ColumnDef<Task>[] = [
       return (
         <div className="flex w-[100px] items-center">
           {status.icon && (
-            <status.icon className="text-muted-foreground mr-2 h-4 w-4" />
+            <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
           )}
           <span>{status.label}</span>
         </div>
@@ -89,34 +153,20 @@ export const columns: ColumnDef<Task>[] = [
     },
   },
   {
-    accessorKey: "priority",
+    accessorKey: "address",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Priority" />
+      <DataTableColumnHeader column={column} title="Address" />
     ),
     cell: ({ row }) => {
-      const priority = priorities.find(
-        (priority) => priority.value === row.getValue("priority"),
-      );
-
-      if (!priority) {
-        return null;
-      }
-
       return (
-        <div className="flex items-center">
-          {priority.icon && (
-            <priority.icon className="text-muted-foreground mr-2 h-4 w-4" />
-          )}
-          <span>{priority.label}</span>
-        </div>
+        <span className="max-w-[200px] truncate font-medium">
+          {row.getValue("address")}
+        </span>
       );
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
     },
   },
   {
-    id: "actions",
+    id: "action",
     cell: ({ row }) => <DataTableRowActions row={row} />,
   },
 ];

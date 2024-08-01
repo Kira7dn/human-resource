@@ -7,8 +7,8 @@ import { DataTable } from "./_components/data-table";
 import { taskSchema } from "./_data/schema";
 
 export const metadata: Metadata = {
-  title: "Tasks",
-  description: "A task and issue tracker build using Tanstack Table.",
+  title: "Employees",
+  description: "",
 };
 
 // Simulate a database read for tasks.
@@ -21,9 +21,31 @@ async function getTasks() {
 
   return z.array(taskSchema).parse(tasks);
 }
+async function getEmployees() {
+  const data = await fs.readFile(
+    path.join(
+      process.cwd(),
+      "app/(main)/(route)/employee/_data/employees.json",
+    ),
+  );
+
+  const tasks = JSON.parse(data.toString());
+  return tasks;
+  // return z.array(taskSchema).parse(tasks);
+}
 
 export default async function TaskPage() {
-  const tasks = await getTasks();
+  const employees = await getEmployees();
+  // generate random employees
+  // const employees = Array.from({ length: 600 }, generateRandomEmployee);
+  // // save the employees to a file
+  // await fs.writeFile(
+  //   path.join(
+  //     process.cwd(),
+  //     "app/(main)/(route)/employee/_data/employees.json",
+  //   ),
+  //   JSON.stringify(employees),
+  // );
 
   return (
     <div className="">
@@ -31,7 +53,7 @@ export default async function TaskPage() {
         <div className="flex h-8 items-center justify-between space-y-2">
           <h2 className="text-large-semibold tracking-tight">Employee List</h2>
         </div>
-        <DataTable data={tasks} columns={columns} />
+        <DataTable data={employees} columns={columns} />
       </div>
     </div>
   );

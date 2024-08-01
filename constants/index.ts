@@ -173,7 +173,17 @@ export const projecLinks = [
   },
 ];
 
-export const department = ["HR", "IT", "Finance", "Marketing"];
-export const level = ["Fresher", "Junior", "Senior", "Manager"];
-export const status = ["Active", "Inactive"];
+export const department = [
+  "Engineering",
+  "Product",
+  "Design",
+  "Data",
+  "Operations",
+  "Management",
+  "Development",
+  "Security",
+  "Mobile",
+];
+export const level = ["Junior", "Mid-Level", "Senior"];
+export const status = ["Active", "Inactive", "On Leave"];
 export const gender = ["Male", "Female", "Other"];

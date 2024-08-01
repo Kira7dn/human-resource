@@ -8,6 +8,7 @@ import {
   QuestionMarkCircledIcon,
   StopwatchIcon,
 } from "@radix-ui/react-icons";
+import { CheckCircle2, CircleSlash, MinusCircle } from "lucide-react";
 
 export const labels = [
   {
@@ -26,46 +27,36 @@ export const labels = [
 
 export const statuses = [
   {
-    value: "backlog",
-    label: "Backlog",
-    icon: QuestionMarkCircledIcon,
+    value: "Active",
+    label: "Active",
+    icon: CheckCircle2,
   },
   {
-    value: "todo",
-    label: "Todo",
-    icon: CircleIcon,
+    value: "Inactive",
+    label: "Inactive",
+    icon: MinusCircle,
   },
   {
-    value: "in progress",
-    label: "In Progress",
-    icon: StopwatchIcon,
-  },
-  {
-    value: "done",
-    label: "Done",
-    icon: CheckCircledIcon,
-  },
-  {
-    value: "canceled",
-    label: "Canceled",
-    icon: CrossCircledIcon,
+    value: "On Leave",
+    label: "On Leave",
+    icon: CircleSlash,
   },
 ];
 
-export const priorities = [
+export const levels = [
   {
-    label: "Low",
-    value: "low",
+    label: "Junior",
+    value: "Junior",
     icon: ArrowDownIcon,
   },
   {
-    label: "Medium",
-    value: "medium",
+    label: "Mid-Level",
+    value: "Mid-Level",
     icon: ArrowRightIcon,
   },
   {
-    label: "High",
-    value: "high",
+    label: "Senior",
+    value: "Senior",
     icon: ArrowUpIcon,
   },
 ];

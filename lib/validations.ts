@@ -87,3 +87,5 @@ export const CandidateValidation = z.object({
   }),
   status: z.enum([status[0], ...status]).optional(),
 });
+
+export type Employee = z.infer<typeof EmployeeValidation>;

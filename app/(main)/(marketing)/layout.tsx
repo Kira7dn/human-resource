@@ -10,10 +10,7 @@ export default function RootLayout({
   return (
     <main className="grid bg-[#070815] text-white">
       <Header />
-      <ClerkLoading>
-        <div className="flex h-screen items-center justify-center" />
-      </ClerkLoading>
-      <ClerkLoaded>{children}</ClerkLoaded>
+      {children}
       <Footer />
     </main>
   );

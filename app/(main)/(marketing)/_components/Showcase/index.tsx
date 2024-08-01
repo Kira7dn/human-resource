@@ -1,17 +1,9 @@
-import clsx from 'clsx'
-import Bounded from '../Bounded'
-import AnimatedContent from './AnimatedContent'
-import ButtonLink from '../ButtonLink'
-import Image from 'next/image'
-import {
-  MessageSquareIcon,
-  Newspaper,
-} from 'lucide-react'
-import {
-  SignInButton,
-  SignedIn,
-  SignedOut,
-} from '@clerk/nextjs'
+import clsx from "clsx";
+import Bounded from "../Bounded";
+import AnimatedContent from "./AnimatedContent";
+import ButtonLink from "../ButtonLink";
+import Image from "next/image";
+import { MessageSquareIcon, Newspaper } from "lucide-react";
 
 const Showcase = (): JSX.Element => {
   return (
@@ -29,49 +21,28 @@ const Showcase = (): JSX.Element => {
             <MessageSquareIcon />
           </div>
           <div className="mt-6 text-large-semibold">
-            Communicate teammates by
-            Chatbox
+            Communicate teammates by Chatbox
           </div>
 
           <div className="mt-4 max-w-xl">
             <p>
-              Chatbox is a powerful tool
-              that allows you to
-              communicate with your
-              teammates in real-time.
-              Easy to use, create a
-              great way to stay
-              connected with your team.
+              Chatbox is a powerful tool that allows you to communicate with
+              your teammates in real-time. Easy to use, create a great way to
+              stay connected with your team.
             </p>
           </div>
 
-          <SignedIn>
-            <ButtonLink
-              className="mt-8"
-              href="/dashboard"
-            >
-              Try now
-            </ButtonLink>
-          </SignedIn>
-          <SignedOut>
-            <SignInButton
-              mode="modal"
-              afterSignInUrl="/dashboard"
-              redirectUrl="/dashboard"
-            >
-              <div className="relative mt-8 inline-flex h-fit w-fit cursor-pointer rounded-full border border-blue-100/20 bg-blue-200/10 px-4 py-2 text-blue-200 outline-none ring-yellow-300 transition-colors after:absolute after:inset-0 after:-z-10 after:animate-pulse after:rounded-full after:bg-yellow-100 after:bg-opacity-0 after:blur-md after:transition-all after:duration-500 hover:border-yellow-200/40 hover:text-yellow-300 after:hover:bg-opacity-10 focus:ring-2 focus:ring-offset-2">
-                Try Free
-              </div>
-            </SignInButton>
-          </SignedOut>
+          <ButtonLink className="mt-8" href="/dashboard">
+            Try now
+          </ButtonLink>
         </div>
 
         <Image
           src="/assets/Chatbox.png"
           alt="Chatbox"
           className={clsx(
-            'opacity-90 shadow-2xl lg:col-span-2 lg:pt-0',
-            'lg:-order-1 lg:translate-x-[-15%]'
+            "opacity-90 shadow-2xl lg:col-span-2 lg:pt-0",
+            "lg:-order-1 lg:translate-x-[-15%]",
           )}
           sizes="(max-width: 768px) 100vw, 50vw"
           width={800}
@@ -84,49 +55,28 @@ const Showcase = (): JSX.Element => {
             <Newspaper />
           </div>
           <div className="mt-6 text-large-semibold">
-            Share value Information by
-            post
+            Share value Information by post
           </div>
 
           <div className="mt-4 max-w-xl">
             <p>
-              Post is a powerful tool
-              that allows you to share
-              value information with
-              your teammates in
-              real-time. Easy to use,
-              create a great way to stay
-              connected with your team.
+              Post is a powerful tool that allows you to share value information
+              with your teammates in real-time. Easy to use, create a great way
+              to stay connected with your team.
             </p>
           </div>
 
-          <SignedIn>
-            <ButtonLink
-              className="mt-8"
-              href="/dashboard"
-            >
-              Try now
-            </ButtonLink>
-          </SignedIn>
-          <SignedOut>
-            <SignInButton
-              mode="modal"
-              afterSignInUrl="/dashboard"
-              redirectUrl="/dashboard"
-            >
-              <div className="relative mt-8 inline-flex h-fit w-fit cursor-pointer rounded-full border border-blue-100/20 bg-blue-200/10 px-4 py-2 text-blue-200 outline-none ring-yellow-300 transition-colors after:absolute after:inset-0 after:-z-10 after:animate-pulse after:rounded-full after:bg-yellow-100 after:bg-opacity-0 after:blur-md after:transition-all after:duration-500 hover:border-yellow-200/40 hover:text-yellow-300 after:hover:bg-opacity-10 focus:ring-2 focus:ring-offset-2">
-                Try Free
-              </div>
-            </SignInButton>
-          </SignedOut>
+          <ButtonLink className="mt-8" href="/dashboard">
+            Try now
+          </ButtonLink>
         </div>
 
         <Image
           src="/assets/Post.png"
           alt="Post"
           className={clsx(
-            'opacity-90 shadow-2xl lg:col-span-2 lg:pt-0',
-            'lg:order-1 lg:translate-x-[15%]'
+            "opacity-90 shadow-2xl lg:col-span-2 lg:pt-0",
+            "lg:order-1 lg:translate-x-[15%]",
           )}
           sizes="(max-width: 768px) 100vw, 50vw"
           width={800}
@@ -134,7 +84,7 @@ const Showcase = (): JSX.Element => {
         />
       </div>
     </Bounded>
-  )
-}
+  );
+};
 
-export default Showcase
+export default Showcase;

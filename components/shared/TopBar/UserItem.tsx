@@ -1,37 +1,14 @@
-'use client'
+"use client";
 
-import { ChevronsLeftRight } from 'lucide-react'
-import {
-  useUser,
-  SignOutButton,
-} from '@clerk/clerk-react'
+import { ChevronsLeftRight } from "lucide-react";
 
-import {
-  Avatar,
-  AvatarImage,
-} from '@/components/ui/avatar'
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
-import { UserButton } from '@clerk/nextjs'
-import {
-  Menubar,
-  MenubarContent,
-  MenubarItem,
-  MenubarMenu,
-  MenubarSeparator,
-  MenubarTrigger,
-} from '../../ui/menubar'
-import {
-  redirect,
-  useRouter,
-} from 'next/navigation'
+import { redirect, useRouter } from "next/navigation";
 
 export const UserItem = () => {
-  const { isSignedIn, user } = useUser()
-  const router = useRouter()
-
-  if (!isSignedIn) return null
   return (
-    <UserButton />
+    <h1>UserItem</h1>
     // <Menubar className="border-transparent px-2">
     //   <MenubarMenu>
     //     <MenubarTrigger className="cursor-pointer px-0 py-0 ">
@@ -96,5 +73,5 @@ export const UserItem = () => {
     //     </MenubarContent>
     //   </MenubarMenu>
     // </Menubar>
-  )
-}
+  );
+};

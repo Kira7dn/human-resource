@@ -17,9 +17,7 @@ function Candidate({}: Props) {
               <UserCheck2 />
             </div>
           </div>
-          <div className="flex items-center text-large-bold">
-            Total Candidates
-          </div>
+          <div className="flex items-center text-large-bold">Candidates</div>
         </div>
         <CandidateDialog type="create" />
       </div>

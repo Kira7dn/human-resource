@@ -11,7 +11,7 @@ type Props = {
 
 function LayoutContainer({ left, top, children }: Props) {
   return (
-    <main className="flex h-screen w-full justify-center bg-background">
+    <main className="flex h-screen w-full justify-center overflow-hidden bg-background">
       <aside className="w-1/6">{left}</aside>
       <div className="flex w-9/12 grow flex-col overflow-hidden">
         <div className={cn("h-14 w-full bg-background")}>{top}</div>

@@ -17,9 +17,7 @@ function Employee({}: Props) {
               <UserCheck2 />
             </div>
           </div>
-          <div className="flex items-center text-large-bold">
-            Total Employees
-          </div>
+          <div className="flex items-center text-large-bold">Employees</div>
         </div>
         <EmployeeDialog type="create" />
       </div>

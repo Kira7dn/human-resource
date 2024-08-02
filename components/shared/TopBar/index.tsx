@@ -1,6 +1,5 @@
 "use client";
 
-import { useScrollTop } from "@/hooks/use-scroll-top";
 import { cn } from "@/lib/utils";
 import { UserItem } from "./UserItem";
 import SearchBar from "./SearchBar";

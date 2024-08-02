@@ -40,16 +40,6 @@ export const mainLinks = [
 ];
 export const otherLinks = [
   {
-    route: "/",
-    label: "Home",
-    component: HomeIcon,
-  },
-  {
-    route: "/dashbod",
-    label: "Dashboard",
-    component: LayoutTemplateIcon,
-  },
-  {
     route: "/profile",
     label: "Profile",
     component: UserCircle,

@@ -6,10 +6,7 @@ import { connectToDatabase } from "@/lib/database";
 import User from "@/lib/database/models/user.model";
 import { handleError } from "@/lib/utils";
 
-import {
-  CreateUserParams,
-  UpdateUserParams,
-} from "@/types";
+import { CreateUserParams, UpdateUserParams } from "@/types";
 
 export async function createUser(user: CreateUserParams) {
   try {
@@ -35,18 +32,13 @@ export async function getUserById(userId: string) {
   }
 }
 
-export async function updateUser(
-  clerkId: string,
-  user: UpdateUserParams
-) {
+export async function updateUser(clerkId: string, user: UpdateUserParams) {
   try {
     await connectToDatabase();
 
-    const updatedUser = await User.findOneAndUpdate(
-      { clerkId },
-      user,
-      { new: true }
-    );
+    const updatedUser = await User.findOneAndUpdate({ clerkId }, user, {
+      new: true,
+    });
 
     if (!updatedUser) throw new Error("User update failed");
     return JSON.parse(JSON.stringify(updatedUser));
@@ -67,14 +59,10 @@ export async function deleteUser(clerkId: string) {
     }
 
     // Delete user
-    const deletedUser = await User.findByIdAndDelete(
-      userToDelete._id
-    );
+    const deletedUser = await User.findByIdAndDelete(userToDelete._id);
     revalidatePath("/");
 
-    return deletedUser
-      ? JSON.parse(JSON.stringify(deletedUser))
-      : null;
+    return deletedUser ? JSON.parse(JSON.stringify(deletedUser)) : null;
   } catch (error) {
     handleError(error);
   }

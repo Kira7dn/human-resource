@@ -1,12 +1,11 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { levels, statuses } from "../_data/data";
-import { Checkbox } from "@/components/ui/checkbox";
+import { statuses } from "../_data/data";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { DataTableRowActions } from "./data-table-row-actions";
-import { Badge } from "@/components/ui/badge";
 import { Employee } from "@/lib/validations";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export const columns: ColumnDef<Employee>[] = [
   // {
@@ -24,12 +23,19 @@ export const columns: ColumnDef<Employee>[] = [
       <DataTableColumnHeader column={column} title="Name" />
     ),
     cell: ({ row }) => {
-      const level = levels.find((level) => level.value === row.original.level);
-
+      const fallback_name = row.original.name.split(" ").map((n) => n[0]);
       return (
-        <span className="max-w-[200px] truncate font-medium">
-          {row.getValue("name")}
-        </span>
+        <div className="flex items-center space-x-2">
+          <Avatar>
+            <AvatarImage
+              src={row.original.image || "https://github.com/shadcn.png"}
+            />
+            <AvatarFallback>{fallback_name}</AvatarFallback>
+          </Avatar>
+          <span className="max-w-[200px] truncate font-medium">
+            {row.getValue("name")}
+          </span>
+        </div>
       );
     },
   },
@@ -100,14 +106,29 @@ export const columns: ColumnDef<Employee>[] = [
     },
   },
   {
+    accessorKey: "phone",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Phone" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <span className="max-w-[200px] truncate font-medium">
+          {row.getValue("phone")}
+        </span>
+      );
+    },
+  },
+  {
     accessorKey: "birthDate",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Birth date" />
     ),
     cell: ({ row }) => {
+      const birthDate = row.getValue("birthDate") as Date;
+      const formattedBirthDate = `${birthDate.getFullYear()}-${birthDate.getMonth() + 1}-${birthDate.getDate()}`;
       return (
         <span className="max-w-[200px] truncate font-medium">
-          {row.getValue("birthDate")}
+          {formattedBirthDate}
         </span>
       );
     },
@@ -118,9 +139,11 @@ export const columns: ColumnDef<Employee>[] = [
       <DataTableColumnHeader column={column} title="Hired date" />
     ),
     cell: ({ row }) => {
+      const hired_date = row.getValue("hired_date") as Date;
+      const formattedHiredDate = `${hired_date.getFullYear()}-${hired_date.getMonth() + 1}-${hired_date.getDate()}`;
       return (
         <span className="max-w-[200px] truncate font-medium">
-          {row.getValue("hired_date")}
+          {formattedHiredDate}
         </span>
       );
     },

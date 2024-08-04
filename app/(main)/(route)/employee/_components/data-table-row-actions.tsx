@@ -10,7 +10,6 @@ import {
   DropdownMenuItem,
   DropdownMenuRadioGroup,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,

@@ -89,3 +89,4 @@ export const CandidateValidation = z.object({
 });
 
 export type Employee = z.infer<typeof EmployeeValidation>;
+export type Candidate = z.infer<typeof CandidateValidation>;

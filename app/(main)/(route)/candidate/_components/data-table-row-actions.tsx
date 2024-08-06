@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { DropdownMenuRadioItem } from "@radix-ui/react-dropdown-menu";
-import { EmployeeValidation } from "@/lib/validations";
+import { CandidateValidation } from "@/lib/validations";
 import { statuses } from "@/constants";
 
 interface DataTableRowActionsProps<TData> {
@@ -26,7 +26,7 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const employee = EmployeeValidation.parse(row.original);
+  const employee = CandidateValidation.parse(row.original);
 
   return (
     <DropdownMenu>

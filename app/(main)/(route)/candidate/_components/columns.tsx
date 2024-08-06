@@ -3,15 +3,15 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { DataTableRowActions } from "./data-table-row-actions";
-import { Employee } from "@/lib/validations";
+import { Candidate } from "@/lib/validations";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { statuses } from "@/constants";
 
-export const columns: ColumnDef<Employee>[] = [
+export const columns: ColumnDef<Candidate>[] = [
   {
     accessorKey: "id",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Employee" />
+      <DataTableColumnHeader column={column} title="Candidate" />
     ),
     cell: ({ row }) => <div className="w-[80px]">{row.getValue("id")}</div>,
     enableSorting: false,
@@ -82,19 +82,7 @@ export const columns: ColumnDef<Employee>[] = [
       );
     },
   },
-  {
-    accessorKey: "department",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Department" />
-    ),
-    cell: ({ row }) => {
-      return (
-        <span className="max-w-[200px] truncate font-medium">
-          {row.getValue("department")}
-        </span>
-      );
-    },
-  },
+
   {
     accessorKey: "email",
     header: ({ column }) => (
@@ -136,21 +124,7 @@ export const columns: ColumnDef<Employee>[] = [
       );
     },
   },
-  {
-    accessorKey: "hired_date",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Hired date" />
-    ),
-    cell: ({ row }) => {
-      const hired_date = row.getValue("hired_date") as Date;
-      const formattedHiredDate = `${hired_date.getFullYear()}-${hired_date.getMonth() + 1}-${hired_date.getDate()}`;
-      return (
-        <span className="max-w-[200px] truncate font-medium">
-          {formattedHiredDate}
-        </span>
-      );
-    },
-  },
+
   {
     accessorKey: "status",
     header: ({ column }) => (

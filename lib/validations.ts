@@ -2,6 +2,7 @@ import { department, level, status } from "@/constants";
 import * as z from "zod";
 
 export const InterviewValidation = z.object({
+  id: z.string().optional(),
   name: z
     .string()
     .min(3, {
@@ -25,6 +26,7 @@ export const InterviewValidation = z.object({
 });
 
 export const EmployeeValidation = z.object({
+  id: z.string().optional(),
   image: z.string().optional(),
   name: z
     .string()
@@ -59,6 +61,7 @@ export const EmployeeValidation = z.object({
   status: z.enum([status[0], ...status]).optional(),
 });
 export const CandidateValidation = z.object({
+  id: z.string().optional(),
   image: z.string().optional(),
   name: z
     .string()

@@ -12,7 +12,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Form, FormControl } from "../ui/form";
 import CustomFormField, { FormFieldType } from "../custom-form-field";
 import SubmitButton from "../submit-btn";
-import { EmployeeValidation } from "@/lib/validations";
+import { Employee, EmployeeValidation } from "@/lib/validations";
 import { department, gender, level, status } from "@/constants";
 import {
   Tooltip,
@@ -24,9 +24,11 @@ import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Label } from "../ui/label";
 
 export const EmployeeForm = ({
+  employee,
   type = "create",
   setOpen,
 }: {
+  employee?: Employee;
   type: "create" | "update";
   setOpen?: Dispatch<SetStateAction<boolean>>;
 }) => {
@@ -36,15 +38,17 @@ export const EmployeeForm = ({
 
   const form = useForm<z.infer<typeof EmployeeValidation>>({
     resolver: zodResolver(EmployeeValidation),
-    defaultValues: {
-      name: "",
-      position: "",
-      level: "",
-      department: "",
-      birthDate: new Date("1/1/1990"),
-      hired_date: new Date(Date.now()),
-      status: "Active",
-    },
+    defaultValues: employee
+      ? employee
+      : {
+          name: "",
+          position: "",
+          level: "",
+          department: "",
+          birthDate: new Date("1/1/1990"),
+          hired_date: new Date(Date.now()),
+          status: "Active",
+        },
   });
   const onSubmit = async (values: z.infer<typeof EmployeeValidation>) => {
     setIsLoading(true);

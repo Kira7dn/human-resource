@@ -24,6 +24,7 @@ import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Label } from "../ui/label";
 
 export const CandidateForm = ({
+  
   type = "create",
   setOpen,
 }: {

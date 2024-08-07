@@ -88,7 +88,6 @@ export const CandidateValidation = z.object({
   level: z.enum([level[0], ...level], {
     message: "Select level",
   }),
-  status: z.enum([status[0], ...status]).optional(),
 });
 
 export type Employee = z.infer<typeof EmployeeValidation>;

@@ -6,12 +6,6 @@ import { Button } from "@/components/ui/button";
 import { EmployeeValidation } from "@/lib/validations";
 import { EmployeeDialog } from "@/components/dialog/EmployeeDialog";
 import { Settings2 } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;

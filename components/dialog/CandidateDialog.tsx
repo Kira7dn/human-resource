@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -12,16 +11,14 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Form, FormControl } from "@/components/ui//form";
 import CustomFormField, { FormFieldType } from "../custom-form-field";
 import SubmitButton from "../submit-btn";
-import { Employee, EmployeeValidation } from "@/lib/validations";
-import { department, gender, level, status } from "@/constants";
+import { Candidate, CandidateValidation } from "@/lib/validations";
+import { gender, level } from "@/constants";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui//tooltip";
-import { RadioGroup, RadioGroupItem } from "@/components/ui//radio-group";
-import { Label } from "@/components/ui//label";
 import {
   Dialog,
   DialogContent,
@@ -30,13 +27,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui//scroll-area";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarImage } from "../ui/avatar";
 
-export const EmployeeDialog = ({
-  employee,
+export const CandidateDialog = ({
+  candidate,
   children,
 }: {
-  employee?: Employee;
+  candidate?: Candidate;
   children: React.ReactNode;
 }) => {
   const router = useRouter();
@@ -44,27 +41,29 @@ export const EmployeeDialog = ({
   const [isLoading, setIsLoading] = useState(false);
   const [file, setFile] = useState<File>();
 
-  const form = useForm<z.infer<typeof EmployeeValidation>>({
-    resolver: zodResolver(EmployeeValidation),
-    defaultValues: employee
-      ? employee
+  const form = useForm<z.infer<typeof CandidateValidation>>({
+    resolver: zodResolver(CandidateValidation),
+    defaultValues: candidate
+      ? candidate
       : {
+          image: "https://github.com/shadcn.png",
+          email: "",
           name: "",
+          birthDate: new Date("1990/1/1"),
+          phone: "",
+          gender: "Male",
+          address: "",
           position: "",
           level: "",
-          department: "",
-          birthDate: new Date("1990/1/1"),
-          hired_date: new Date(Date.now()),
-          status: "Active",
         },
   });
-  const onSubmit = async (values: z.infer<typeof EmployeeValidation>) => {
+  const onSubmit = async (values: z.infer<typeof CandidateValidation>) => {
     setIsLoading(true);
     console.log(values);
     setIsLoading(false);
   };
 
-  let buttonLabel = employee ? "Update Employee" : "Submit Employee";
+  let buttonLabel = candidate ? "Update Candidate" : "Submit Candidate";
 
   const handleImage = (
     e: ChangeEvent<HTMLInputElement>,
@@ -89,7 +88,7 @@ export const EmployeeDialog = ({
       <DialogContent className="max-w-lg">
         <DialogHeader className="mb-4 space-y-3">
           <DialogTitle className="capitalize">
-            {employee ? "Edit" : "Create"} Employee profile
+            {candidate ? "Edit" : "Create"} Candidate profile
           </DialogTitle>
         </DialogHeader>
         <ScrollArea className="h-[80vh] rounded-md">
@@ -143,7 +142,7 @@ export const EmployeeDialog = ({
                 )}
               />
               <div
-                className={`flex flex-col gap-6  ${!employee && "xl:flex-row"}`}
+                className={`flex flex-col gap-6  ${!candidate && "xl:flex-row"}`}
               >
                 <CustomFormField
                   fieldType={FormFieldType.INPUT}
@@ -169,7 +168,7 @@ export const EmployeeDialog = ({
                 </CustomFormField>
               </div>
               <div
-                className={`flex flex-col gap-6  ${!employee && "xl:flex-row"}`}
+                className={`flex flex-col gap-6  ${!candidate && "xl:flex-row"}`}
               >
                 <CustomFormField
                   fieldType={FormFieldType.DATE_PICKER}
@@ -186,7 +185,7 @@ export const EmployeeDialog = ({
                 />
               </div>
               <div
-                className={`flex flex-col gap-6  ${!employee && "xl:flex-row"}`}
+                className={`flex flex-col gap-6  ${!candidate && "xl:flex-row"}`}
               >
                 <CustomFormField
                   fieldType={FormFieldType.INPUT}
@@ -204,7 +203,7 @@ export const EmployeeDialog = ({
                 />
               </div>
               <div
-                className={`flex flex-col gap-6  ${!employee && "xl:flex-row"}`}
+                className={`flex flex-col gap-6  ${!candidate && "xl:flex-row"}`}
               >
                 <CustomFormField
                   fieldType={FormFieldType.SELECT}
@@ -221,56 +220,10 @@ export const EmployeeDialog = ({
                     </SelectItem>
                   ))}
                 </CustomFormField>
-                <CustomFormField
-                  fieldType={FormFieldType.SELECT}
-                  control={form.control}
-                  name="department"
-                  label="Department"
-                  placeholder="Select"
-                >
-                  {department.map((item, i) => (
-                    <SelectItem key={i} value={item}>
-                      <div className="flex cursor-pointer items-center gap-2">
-                        <p className="capitalize">{item}</p>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </CustomFormField>
               </div>
               <div
-                className={`flex flex-col gap-6  ${!employee && "xl:flex-row"}`}
-              >
-                <CustomFormField
-                  fieldType={FormFieldType.DATE_PICKER}
-                  control={form.control}
-                  name="hired_date"
-                  label="Hired date"
-                />
-                <CustomFormField
-                  fieldType={FormFieldType.SKELETON}
-                  control={form.control}
-                  name="status"
-                  label="Status"
-                  renderSkeleton={(field) => (
-                    <FormControl>
-                      <RadioGroup
-                        className="flex h-11 gap-6 xl:justify-between"
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        {status.map((option, i) => (
-                          <div key={option + i} className="radio-group">
-                            <RadioGroupItem value={option} id={option} />
-                            <Label htmlFor={option} className="cursor-pointer">
-                              {option}
-                            </Label>
-                          </div>
-                        ))}
-                      </RadioGroup>
-                    </FormControl>
-                  )}
-                />
-              </div>
+                className={`flex flex-col gap-6  ${!candidate && "xl:flex-row"}`}
+              ></div>
 
               <SubmitButton
                 isLoading={isLoading}

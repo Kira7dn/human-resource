@@ -1,17 +1,13 @@
-export type CreateUserParams = {
-  clerkId: string;
-  email: string;
-  username: string;
-  firstName: string;
-  lastName: string;
-  photo: string;
-};
-
-export type UpdateUserParams = {
-  clerkId: string;
-  email: string;
-  username: string;
-  firstName: string;
-  lastName: string;
-  photo: string;
+export type Payroll = {
+  id: string;
+  image: string;
+  name: string;
+  position: string;
+  level: string;
+  department: string;
+  month: number;
+  gross_salary: number;
+  allowance: number;
+  days_worked: number;
+  overtime: number;
 };

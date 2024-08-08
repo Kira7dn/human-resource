@@ -95,7 +95,7 @@ export const mainLinks = [
     component: UsersRound,
   },
   {
-    route: "/events",
+    route: "/payroll",
     label: "Payroll",
     component: Wallet,
   },

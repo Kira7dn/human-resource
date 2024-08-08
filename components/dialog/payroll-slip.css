@@ -34,13 +34,13 @@
     height: 880px;
 }
 
-.content .left-panel {
+.left-panel {
     border-right: 1px solid #ccc;
     min-width: 200px;
     padding: 20px 16px 0 0;
 }
 
-.content .right-panel {
+.right-panel {
     width: 100%;
     padding: 10px 0 0 16px;
 }
@@ -99,47 +99,47 @@
     margin-bottom: 6px;
 }
 
-.content .right-panel .details {
+.details {
     width: 100%;
 }
 
-.content .right-panel .details .entry {
+.details .entry {
     display: flex;
     padding: 0 10px;
     margin: 6px 0;
 }
 
-.content .right-panel .details .label {
+.details .label {
     font-weight: 700;
     width: 120px;
 }
 
-.content .right-panel .details .detail {
+.details .detail {
     font-weight: 600;
     width: 130px;
 }
 
-.content .right-panel .details .rate {
+.details .rate {
     font-weight: 400;
     width: 80px;
     font-style: italic;
     letter-spacing: 1px;
 }
 
-.content .right-panel .details .amount {
+.details .amount {
     text-align: right;
     font-weight: 700;
     width: 90px;
 }
 
-.content .right-panel .details .net_pay div,
-.content .right-panel .details .nti div {
+.details .net_pay div,
+.details .nti div {
     font-weight: 600;
     font-size: 12px;
 }
 
-.content .right-panel .details .net_pay,
-.content .right-panel .details .nti {
+.details .net_pay,
+.details .nti {
     padding: 3px 0 2px 0;
     margin-bottom: 10px;
     background: rgba(0, 0, 0, 0.04);

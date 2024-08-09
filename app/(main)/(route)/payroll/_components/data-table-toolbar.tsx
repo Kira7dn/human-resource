@@ -29,13 +29,13 @@ export function DataTableToolbar<TData>({
           }
           className="h-8 w-[150px] lg:w-[250px]"
         />
-        {table.getColumn("level") && (
+        {/* {table.getColumn("level") && (
           <DataTableFacetedFilter
             column={table.getColumn("level")}
             title="Level"
             options={levels}
           />
-        )}
+        )} */}
         {isFiltered && (
           <Button
             variant="ghost"

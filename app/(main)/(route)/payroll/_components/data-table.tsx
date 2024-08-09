@@ -53,6 +53,7 @@ export function DataTable<TData, TValue>({
       columnFilters,
     },
     enableRowSelection: true,
+    sortDescFirst: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,

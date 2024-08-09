@@ -13,7 +13,7 @@ import { Form, FormControl } from "../ui/form";
 import CustomFormField, { FormFieldType } from "../custom-form-field";
 import SubmitButton from "../submit-btn";
 import { CandidateValidation } from "@/lib/validations";
-import { department, gender, level, status } from "@/constants";
+import { gender, level } from "@/constants";
 import {
   Tooltip,
   TooltipContent,
@@ -24,7 +24,6 @@ import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Label } from "../ui/label";
 
 export const CandidateForm = ({
-  
   type = "create",
   setOpen,
 }: {
@@ -42,7 +41,6 @@ export const CandidateForm = ({
       position: "",
       level: "",
       birthDate: new Date("1/1/1990"),
-      status: "Active",
     },
   });
   const onSubmit = async (values: z.infer<typeof CandidateValidation>) => {
@@ -212,30 +210,6 @@ export const CandidateForm = ({
               </SelectItem>
             ))}
           </CustomFormField>
-          <CustomFormField
-            fieldType={FormFieldType.SKELETON}
-            control={form.control}
-            name="status"
-            label="Status"
-            renderSkeleton={(field) => (
-              <FormControl>
-                <RadioGroup
-                  className="flex h-11 gap-6 xl:justify-between"
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  {status.map((option, i) => (
-                    <div key={option + i} className="radio-group">
-                      <RadioGroupItem value={option} id={option} />
-                      <Label htmlFor={option} className="cursor-pointer">
-                        {option}
-                      </Label>
-                    </div>
-                  ))}
-                </RadioGroup>
-              </FormControl>
-            )}
-          />
         </div>
 
         <SubmitButton

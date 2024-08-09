@@ -12,14 +12,18 @@ const payrolls = Array.from({ length: 100 }, () => ({
   id: `EMP-${faker.number.int({ min: 1000, max: 9999 })}`,
   image: faker.image.avatar(),
   name: faker.person.fullName(),
+  email: faker.internet.email(),
   position: faker.person.jobTitle(),
   level: faker.helpers.arrayElement(level),
   department: faker.helpers.arrayElement(department),
-  month: faker.number.int({ min: 12, max: 12 }),
-  gross_salary: faker.number.int({ min: 10000000, max: 50000000 }),
-  allowance: faker.number.int({ min: 100000, max: 5000000 }),
-  days_worked: faker.number.int({ min: 15, max: 24 }),
+  month: faker.number.int({ min: 1, max: 12 }),
+  hired_date: faker.date.past({ years: 3 }).toISOString().slice(0, 10),
+  gross_salary: faker.number.int({ min: 10, max: 50 }) * 1000000,
   overtime: faker.number.int({ min: 1, max: 24 }),
+  paid_leave: faker.number.int({ min: 1, max: 2 }),
+  unpaid_leave: faker.number.int({ min: 1, max: 2 }),
+  position_allowance: faker.number.int({ min: 0.5, max: 5 }) * 1000000,
+  travel_allowance: faker.number.int({ min: 0.5, max: 2 }) * 1000000,
 }));
 
 fs.writeFileSync(

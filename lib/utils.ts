@@ -222,3 +222,23 @@ export const generateRandomEmployee = () => {
     status,
   };
 };
+
+export function get_tax_level(tntt: number): number {
+  if (tntt <= 0) {
+    return 0;
+  } else if (tntt <= 5000000) {
+    return (tntt * 5) / 100;
+  } else if (tntt <= 10000000) {
+    return (tntt * 10) / 100 - 250000;
+  } else if (tntt <= 18000000) {
+    return (tntt * 15) / 100 - 750000;
+  } else if (tntt <= 32000000) {
+    return (tntt * 20) / 100 - 1650000;
+  } else if (tntt <= 52000000) {
+    return (tntt * 25) / 100 - 3250000;
+  } else if (tntt <= 80000000) {
+    return (tntt * 30) / 100 - 5850000;
+  } else {
+    return (tntt * 35) / 100 - 9850000;
+  }
+}

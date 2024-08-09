@@ -3,16 +3,71 @@ import {
   Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui//scroll-area";
 import { useState } from "react";
-import "./payroll-slip.css";
 import Image from "next/image";
+import { Payroll } from "@/types";
+import { ScrollArea } from "../ui/scroll-area";
+import { get_tax_level } from "@/lib/utils";
+import { months } from "@/constants";
 
-export const PayrollDialog = ({ children }: { children: React.ReactNode }) => {
+export const PayrollDialog = ({
+  payroll,
+  children,
+}: {
+  payroll: Payroll;
+  children: React.ReactNode;
+}) => {
   const [open, setOpen] = useState(false);
+  const {
+    id,
+    month,
+    name,
+    email,
+    position,
+    level,
+    department,
+    hired_date,
+    gross_salary,
+    overtime,
+    paid_leave,
+    unpaid_leave,
+    position_allowance,
+    travel_allowance,
+  } = payroll;
+  const format_hired_date = new Date(hired_date).toLocaleDateString("en-us", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+  const pay_period = `15-${months[month - 1]} to 15-${months[month]}`;
+  const work_hour = 8;
+  const work_day = 24;
+  const basic_salary = 9000000;
+  const basic_tax_reduction = 11000000;
+  const hour_salary = gross_salary / (work_hour * work_day);
+  const overtime_salary = overtime * 1.5 * hour_salary;
+  const paid_leave_salary = (paid_leave * gross_salary) / work_day;
+  const unpaid_leave_salary = (-unpaid_leave * gross_salary) / work_day;
+  const total_income =
+    gross_salary -
+    unpaid_leave_salary +
+    overtime_salary +
+    position_allowance +
+    travel_allowance;
+  const social_insurance = total_income * 0.08;
+  const health_insurance = total_income * 0.015;
+  const unemployment_insurance = total_income * 0.01;
+  const taxable_income =
+    total_income -
+    basic_salary -
+    unemployment_insurance -
+    health_insurance -
+    unemployment_insurance -
+    basic_tax_reduction;
+  const income_tax = get_tax_level(taxable_income);
+  const net_pay = total_income - income_tax;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -32,7 +87,7 @@ export const PayrollDialog = ({ children }: { children: React.ReactNode }) => {
                   priority
                 />
 
-                <div className="text-heading4-bold">Payslip</div>
+                <div className="text-heading4-bold">Payroll slip</div>
               </div>
               <div>
                 <Image
@@ -47,54 +102,52 @@ export const PayrollDialog = ({ children }: { children: React.ReactNode }) => {
             <div className="flex justify-start border-y border-[#ccc] py-2">
               <div className="">
                 <div className="text-body-normal">PAY PERIOD</div>
-                <div className="text-body-semibold">Feb 15 - Mar 15, 2024</div>
+                <div className="text-body-semibold">{pay_period}</div>
               </div>
             </div>
             <div className="flex justify-between border-b border-[#ccc]">
-              <div className="flex min-w-56 flex-col gap-4 border-r border-[#ccc] pr-5">
+              <div className="flex min-w-72 flex-col gap-4 border-r border-[#ccc] pr-5">
                 <div className="py-2">
-                  <div className="text-body-bold">Piven El'Sync</div>
-                  <div className="text-small-medium">
-                    maryannRegr06@salarium.com
-                  </div>
+                  <div className="text-body-bold">{name}</div>
+                  <div className="text-small-medium">{email}</div>
                 </div>
                 <div className="">
                   <div className="flex justify-between">
                     <div className="text-start text-small-semibold">
                       Employee ID
                     </div>
-                    <div className="max-w-24 truncate text-end text-small-regular">
-                      Reg-006
+                    <div className="max-w-32 truncate text-end text-small-regular">
+                      {id}
                     </div>
                   </div>
                   <div className="flex justify-between">
                     <div className="text-start text-small-semibold">
                       Date Hired
                     </div>
-                    <div className="max-w-24 truncate text-end text-small-regular">
-                      Dec 1, 1862
+                    <div className="max-w-32 truncate text-end text-small-regular">
+                      {format_hired_date}
                     </div>
                   </div>
                   <div className="flex justify-between">
                     <div className="text-start text-small-semibold">
                       Position
                     </div>
-                    <div className="max-w-24 truncate text-end text-small-regular">
-                      Point Guard
+                    <div className="max-w-32 text-end text-small-regular">
+                      {position}
                     </div>
                   </div>
                   <div className="flex justify-between">
                     <div className="text-start text-small-semibold">
                       Department
                     </div>
-                    <div className="max-w-24 truncate text-end text-small-regular">
-                      1st String
+                    <div className="max-w-32 truncate text-end text-small-regular">
+                      {department}
                     </div>
                   </div>
                   <div className="flex justify-between">
                     <div className="text-start text-small-semibold">Level</div>
-                    <div className="max-w-24 truncate text-end text-small-regular">
-                      Junior
+                    <div className="max-w-32 truncate text-end text-small-regular">
+                      {level}
                     </div>
                   </div>
                 </div>
@@ -104,43 +157,57 @@ export const PayrollDialog = ({ children }: { children: React.ReactNode }) => {
                   <div className="flex w-full flex-col">
                     <div className="text-base-medium">Salary</div>
                     <div className="flex w-full justify-between">
-                      <div className="pl-2">Basic Salary</div>
-                      <div className="">1201511</div>
+                      <div className="pl-2">Basic Salary (24 days)</div>
+                      <div className="">
+                        {gross_salary.toLocaleString("en-US")}
+                      </div>
                     </div>
                     <div className="flex w-full justify-between">
-                      <div className="pl-2">Overtime</div>
-                      <div className="">1201511</div>
-                    </div>
-                    <div className="flex w-full justify-between">
-                      <div className="pl-2">Holiday</div>
-                      <div className="">1201511</div>
+                      <div className="pl-2">Overtime ({overtime} hours)</div>
+                      <div className="">
+                        {Math.floor(overtime_salary).toLocaleString("en-US")}
+                      </div>
                     </div>
                   </div>
                   <div className="flex w-full flex-col">
                     <div className="text-base-medium">Leave</div>
                     <div className="flex w-full justify-between">
-                      <div className="pl-2">Paid leave</div>
-                      <div className="">1201511</div>
+                      <div className="pl-2">Paid leave ({paid_leave} days)</div>
+                      <div className="">
+                        {Math.floor(paid_leave_salary).toLocaleString("en-US")}
+                      </div>
                     </div>
                     <div className="flex w-full justify-between">
-                      <div className="pl-2">Unpaid leave</div>
-                      <div className="">(1201511)</div>
+                      <div className="pl-2">
+                        Unpaid leave ({unpaid_leave} days)
+                      </div>
+                      <div className="">
+                        {Math.floor(unpaid_leave_salary).toLocaleString(
+                          "en-US",
+                        )}
+                      </div>
                     </div>
                   </div>
                   <div className="flex w-full flex-col">
                     <div className="text-base-medium">Allowance</div>
                     <div className="flex w-full justify-between">
                       <div className="pl-2">Position</div>
-                      <div className="">1201511</div>
+                      <div className="">
+                        {position_allowance.toLocaleString("en-US")}
+                      </div>
                     </div>
                     <div className="flex w-full justify-between">
                       <div className="pl-2">Travel</div>
-                      <div className="">(1201511)</div>
+                      <div className="">
+                        {travel_allowance.toLocaleString("en-US")}
+                      </div>
                     </div>
                   </div>
                   <div className="flex w-full justify-between bg-black  bg-opacity-5 text-base-semibold">
                     <div className="label">TOTAL INCOME</div>
-                    <div className="amount">82,705.06</div>
+                    <div className="amount">
+                      {Math.floor(total_income).toLocaleString("en-US")}
+                    </div>
                   </div>
                 </div>
                 <div className="flex flex-col">
@@ -148,35 +215,36 @@ export const PayrollDialog = ({ children }: { children: React.ReactNode }) => {
                     <div className="text-base-medium">Tax & Insurance</div>
                     <div className="flex w-full justify-between">
                       <div className="pl-2">Social Insurance (8%)</div>
-                      <div className="">(1201511)</div>
+                      <div className="">
+                        {Math.floor(social_insurance).toLocaleString("en-US")}
+                      </div>
                     </div>
                     <div className="flex w-full justify-between">
                       <div className="pl-2">Health Insurance (1.5%)</div>
-                      <div className="">(1201511)</div>
+                      <div className="">
+                        {Math.floor(health_insurance).toLocaleString("en-US")}
+                      </div>
                     </div>
                     <div className="flex w-full justify-between">
                       <div className="pl-2">Unemployment insurance (1%)</div>
-                      <div className="">(1201511)</div>
+                      <div className="">
+                        {Math.floor(unemployment_insurance).toLocaleString(
+                          "en-US",
+                        )}
+                      </div>
                     </div>
                     <div className="flex w-full justify-between">
                       <div className="pl-2">Income Tax</div>
-                      <div className="">(1201511)</div>
+                      <div className="">
+                        {Math.floor(income_tax).toLocaleString("en-US")}
+                      </div>
                     </div>
                   </div>
-                  {/* <div className="flex w-full flex-col">
-                    <div className="text-base-medium">Other Reduction</div>
-                    <div className="flex w-full justify-between">
-                      <div className="pl-2">Overtime</div>
-                      <div className="">1201511</div>
-                    </div>
-                    <div className="flex w-full justify-between">
-                      <div className="pl-2">Holiday</div>
-                      <div className="">1201511</div>
-                    </div>
-                  </div> */}
                   <div className="flex w-full justify-between bg-black  bg-opacity-5 text-base-semibold">
                     <div className="label">NET PAY</div>
-                    <div className="amount">82,705.06</div>
+                    <div className="amount">
+                      {Math.floor(net_pay).toLocaleString("en-US")}
+                    </div>
                   </div>
                 </div>
               </div>

@@ -239,3 +239,17 @@ export const department = [
 export const level = ["Junior", "Mid-Level", "Senior"];
 export const status = ["Active", "Inactive", "On Leave"];
 export const gender = ["Male", "Female", "Other"];
+export const months = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];

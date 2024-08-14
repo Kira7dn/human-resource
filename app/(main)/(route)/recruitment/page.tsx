@@ -24,25 +24,20 @@ async function getRecruits() {
 export default async function Component() {
   const recruits = await getRecruits();
   return (
-    <div className="mx-auto grid w-full max-w-6xl gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <div className="mx-auto grid w-full max-w-6xl items-stretch gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {recruits.map((recruit) => (
-        <Card key={recruit.id}>
+        <Card key={recruit.id} className="flex flex-col">
           <CardHeader className="">
             <CardTitle className="truncate pb-2 text-base-semibold">
               {recruit.position}
             </CardTitle>
-            <CardDescription className="line-clamp-5 overflow-ellipsis">
+            <CardDescription className="mb-auto line-clamp-5 overflow-ellipsis">
               <span>Department: {recruit.department}</span>
               <br />
-              <span>
-                Dolor excepteur aliquip dolore cupidatat eiusmod dolor non
-                voluptate. Ad nulla ea quis aute consectetur nulla ut
-                consectetur dolore in consectetur.onsectetur dolore in
-                consectetur.
-              </span>
+              <span>{recruit.description}</span>
             </CardDescription>
           </CardHeader>
-          <CardContent className="p-4">
+          <CardContent className="mt-auto p-4">
             <div className="flex space-x-2 text-small-medium">
               <Badge variant="outline" className="py-0">
                 Full-time
@@ -60,7 +55,9 @@ export default async function Component() {
                 Expire date: {recruit.expried_date}
               </div>
             </div>
-            <Button size="sm">Detail</Button>
+            <Button size="sm" className="p-1">
+              Detail
+            </Button>
           </CardFooter>
         </Card>
       ))}

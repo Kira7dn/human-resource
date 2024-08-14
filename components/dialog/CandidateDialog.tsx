@@ -101,17 +101,17 @@ export const CandidateDialog = ({
                 fieldType={FormFieldType.SKELETON}
                 control={form.control}
                 name="image"
-                label="Image"
+                label=""
                 renderSkeleton={(field) => (
                   <div className="flex items-center gap-4">
-                    <FormControl className="flex-1  text-base-semibold text-secondary">
+                    <FormControl className="flex-1 text-base-semibold text-secondary">
                       <>
                         <input
                           type="file"
                           accept="image/*"
                           name="file"
                           id="file"
-                          className="absolute -z-10 h-0 w-0  opacity-0"
+                          className="absolute -z-10 h-0 w-0 opacity-0"
                           onChange={(e) => handleImage(e, field.onChange)}
                         />
                         <label htmlFor="file">
@@ -119,14 +119,13 @@ export const CandidateDialog = ({
                             <TooltipProvider delayDuration={200}>
                               <Tooltip>
                                 <TooltipTrigger asChild>
-                                  <Avatar className="">
+                                  <Avatar className="h-16 w-16">
                                     <AvatarImage
                                       src={
                                         field.value ||
                                         "https://github.com/shadcn.png"
                                       }
                                     />
-                                    {/* <AvatarFallback>{fallback_name}</AvatarFallback> */}
                                   </Avatar>
                                 </TooltipTrigger>
                                 <TooltipContent className="bg-secondary">
@@ -141,9 +140,7 @@ export const CandidateDialog = ({
                   </div>
                 )}
               />
-              <div
-                className={`flex flex-col gap-6  ${!candidate && "xl:flex-row"}`}
-              >
+              <div className={`flex flex-col gap-6 md:flex-row`}>
                 <CustomFormField
                   fieldType={FormFieldType.INPUT}
                   control={form.control}
@@ -167,9 +164,7 @@ export const CandidateDialog = ({
                   ))}
                 </CustomFormField>
               </div>
-              <div
-                className={`flex flex-col gap-6  ${!candidate && "xl:flex-row"}`}
-              >
+              <div className={`flex flex-col gap-6 md:flex-row`}>
                 <CustomFormField
                   fieldType={FormFieldType.DATE_PICKER}
                   control={form.control}
@@ -184,9 +179,7 @@ export const CandidateDialog = ({
                   placeholder="(+84) 123-4567"
                 />
               </div>
-              <div
-                className={`flex flex-col gap-6  ${!candidate && "xl:flex-row"}`}
-              >
+              <div className={`flex flex-col gap-6 md:flex-row`}>
                 <CustomFormField
                   fieldType={FormFieldType.INPUT}
                   control={form.control}
@@ -194,17 +187,6 @@ export const CandidateDialog = ({
                   label="Position"
                   placeholder="Frontend Developer"
                 />
-                <CustomFormField
-                  fieldType={FormFieldType.INPUT}
-                  control={form.control}
-                  name="address"
-                  label="Address"
-                  placeholder="123, Street, City"
-                />
-              </div>
-              <div
-                className={`flex flex-col gap-6  ${!candidate && "xl:flex-row"}`}
-              >
                 <CustomFormField
                   fieldType={FormFieldType.SELECT}
                   control={form.control}
@@ -221,9 +203,13 @@ export const CandidateDialog = ({
                   ))}
                 </CustomFormField>
               </div>
-              <div
-                className={`flex flex-col gap-6  ${!candidate && "xl:flex-row"}`}
-              ></div>
+              <CustomFormField
+                fieldType={FormFieldType.INPUT}
+                control={form.control}
+                name="address"
+                label="Address"
+                placeholder="123, Street, City"
+              />
 
               <SubmitButton
                 isLoading={isLoading}

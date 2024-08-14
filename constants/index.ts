@@ -8,6 +8,7 @@ import {
   UsersRound,
   Wallet,
   Contact,
+  UserRoundPlus,
 } from "lucide-react";
 
 import {
@@ -87,7 +88,7 @@ export const mainLinks = [
   {
     route: "/candidate",
     label: "Candidate",
-    component: Contact,
+    component: UserRoundPlus,
   },
   {
     route: "/recruitment",

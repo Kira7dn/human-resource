@@ -128,10 +128,9 @@ export const columns: ColumnDef<Employee>[] = [
     ),
     cell: ({ row }) => {
       const birthDate = row.getValue("birthDate") as Date;
-      const formattedBirthDate = `${birthDate.getFullYear()}-${birthDate.getMonth() + 1}-${birthDate.getDate()}`;
       return (
         <span className="max-w-[200px] truncate font-medium">
-          {formattedBirthDate}
+          {birthDate.toLocaleDateString("en-US")}
         </span>
       );
     },
@@ -143,10 +142,9 @@ export const columns: ColumnDef<Employee>[] = [
     ),
     cell: ({ row }) => {
       const hired_date = row.getValue("hired_date") as Date;
-      const formattedHiredDate = `${hired_date.getFullYear()}-${hired_date.getMonth() + 1}-${hired_date.getDate()}`;
       return (
         <span className="max-w-[200px] truncate font-medium">
-          {formattedHiredDate}
+          {hired_date.toLocaleDateString("en-US")}
         </span>
       );
     },

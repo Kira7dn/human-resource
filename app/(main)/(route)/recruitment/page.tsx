@@ -8,17 +8,18 @@ import {
   CardDescription,
   CardFooter,
 } from "@/components/ui/card";
-import { Recruit } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { RecruitValidation } from "@/lib/validations";
+import { z } from "zod";
 
 // Simulate a database read for tasks.
 async function getRecruits() {
   const data = await fs.readFile(
     path.join(process.cwd(), "constants/recruitment/data.json"),
   );
-  const recruit = JSON.parse(data.toString()) as Recruit[];
-  return recruit;
+  const recruit = JSON.parse(data.toString());
+  return z.array(RecruitValidation).parse(recruit);
 }
 
 export default async function Component() {
@@ -52,7 +53,7 @@ export default async function Component() {
                 Salary: {recruit.salary}
               </div>
               <div className="text-tiny-medium capitalize text-gray-500 dark:text-gray-400">
-                Expire date: {recruit.expried_date}
+                Expire date: {recruit.expried_date.toLocaleDateString("en-US")}
               </div>
             </div>
             <Button size="sm" className="p-1">

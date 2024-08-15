@@ -11,7 +11,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Form, FormControl } from "@/components/ui//form";
 import CustomFormField, { FormFieldType } from "../custom-form-field";
 import SubmitButton from "../submit-btn";
-import { Candidate, CandidateValidation } from "@/lib/validations";
+import { Candidate, CandidateValidation, Recruit } from "@/lib/validations";
 import { gender, level } from "@/constants";
 import {
   Tooltip,
@@ -31,9 +31,11 @@ import { Avatar, AvatarImage } from "../ui/avatar";
 
 export const CandidateDialog = ({
   candidate,
+  recruitment,
   children,
 }: {
   candidate?: Candidate;
+  recruitment?: Recruit;
   children: React.ReactNode;
 }) => {
   const router = useRouter();
@@ -53,8 +55,8 @@ export const CandidateDialog = ({
           phone: "",
           gender: "Male",
           address: "",
-          position: "",
-          level: "",
+          position: recruitment ? recruitment.position : "",
+          level: recruitment ? recruitment.level : "",
         },
   });
   const onSubmit = async (values: z.infer<typeof CandidateValidation>) => {

@@ -15,14 +15,3 @@ export type Payroll = {
   position_allowance: number;
   travel_allowance: number;
 };
-
-export type Recruit = {
-  id: string;
-  expried_date: string;
-  quantity: number;
-  position: string;
-  level: string;
-  department: string;
-  salary: string;
-  description: string;
-};

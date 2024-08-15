@@ -116,10 +116,9 @@ export const columns: ColumnDef<Candidate>[] = [
     ),
     cell: ({ row }) => {
       const birthDate = row.getValue("birthDate") as Date;
-      const formattedBirthDate = `${birthDate.getFullYear()}-${birthDate.getMonth() + 1}-${birthDate.getDate()}`;
       return (
         <span className="max-w-[200px] truncate font-medium">
-          {formattedBirthDate}
+          {birthDate.toLocaleDateString("en-US")}
         </span>
       );
     },

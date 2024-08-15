@@ -1,8 +1,9 @@
+import { CandidateDialog } from "@/components/dialog/CandidateDialog";
 import { Button } from "@/components/ui/button";
 
 const recruit = {
   id: "REC-9814",
-  expried_date: "2024-12-13",
+  expried_date: new Date("2024-12-13"),
   quantity: 3,
   position: "Future Data Administrator",
   level: "Senior",
@@ -18,7 +19,14 @@ export default function Page({ params }: { params: { id: string } }) {
     <div className="p-4">
       <div className="flex items-center justify-between border-b py-2 text-body-semibold">
         <p>{recruit.position}</p>
-        <Button size="sm">Apply</Button>
+        <div className="flex gap-2">
+          <Button size="sm" variant="outline">
+            Edit
+          </Button>
+          <CandidateDialog recruitment={recruit}>
+            <Button size="sm">Apply</Button>
+          </CandidateDialog>
+        </div>
       </div>
       <div className="flex flex-col gap-2 pt-2">
         <div className="flex gap-8">
@@ -49,7 +57,9 @@ export default function Page({ params }: { params: { id: string } }) {
               <span className="mr-2 text-base-semibold uppercase underline">
                 Expired date:
               </span>
-              <span className="text-base-medium">{recruit.expried_date}</span>
+              <span className="text-base-medium">
+                {recruit.expried_date.toLocaleDateString("en-US")}
+              </span>
             </p>
           </div>
         </div>

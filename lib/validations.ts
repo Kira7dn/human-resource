@@ -60,6 +60,7 @@ export const EmployeeValidation = z.object({
   end_date: z.coerce.date().optional(),
   status: z.enum([status[0], ...status]).optional(),
 });
+
 export const CandidateValidation = z.object({
   id: z.string().optional(),
   image: z.string().optional(),
@@ -89,6 +90,28 @@ export const CandidateValidation = z.object({
     message: "Select level",
   }),
 });
+export const RecruitValidation = z.object({
+  id: z.string().optional(),
+  expried_date: z.coerce.date(),
+  quantity: z.number(),
+  position: z
+    .string()
+    .min(3, {
+      message: "Minimum 3 characters.",
+    })
+    .max(300, {
+      message: "Maximum 300 caracters.",
+    }),
+  level: z.enum([level[0], ...level], {
+    message: "Select level",
+  }),
+  department: z.enum([department[0], ...department], {
+    message: "Select department",
+  }),
+  salary: z.string(),
+  description: z.string(),
+});
 
 export type Employee = z.infer<typeof EmployeeValidation>;
 export type Candidate = z.infer<typeof CandidateValidation>;
+export type Recruit = z.infer<typeof RecruitValidation>;

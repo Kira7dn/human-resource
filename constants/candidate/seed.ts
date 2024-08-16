@@ -3,7 +3,7 @@ import path from "path";
 import { faker } from "@faker-js/faker";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
-import { gender, level, statuses } from "..";
+import { gender, levels, statuses } from "..";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -18,7 +18,7 @@ const tasks = Array.from({ length: 100 }, () => ({
   gender: faker.helpers.arrayElement(gender),
   address: faker.location.streetAddress(),
   position: faker.person.jobTitle(),
-  level: faker.helpers.arrayElement(level),
+  level: faker.helpers.arrayElement(levels.map((item) => item.value)),
   status: faker.helpers.arrayElement(statuses).value,
 }));
 

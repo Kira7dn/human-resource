@@ -12,7 +12,7 @@ import { Form, FormControl } from "@/components/ui//form";
 import CustomFormField, { FormFieldType } from "../custom-form-field";
 import SubmitButton from "../submit-btn";
 import { Employee, EmployeeValidation } from "@/lib/validations";
-import { department, gender, level, status } from "@/constants";
+import { department, gender, levels, status } from "@/constants";
 import {
   Tooltip,
   TooltipContent,
@@ -212,10 +212,10 @@ export const EmployeeDialog = ({
                   label="Level"
                   placeholder="Select"
                 >
-                  {level.map((item, i) => (
-                    <SelectItem key={i} value={item}>
+                  {levels.map((item, i) => (
+                    <SelectItem key={i} value={item.value}>
                       <div className="flex cursor-pointer items-center gap-2">
-                        <p className="capitalize">{item}</p>
+                        <p className="capitalize">{item.label}</p>
                       </div>
                     </SelectItem>
                   ))}

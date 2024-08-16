@@ -12,7 +12,7 @@ import { Form, FormControl } from "@/components/ui//form";
 import CustomFormField, { FormFieldType } from "../custom-form-field";
 import SubmitButton from "../submit-btn";
 import { Candidate, CandidateValidation, Recruit } from "@/lib/validations";
-import { gender, level } from "@/constants";
+import { gender, levels } from "@/constants";
 import {
   Tooltip,
   TooltipContent,
@@ -196,10 +196,10 @@ export const CandidateDialog = ({
                   label="Level"
                   placeholder="Select"
                 >
-                  {level.map((item, i) => (
-                    <SelectItem key={i} value={item}>
+                  {levels.map((item, i) => (
+                    <SelectItem key={i} value={item.value}>
                       <div className="flex cursor-pointer items-center gap-2">
-                        <p className="capitalize">{item}</p>
+                        <p className="capitalize">{item.label}</p>
                       </div>
                     </SelectItem>
                   ))}

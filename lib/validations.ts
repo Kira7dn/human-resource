@@ -1,6 +1,9 @@
-import { department, level, status } from "@/constants";
+import { department, levels, status } from "@/constants";
 import * as z from "zod";
 
+const level = levels.map((item) => item.value) as [string, ...string[]];
+const departments = department as [string, ...string[]];
+const statuses = status as [string, ...string[]];
 export const InterviewValidation = z.object({
   id: z.string().optional(),
   name: z
@@ -19,7 +22,7 @@ export const InterviewValidation = z.object({
     .max(300, {
       message: "Maximum 300 caracters.",
     }),
-  level: z.enum([level[0], ...level], {
+  level: z.enum(level, {
     message: "Select level",
   }),
   appointment_date: z.coerce.date(),
@@ -50,15 +53,15 @@ export const EmployeeValidation = z.object({
     .max(300, {
       message: "Maximum 300 caracters.",
     }),
-  level: z.enum([level[0], ...level], {
+  level: z.enum(level, {
     message: "Select level",
   }),
-  department: z.enum([department[0], ...department], {
+  department: z.enum(departments, {
     message: "Select department",
   }),
   hired_date: z.coerce.date(),
   end_date: z.coerce.date().optional(),
-  status: z.enum([status[0], ...status]).optional(),
+  status: z.enum(statuses).optional(),
 });
 
 export const CandidateValidation = z.object({
@@ -86,7 +89,7 @@ export const CandidateValidation = z.object({
     .max(300, {
       message: "Maximum 300 caracters.",
     }),
-  level: z.enum([level[0], ...level], {
+  level: z.enum(level, {
     message: "Select level",
   }),
 });
@@ -102,10 +105,10 @@ export const RecruitValidation = z.object({
     .max(300, {
       message: "Maximum 300 caracters.",
     }),
-  level: z.enum([level[0], ...level], {
+  level: z.enum(level, {
     message: "Select level",
   }),
-  department: z.enum([department[0], ...department], {
+  department: z.enum(departments, {
     message: "Select department",
   }),
   salary: z.string(),

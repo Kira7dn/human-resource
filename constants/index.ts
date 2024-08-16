@@ -237,7 +237,6 @@ export const department = [
   "Security",
   "Mobile",
 ];
-export const level = ["Junior", "Mid-Level", "Senior"];
 export const status = ["Active", "Inactive", "On Leave"];
 export const gender = ["Male", "Female", "Other"];
 export const months = [

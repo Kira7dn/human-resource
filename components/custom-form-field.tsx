@@ -38,6 +38,7 @@ interface CustomProps {
   disabled?: boolean;
   dateFormat?: string;
   showTimeSelect?: boolean;
+  type?: string;
   children?: React.ReactNode;
   renderSkeleton?: (field: any) => React.ReactNode;
   fieldType: FormFieldType;
@@ -60,6 +61,7 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
           <FormControl>
             <Input
               placeholder={props.placeholder}
+              type={props.type}
               {...field}
               className="h-11 border-0 border-gray-500 bg-card placeholder:text-gray-600 focus-visible:ring-0 focus-visible:ring-offset-0"
             />

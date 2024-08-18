@@ -10,7 +10,8 @@
     "seed:employee": "tsx ./constants/employee/seed.ts",
     "seed:candidate": "tsx ./constants/candidate/seed.ts",
     "seed:payroll": "tsx ./constants/payroll/seed.ts",
-    "seed:recruit": "tsx ./constants/recruitment/seed.ts"
+    "seed:recruit": "tsx ./constants/recruitment/seed.ts",
+    "mongodb:recruit": "tsx ./constants/recruitment/mongodb.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "^5.0.3",

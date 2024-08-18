@@ -5,23 +5,18 @@ import {
   Package,
   LayoutTemplateIcon,
   HomeIcon,
-  UsersRound,
-  Wallet,
-  Contact,
-  UserRoundPlus,
 } from "lucide-react";
 
 import {
   ArrowDownIcon,
   ArrowRightIcon,
   ArrowUpIcon,
-  CheckCircledIcon,
-  CircleIcon,
-  CrossCircledIcon,
-  QuestionMarkCircledIcon,
-  StopwatchIcon,
 } from "@radix-ui/react-icons";
 import { CheckCircle2, CircleSlash, MinusCircle } from "lucide-react";
+import { FaHeadset, FaUserClock, FaUserTie } from "react-icons/fa6";
+import { MdPayments } from "react-icons/md";
+import { RiDashboard2Line } from "react-icons/ri";
+import { TbFingerprintScan } from "react-icons/tb";
 
 export const labels = [
   {
@@ -78,34 +73,34 @@ export const mainLinks = [
   {
     route: "/dashboard",
     label: "Dashboard",
-    component: LayoutTemplateIcon,
+    component: RiDashboard2Line,
   },
   {
     route: "/employee",
     label: "Employee",
-    component: Contact,
+    component: FaUserTie,
   },
   {
     route: "/candidate",
     label: "Candidate",
-    component: UserRoundPlus,
+    component: FaUserClock,
   },
   {
     route: "/recruitment",
     label: "Recruitment",
-    component: UsersRound,
+    component: FaHeadset,
   },
   {
     route: "/payroll",
     label: "Payroll",
-    component: Wallet,
+    component: MdPayments,
   },
 ];
 export const otherLinks = [
   {
-    route: "/profile",
-    label: "Profile",
-    component: UserCircle,
+    route: "/attendance",
+    label: "Attendance",
+    component: TbFingerprintScan,
   },
   {
     route: "/events",
@@ -237,7 +232,7 @@ export const department = [
   "Security",
   "Mobile",
 ];
-export const status = ["Active", "Inactive", "On Leave"];
+export const status = ["Active", "Inactive"];
 export const gender = ["Male", "Female", "Other"];
 export const months = [
   "Jan",

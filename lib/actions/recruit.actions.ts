@@ -1,12 +1,27 @@
-// "use server";
+"use server";
 
-// import { revalidatePath } from "next/cache";
-
-// import { connectToDatabase } from "@/lib/database";
+import { revalidatePath } from "next/cache";
+import { promises as fs } from "fs";
+import path from "path";
+import { z } from "zod";
+import { Recruit as RecruitType, RecruitValidation } from "@/lib/validations";
+import { connectToDatabase } from "@/lib/database";
 // import User from "@/lib/database/models/user.model";
-// import { handleError } from "@/lib/utils";
+import { handleError } from "@/lib/utils";
+import Recruit from "../database/models/recruit.model";
 
 // import { CreateUserParams, UpdateUserParams } from "@/types";
+
+export async function createBatchRecruit(data: RecruitType[]) {
+  try {
+    await connectToDatabase();
+    await Recruit.deleteMany({});
+    const newRecruits = await Recruit.create(data);
+    return JSON.parse(JSON.stringify(newRecruits));
+  } catch (error) {
+    handleError(error);
+  }
+}
 
 // export async function createUser(user: CreateUserParams) {
 //   try {

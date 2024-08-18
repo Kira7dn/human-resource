@@ -1,7 +1,8 @@
 "use client";
+import { EmployeeDialog } from "@/components/dialog/EmployeeDialog";
 import { Card } from "@/components/ui/card";
-import { UserCheck2 } from "lucide-react";
-import { EmployeeDialog } from "./EmployeeDialog";
+import { PlusCircle, UserCheck2 } from "lucide-react";
+import { FaUserTie } from "react-icons/fa6";
 
 type Props = {};
 
@@ -14,12 +15,14 @@ function Employee({}: Props) {
         <div className="flex gap-2">
           <div className="bg-primary-gradient flex h-10 w-10 items-center justify-center rounded-full border border-[2F0267]">
             <div className="text-primary-foreground">
-              <UserCheck2 />
+              <FaUserTie size={24} />
             </div>
           </div>
           <div className="flex items-center text-large-bold">Employees</div>
         </div>
-        <EmployeeDialog type="create" />
+        <EmployeeDialog>
+          <PlusCircle className="h-8 w-8 cursor-pointer text-primary transition delay-75 ease-in-out hover:scale-125 hover:fill-primary hover:text-primary-foreground" />
+        </EmployeeDialog>
       </div>
       <div className="h-1/2">
         <p className="text-large-bold">{employee_quantity}</p>

@@ -12,7 +12,7 @@ import { Form, FormControl } from "@/components/ui//form";
 import CustomFormField, { FormFieldType } from "../custom-form-field";
 import SubmitButton from "../submit-btn";
 import { Employee, EmployeeValidation } from "@/lib/validations";
-import { department, gender, levels, status } from "@/constants";
+import { department, genders, levels, statuses } from "@/constants";
 import {
   Tooltip,
   TooltipContent,
@@ -158,10 +158,11 @@ export const EmployeeDialog = ({
                   label="Gender"
                   placeholder="Select"
                 >
-                  {gender.map((item, i) => (
-                    <SelectItem key={i} value={item}>
+                  {genders.map((item, i) => (
+                    <SelectItem key={i} value={item.value}>
                       <div className="flex cursor-pointer items-center gap-2">
-                        <p className="capitalize">{item}</p>
+                        <item.icon />
+                        <p className="capitalize">{item.label}</p>
                       </div>
                     </SelectItem>
                   ))}
@@ -257,11 +258,17 @@ export const EmployeeDialog = ({
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
-                        {status.map((option, i) => (
-                          <div key={option + i} className="radio-group">
-                            <RadioGroupItem value={option} id={option} />
-                            <Label htmlFor={option} className="cursor-pointer">
-                              {option}
+                        {statuses.map((option, i) => (
+                          <div key={option.value + i} className="radio-group">
+                            <RadioGroupItem
+                              value={option.value}
+                              id={option.value}
+                            />
+                            <Label
+                              htmlFor={option.value}
+                              className="cursor-pointer"
+                            >
+                              {option.label}
                             </Label>
                           </div>
                         ))}

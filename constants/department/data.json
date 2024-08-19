@@ -1,0 +1,38 @@
+[
+  {
+    "name": "Engineering",
+    "description": "Ipsum et dolore ea sint est sint mollit veniam id aliqua deserunt eiusmod fugiat."
+  },
+  {
+    "name": "Product",
+    "description": "Ipsum et dolore ea sint est sint mollit veniam id aliqua deserunt eiusmod fugiat."
+  },
+  {
+    "name": "Design",
+    "description": "Ipsum et dolore ea sint est sint mollit veniam id aliqua deserunt eiusmod fugiat."
+  },
+  {
+    "name": "Data",
+    "description": "Ipsum et dolore ea sint est sint mollit veniam id aliqua deserunt eiusmod fugiat."
+  },
+  {
+    "name": "Operations",
+    "description": "Ipsum et dolore ea sint est sint mollit veniam id aliqua deserunt eiusmod fugiat."
+  },
+  {
+    "name": "Management",
+    "description": "Ipsum et dolore ea sint est sint mollit veniam id aliqua deserunt eiusmod fugiat."
+  },
+  {
+    "name": "Development",
+    "description": "Ipsum et dolore ea sint est sint mollit veniam id aliqua deserunt eiusmod fugiat."
+  },
+  {
+    "name": "Security",
+    "description": "Ipsum et dolore ea sint est sint mollit veniam id aliqua deserunt eiusmod fugiat."
+  },
+  {
+    "name": "Mobile",
+    "description": "Ipsum et dolore ea sint est sint mollit veniam id aliqua deserunt eiusmod fugiat."
+  }
+]

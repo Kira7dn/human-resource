@@ -26,6 +26,15 @@ export async function createRecruit(recruit: RecruitType) {
   }
 }
 
+export async function getAllRecruits() {
+  try {
+    await connectToDatabase();
+    const recruits = await Recruit.find();
+    return JSON.parse(JSON.stringify(recruits));
+  } catch (error) {
+    handleError(error);
+  }
+}
 export async function getRecruitById(recruitId: string) {
   try {
     await connectToDatabase();

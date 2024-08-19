@@ -1,8 +1,11 @@
-import { Schema, model, models } from "mongoose";
-import Employee from "./employee.model";
+import mongoose, { Schema, model, models } from "mongoose";
 
 const PayrollSchema = new Schema({
-  employee: { type: Employee, required: true },
+  employee: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Employee",
+    required: true,
+  },
   period_from: { type: String, required: true },
   period_to: { type: String, required: true },
   gross_salary: { type: Number, required: true },

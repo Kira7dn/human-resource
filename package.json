@@ -11,7 +11,11 @@
     "seed:candidate": "tsx ./constants/candidate/seed.ts",
     "seed:payroll": "tsx ./constants/payroll/seed.ts",
     "seed:recruit": "tsx ./constants/recruitment/seed.ts",
-    "mongodb:recruit": "tsx ./constants/recruitment/mongodb.ts"
+    "mongodb:recruit": "tsx ./constants/recruitment/mongodb.ts",
+    "mongodb:dep": "tsx ./constants/department/mongodb.ts",
+    "mongodb:employee": "tsx ./constants/employee/mongodb.ts",
+    "mongodb:candidate": "tsx ./constants/candidate/mongodb.ts",
+    "mongodb:payroll": "tsx ./constants/payroll/mongodb.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "^5.0.3",

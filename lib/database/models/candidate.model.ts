@@ -1,5 +1,4 @@
-import { Schema, model, models } from "mongoose";
-import Recruit from "./recruit.model";
+import mongoose, { Schema, model, models } from "mongoose";
 import { genders, statuses } from "@/constants";
 
 const CandidateSchema = new Schema({
@@ -11,7 +10,11 @@ const CandidateSchema = new Schema({
   gender: { type: String, enum: genders.map((gender) => gender.value) },
   address: { type: String, required: true },
   status: { type: String, enum: statuses.map((status) => status.value) },
-  recruit: { type: Recruit, required: true },
+  recruit: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Recruit",
+    required: true,
+  },
 });
 
 const Candidate = models.Candidate || model("Candidate", CandidateSchema);

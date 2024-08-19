@@ -1,5 +1,4 @@
-import { Schema, model, models } from "mongoose";
-import Department from "./department.model";
+import mongoose, { Schema, model, models } from "mongoose";
 import { levels } from "@/constants";
 
 const RecruitSchema = new Schema({
@@ -7,7 +6,11 @@ const RecruitSchema = new Schema({
   quantity: { type: Number, required: true },
   position: { type: String, required: true },
   level: { type: String, enum: levels.map((level) => level.value) },
-  department: { type: Department, required: true },
+  department: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Department",
+    required: true,
+  },
   salary: { type: String, required: true },
   description: { type: String, required: true },
   requirements: { type: String, required: true },

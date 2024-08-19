@@ -26,6 +26,16 @@ export async function createDepartment(department: DepartmentType) {
   }
 }
 
+export async function getAllDepartments() {
+  try {
+    await connectToDatabase();
+    const departments = await Department.find();
+    return JSON.parse(JSON.stringify(departments));
+  } catch (error) {
+    handleError(error);
+  }
+}
+
 export async function getDepartmentById(departmentId: string) {
   try {
     await connectToDatabase();

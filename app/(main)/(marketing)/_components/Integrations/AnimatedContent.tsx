@@ -15,7 +15,7 @@ import {
   FaFigma,
   FaFly,
 } from "react-icons/fa6";
-import { projecLinks } from "@/constants";
+// import { projecLinks } from "@/constants";
 import Link from "next/link";
 import LogoSVG from "../LogoSVG";
 
@@ -102,7 +102,7 @@ export default function AnimatedContent() {
       className="mt-20 flex flex-col items-center md:flex-row"
       ref={container}
     >
-      {projecLinks.map((item, index) => {
+      {/* {projecLinks.map((item, index) => {
         const Icon = item.icon;
         return (
           <React.Fragment key={index}>
@@ -130,7 +130,7 @@ export default function AnimatedContent() {
             )}
           </React.Fragment>
         );
-      })}
+      })} */}
     </div>
   );
 }

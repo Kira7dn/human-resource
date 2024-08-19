@@ -4,31 +4,34 @@ import { faker } from "@faker-js/faker";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { department, levels } from "..";
+import { getAllEmployees } from "@/lib/actions/employee.actions";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const payrolls = Array.from({ length: 100 }, () => ({
-  id: `EMP-${faker.number.int({ min: 1000, max: 9999 })}`,
-  image: faker.image.avatar(),
-  name: faker.person.fullName(),
-  email: faker.internet.email(),
-  position: faker.person.jobTitle(),
-  level: faker.helpers.arrayElement(levels.map((item) => item.value)),
-  department: faker.helpers.arrayElement(department),
-  month: faker.number.int({ min: 1, max: 12 }),
-  hired_date: faker.date.past({ years: 3 }).toISOString().slice(0, 10),
-  gross_salary: faker.number.int({ min: 10, max: 50 }) * 1000000,
-  overtime: faker.number.int({ min: 1, max: 24 }),
-  paid_leave: faker.number.int({ min: 1, max: 2 }),
-  unpaid_leave: faker.number.int({ min: 1, max: 2 }),
-  position_allowance: faker.number.int({ min: 0.5, max: 5 }) * 1000000,
-  travel_allowance: faker.number.int({ min: 0.5, max: 2 }) * 1000000,
-}));
+async function getEmpployeeIds() {
+  const data = await getAllEmployees();
+  return data;
+}
+getEmpployeeIds().then((data) => {
+  const payrolls = data.map((item: any) => {
+    return {
+      employee: item._id,
+      period_from: "2024-08-01",
+      period_to: "2024-08-31",
+      gross_salary: item.gross_salary,
+      position_allowance: item.position_allowance,
+      travel_allowance: item.travel_allowance,
+      overtime: faker.number.int({ min: 1, max: 24 }),
+      paid_leave: faker.number.int({ min: 1, max: 2 }),
+      unpaid_leave: faker.number.int({ min: 1, max: 2 }),
+    };
+  });
 
-fs.writeFileSync(
-  path.join(__dirname, "data.json"),
-  JSON.stringify(payrolls, null, 2),
-);
+  fs.writeFileSync(
+    path.join(__dirname, "data.json"),
+    JSON.stringify(payrolls, null, 2),
+  );
 
-console.log("✅ Data generated.");
+  console.log("✅ Data generated.");
+});

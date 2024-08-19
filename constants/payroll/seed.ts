@@ -3,7 +3,7 @@ import path from "path";
 import { faker } from "@faker-js/faker";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
-import { department, level } from "..";
+import { department, levels } from "..";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -14,7 +14,7 @@ const payrolls = Array.from({ length: 100 }, () => ({
   name: faker.person.fullName(),
   email: faker.internet.email(),
   position: faker.person.jobTitle(),
-  level: faker.helpers.arrayElement(level),
+  level: faker.helpers.arrayElement(levels.map((item) => item.value)),
   department: faker.helpers.arrayElement(department),
   month: faker.number.int({ min: 1, max: 12 }),
   hired_date: faker.date.past({ years: 3 }).toISOString().slice(0, 10),

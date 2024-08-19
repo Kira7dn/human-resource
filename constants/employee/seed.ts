@@ -3,7 +3,7 @@ import path from "path";
 import { faker } from "@faker-js/faker";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
-import { department, gender, labels, level, statuses } from "..";
+import { department, genders, levels, statuses } from "..";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -15,10 +15,10 @@ const employees = Array.from({ length: 100 }, () => ({
   email: faker.internet.email(),
   birthDate: faker.date.birthdate().toISOString().slice(0, 10),
   phone: faker.helpers.fromRegExp("+84[0-9]{9}"),
-  gender: faker.helpers.arrayElement(gender),
+  gender: faker.helpers.arrayElement(genders.map((gender) => gender.value)),
   address: faker.location.streetAddress(),
   position: faker.person.jobTitle(),
-  level: faker.helpers.arrayElement(level),
+  level: faker.helpers.arrayElement(levels.map((item) => item.value)),
   department: faker.helpers.arrayElement(department),
   hired_date: faker.date.past({ years: 3 }).toISOString().slice(0, 10),
   end_date: faker.helpers.weightedArrayElement([

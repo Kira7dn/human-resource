@@ -1,9 +1,9 @@
-import { department, levels, status } from "@/constants";
+import { department, levels, statuses } from "@/constants";
 import * as z from "zod";
 
 const level = levels.map((item) => item.value) as [string, ...string[]];
 const departments = department as [string, ...string[]];
-const statuses = status as [string, ...string[]];
+const status = statuses.map((item) => item.value) as [string, ...string[]];
 export const InterviewValidation = z.object({
   id: z.string().optional(),
   name: z
@@ -61,7 +61,7 @@ export const EmployeeValidation = z.object({
   }),
   hired_date: z.coerce.date(),
   end_date: z.coerce.date().optional(),
-  status: z.enum(statuses).optional(),
+  status: z.enum(status).optional(),
 });
 
 export const CandidateValidation = z.object({
@@ -113,8 +113,23 @@ export const RecruitValidation = z.object({
   }),
   salary: z.string(),
   description: z.string(),
+  requirements: z.string(),
+});
+
+export const DepartmentValidation = z.object({
+  id: z.string().optional(),
+  name: z
+    .string()
+    .min(3, {
+      message: "Minimum 3 characters.",
+    })
+    .max(30, {
+      message: "Maximum 30 caracters.",
+    }),
+  description: z.string().optional(),
 });
 
 export type Employee = z.infer<typeof EmployeeValidation>;
 export type Candidate = z.infer<typeof CandidateValidation>;
 export type Recruit = z.infer<typeof RecruitValidation>;
+export type Department = z.infer<typeof DepartmentValidation>;

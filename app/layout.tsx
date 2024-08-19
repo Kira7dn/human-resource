@@ -52,9 +52,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const MONGODB_URI = process.env.MONGODB_URI;
-  console.log(MONGODB_URI);
-
   return (
     <html lang="en">
       <body className={`${LGEI.className}`}>{children}</body>

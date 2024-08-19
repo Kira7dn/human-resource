@@ -1,4 +1,11 @@
-import { CalendarCheck, LayoutTemplateIcon, HomeIcon } from "lucide-react";
+import {
+  CalendarCheck,
+  LayoutTemplateIcon,
+  HomeIcon,
+  UserCircle,
+  Folders,
+  Package,
+} from "lucide-react";
 
 import {
   ArrowDownIcon,
@@ -110,6 +117,29 @@ export const preferenceLinks = [
     route: "/sađá",
     label: "Dashboard",
     component: LayoutTemplateIcon,
+  },
+];
+export const projecLinks = [
+  { icon: HomeIcon, route: "/" },
+  {
+    icon: LayoutTemplateIcon,
+    route: "/dashboard",
+  },
+  {
+    icon: UserCircle,
+    route: "/profile",
+  },
+  {
+    icon: Folders,
+    route: "/workspaces",
+  },
+  {
+    icon: CalendarCheck,
+    route: "/events",
+  },
+  {
+    icon: Package,
+    route: "/workspaces",
   },
 ];
 

@@ -18,22 +18,27 @@ import { MdPayments } from "react-icons/md";
 import { RiDashboard2Line } from "react-icons/ri";
 import { TbFingerprintScan } from "react-icons/tb";
 import { FaFemale, FaGenderless, FaMale } from "react-icons/fa";
+import {
+  LiaFemaleSolid,
+  LiaGenderlessSolid,
+  LiaMaleSolid,
+} from "react-icons/lia";
 
 export const genders = [
   {
     value: "male",
     label: "Male",
-    icon: FaMale,
+    icon: LiaMaleSolid,
   },
   {
     value: "female",
     label: "Female",
-    icon: FaFemale,
+    icon: LiaFemaleSolid,
   },
   {
     value: "other",
     label: "Other",
-    icon: FaGenderless,
+    icon: LiaGenderlessSolid,
   },
 ];
 

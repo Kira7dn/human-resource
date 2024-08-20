@@ -9,11 +9,13 @@ import { statuses } from "@/constants";
 
 export const columns: ColumnDef<Employee>[] = [
   {
-    accessorKey: "id",
+    accessorKey: "employee_id",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Employee" />
     ),
-    cell: ({ row }) => <div className="w-[80px]">{row.getValue("id")}</div>,
+    cell: ({ row }) => (
+      <div className="w-[80px]">{row.getValue("employee_id")}</div>
+    ),
     enableSorting: false,
     enableHiding: false,
   },

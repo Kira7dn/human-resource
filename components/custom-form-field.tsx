@@ -17,6 +17,7 @@ import { Input } from "./ui/input";
 import { Select, SelectContent, SelectTrigger, SelectValue } from "./ui/select";
 import { Textarea } from "./ui/textarea";
 import "react-phone-number-input/style.css";
+import { IconType } from "react-icons/lib";
 
 export enum FormFieldType {
   INPUT = "input",
@@ -34,6 +35,7 @@ interface CustomProps {
   label?: string;
   placeholder?: string;
   iconSrc?: string;
+  iconNode?: IconType;
   iconAlt?: string;
   disabled?: boolean;
   dateFormat?: string;
@@ -48,7 +50,7 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
   switch (props.fieldType) {
     case FormFieldType.INPUT:
       return (
-        <div className="flex rounded-md border border-gray-500 bg-card">
+        <div className="flex items-center rounded-md border border-gray-500 bg-card">
           {props.iconSrc && (
             <Image
               src={props.iconSrc}
@@ -57,6 +59,11 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
               alt={props.iconAlt || "icon"}
               className="ml-2"
             />
+          )}
+          {props.iconNode && (
+            <div className="ml-2">
+              <props.iconNode />
+            </div>
           )}
           <FormControl>
             <Input
@@ -89,7 +96,7 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
             withCountryCallingCode
             value={field.value as E164Number | undefined}
             onChange={field.onChange}
-            className="input-phone bg-card"
+            className="input-phone border-gray-500 bg-card placeholder:text-gray-600 focus-visible:ring-0 focus-visible:ring-offset-0"
           />
         </FormControl>
       );
@@ -110,14 +117,20 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
       );
     case FormFieldType.DATE_PICKER:
       return (
-        <div className="flex rounded-md border border-dark-500 bg-card">
-          <Image
-            src="/assets/icons/calendar.svg"
-            height={24}
-            width={24}
-            alt="user"
-            className="ml-2 bg-card"
-          />
+        <div className="flex items-center rounded-md border border-dark-500 bg-card">
+          {props.iconNode ? (
+            <div className="ml-2">
+              <props.iconNode />
+            </div>
+          ) : (
+            <Image
+              src="/assets/icons/calendar.svg"
+              height={24}
+              width={24}
+              alt="user"
+              className="ml-2 bg-card"
+            />
+          )}
           <FormControl>
             <ReactDatePicker
               showTimeSelect={props.showTimeSelect ?? false}
@@ -159,9 +172,9 @@ const CustomFormField = (props: CustomProps) => {
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem className="flex-1 ">
+        <FormItem className="flex-1">
           {props.fieldType !== FormFieldType.CHECKBOX && label && (
-            <FormLabel className="shad-input-label ">{label}</FormLabel>
+            <FormLabel className="shad-input-label">{label}</FormLabel>
           )}
           <RenderInput field={field} props={props} />
 

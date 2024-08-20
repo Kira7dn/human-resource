@@ -2,17 +2,30 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { SelectItem } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import "react-datepicker/dist/react-datepicker.css";
 
-import { Form, FormControl } from "@/components/ui//form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui//form";
 import CustomFormField, { FormFieldType } from "../custom-form-field";
 import SubmitButton from "../submit-btn";
-import { Employee, EmployeeValidation } from "@/lib/validations";
-import { department, genders, levels, statuses } from "@/constants";
+import { Department, Employee, EmployeeValidation } from "@/lib/validations";
+import { genders, levels, statuses } from "@/constants";
 import {
   Tooltip,
   TooltipContent,
@@ -30,6 +43,8 @@ import {
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui//scroll-area";
 import { Avatar, AvatarImage } from "../ui/avatar";
+import { getAllDepartments } from "@/lib/actions/department.actions";
+import { Spinner } from "../spinner";
 
 export const EmployeeDialog = ({
   employee,
@@ -42,6 +57,14 @@ export const EmployeeDialog = ({
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [file, setFile] = useState<File>();
+  const [departmentdata, setDepartmentdata] = useState<Department[]>([]);
+  const [isLoadingdata, setLoadingdata] = useState(true);
+  useEffect(() => {
+    getAllDepartments().then((data) => {
+      setDepartmentdata(data);
+      setLoadingdata(false);
+    });
+  }, []);
 
   const form = useForm<z.infer<typeof EmployeeValidation>>({
     resolver: zodResolver(EmployeeValidation),
@@ -126,7 +149,6 @@ export const EmployeeDialog = ({
                                         "https://github.com/shadcn.png"
                                       }
                                     />
-                                    {/* <AvatarFallback>{fallback_name}</AvatarFallback> */}
                                   </Avatar>
                                 </TooltipTrigger>
                                 <TooltipContent className="bg-secondary">
@@ -221,21 +243,52 @@ export const EmployeeDialog = ({
                     </SelectItem>
                   ))}
                 </CustomFormField>
-                <CustomFormField
-                  fieldType={FormFieldType.SELECT}
+                {/* query selection form field */}
+                <FormField
                   control={form.control}
                   name="department"
-                  label="Department"
-                  placeholder="Select"
-                >
-                  {department.map((item, i) => (
-                    <SelectItem key={i} value={item}>
-                      <div className="flex cursor-pointer items-center gap-2">
-                        <p className="capitalize">{item}</p>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </CustomFormField>
+                  render={({ field }) => (
+                    <FormItem className="flex-1 ">
+                      <FormLabel className="shad-input-label ">
+                        Department
+                      </FormLabel>
+                      <FormControl>
+                        {isLoadingdata ? (
+                          <Spinner />
+                        ) : (
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={
+                              typeof field.value === "string"
+                                ? field.value
+                                : field.value._id
+                            }
+                          >
+                            <FormControl>
+                              <SelectTrigger className="h-11 border-dark-500 bg-card placeholder:text-dark-600 focus:ring-0 focus:ring-offset-0">
+                                <SelectValue placeholder="Select Department" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent className="border-dark-500 bg-card">
+                              {departmentdata &&
+                                departmentdata.map((item: Department) => (
+                                  <SelectItem
+                                    key={item._id}
+                                    value={item._id || "0"}
+                                  >
+                                    <div className="flex cursor-pointer items-center gap-2">
+                                      <p className="capitalize">{item.name}</p>
+                                    </div>
+                                  </SelectItem>
+                                ))}
+                            </SelectContent>
+                          </Select>
+                        )}
+                      </FormControl>
+                      <FormMessage className="shad-error" />
+                    </FormItem>
+                  )}
+                />
               </div>
               <div
                 className={`flex flex-col gap-6  ${!employee && "xl:flex-row"}`}

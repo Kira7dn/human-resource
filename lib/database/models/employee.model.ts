@@ -1,8 +1,10 @@
 import mongoose, { Schema, model, models } from "mongoose";
 import { genders, levels, statuses } from "@/constants";
+import Department from "./department.model";
 
 const EmployeeSchema = new Schema({
   image: { type: String, required: true },
+  employee_id: { type: String, required: true },
   name: { type: String, required: true },
   email: { type: String, required: true },
   birthDate: { type: String, required: true },
@@ -13,7 +15,7 @@ const EmployeeSchema = new Schema({
   level: { type: String, enum: levels.map((level) => level.value) },
   department: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Department",
+    ref: Department,
     required: true,
   },
   hired_date: { type: String, required: true },

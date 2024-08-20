@@ -65,7 +65,7 @@ export const formatPrice = (price: string) => {
 
 export const handleError = (error: unknown) => {
   console.error(error);
-  throw new Error(typeof error === "string" ? error : JSON.stringify(error));
+  // throw new Error(typeof error === "string" ? error : JSON.stringify(error));
 };
 
 // create isBase64 function

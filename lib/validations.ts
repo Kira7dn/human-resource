@@ -1,11 +1,12 @@
-import { department, levels, statuses } from "@/constants";
+import { department, genders, levels, statuses } from "@/constants";
 import * as z from "zod";
 
 const level = levels.map((item) => item.value) as [string, ...string[]];
 const departments = department as [string, ...string[]];
 const status = statuses.map((item) => item.value) as [string, ...string[]];
+const gender = genders.map((item) => item.value) as [string, ...string[]];
 export const InterviewValidation = z.object({
-  id: z.string().optional(),
+  _id: z.string().optional(),
   name: z
     .string()
     .min(3, {
@@ -29,7 +30,8 @@ export const InterviewValidation = z.object({
 });
 
 export const EmployeeValidation = z.object({
-  id: z.string().optional(),
+  _id: z.string().optional(),
+  employee_id: z.string(),
   image: z.string().optional(),
   name: z
     .string()
@@ -40,7 +42,7 @@ export const EmployeeValidation = z.object({
   phone: z
     .string()
     .refine((phone) => /^\+\d{10,15}$/.test(phone), "Invalid phone number"),
-  gender: z.enum(["Male", "Female", "Other"]),
+  gender: z.enum(gender),
   address: z
     .string()
     .min(5, "Address must be at least 5 characters")
@@ -56,16 +58,21 @@ export const EmployeeValidation = z.object({
   level: z.enum(level, {
     message: "Select level",
   }),
-  department: z.enum(departments, {
-    message: "Select department",
-  }),
+  department: z.union([
+    z.string(),
+    z.object({
+      _id: z.string(),
+      name: z.string(),
+      description: z.string().optional(),
+    }),
+  ]),
   hired_date: z.coerce.date(),
   end_date: z.coerce.date().optional(),
   status: z.enum(status).optional(),
 });
 
 export const CandidateValidation = z.object({
-  id: z.string().optional(),
+  _id: z.string().optional(),
   image: z.string().optional(),
   name: z
     .string()
@@ -94,7 +101,7 @@ export const CandidateValidation = z.object({
   }),
 });
 export const RecruitValidation = z.object({
-  id: z.string().optional(),
+  _id: z.string().optional(),
   expried_date: z.coerce.date(),
   quantity: z.number(),
   position: z
@@ -117,7 +124,7 @@ export const RecruitValidation = z.object({
 });
 
 export const DepartmentValidation = z.object({
-  id: z.string().optional(),
+  _id: z.string().optional(),
   name: z
     .string()
     .min(3, {

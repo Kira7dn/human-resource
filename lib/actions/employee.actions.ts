@@ -1,5 +1,8 @@
 "use server";
-import { Employee as EmployeeType } from "@/lib/validations";
+import {
+  Employee as EmployeeType,
+  EmployeeValidation,
+} from "@/lib/validations";
 import { connectToDatabase } from "@/lib/database";
 import { handleError } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
@@ -28,7 +31,7 @@ export async function createEmployee(employee: EmployeeType) {
 export async function getAllEmployees() {
   try {
     await connectToDatabase();
-    const employees = await Employee.find();
+    const employees = await Employee.find().populate("department");
     return JSON.parse(JSON.stringify(employees));
   } catch (error) {
     handleError(error);

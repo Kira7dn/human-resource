@@ -1,3 +1,5 @@
+import { Employee } from "@/lib/validations";
+
 export type Payroll = {
   id: string;
   image: string;
@@ -14,4 +16,10 @@ export type Payroll = {
   unpaid_leave: number;
   position_allowance: number;
   travel_allowance: number;
+};
+
+export type DepartmentType = {
+  _id: string;
+  name: string;
+  description: string;
 };

@@ -88,9 +88,10 @@ export const columns: ColumnDef<Employee>[] = [
       <DataTableColumnHeader column={column} title="Department" />
     ),
     cell: ({ row }) => {
+      const department = row.original.department;
       return (
         <span className="max-w-[200px] truncate font-medium">
-          {row.getValue("department")}
+          {typeof department === "string" ? department : department.name}
         </span>
       );
     },
@@ -127,10 +128,9 @@ export const columns: ColumnDef<Employee>[] = [
       <DataTableColumnHeader column={column} title="Birth date" />
     ),
     cell: ({ row }) => {
-      const birthDate = row.getValue("birthDate") as Date;
       return (
         <span className="max-w-[200px] truncate font-medium">
-          {birthDate.toLocaleDateString("en-US")}
+          {row.getValue("birthDate")}
         </span>
       );
     },
@@ -141,10 +141,9 @@ export const columns: ColumnDef<Employee>[] = [
       <DataTableColumnHeader column={column} title="Hired date" />
     ),
     cell: ({ row }) => {
-      const hired_date = row.getValue("hired_date") as Date;
       return (
         <span className="max-w-[200px] truncate font-medium">
-          {hired_date.toLocaleDateString("en-US")}
+          {row.getValue("hired_date")}
         </span>
       );
     },

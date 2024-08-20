@@ -3,7 +3,7 @@ import path from "path";
 import { faker } from "@faker-js/faker";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
-import { department, genders, levels, statuses } from "..";
+import { genders, levels, statuses } from "..";
 import { getAllDepartments } from "@/lib/actions/department.actions";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -16,7 +16,7 @@ async function getDeptIds() {
 }
 getDeptIds().then((departments) => {
   const employees = Array.from({ length: 100 }, () => ({
-    id: `EMP-${faker.number.int({ min: 1000, max: 9999 })}`,
+    employee_id: `EMP-${faker.number.int({ min: 1000, max: 9999 })}`,
     image: faker.image.avatar(),
     name: faker.person.fullName(),
     email: faker.internet.email(),

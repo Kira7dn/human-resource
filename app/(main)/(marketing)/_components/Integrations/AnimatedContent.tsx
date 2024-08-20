@@ -18,6 +18,7 @@ import {
 // import { projecLinks } from "@/constants";
 import Link from "next/link";
 import LogoSVG from "../LogoSVG";
+import { projecLinks } from "@/constants";
 
 export default function AnimatedContent() {
   const container = useRef(null);
@@ -102,7 +103,7 @@ export default function AnimatedContent() {
       className="mt-20 flex flex-col items-center md:flex-row"
       ref={container}
     >
-      {/* {projecLinks.map((item, index) => {
+      {projecLinks.map((item, index) => {
         const Icon = item.icon;
         return (
           <React.Fragment key={index}>
@@ -114,7 +115,7 @@ export default function AnimatedContent() {
             )}
             <Link
               href={item.route}
-              className="pulsing-icon flex aspect-square shrink-0 items-center justify-center rounded-full border border-blue-50/30 bg-blue-50/25 p-3 text-3xl text-blue-100 opacity-40 md:text-4xl lg:text-5xl"
+              className="pulsing-icon text-3xl md:text-4xl lg:text-5xl flex aspect-square shrink-0 items-center justify-center rounded-full border border-blue-50/30 bg-blue-50/25 p-3 text-blue-100 opacity-40"
             >
               <Icon />
             </Link>
@@ -130,7 +131,7 @@ export default function AnimatedContent() {
             )}
           </React.Fragment>
         );
-      })} */}
+      })}
     </div>
   );
 }

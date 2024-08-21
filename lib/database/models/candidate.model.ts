@@ -1,5 +1,6 @@
 import mongoose, { Schema, model, models } from "mongoose";
 import { genders, statuses } from "@/constants";
+import Recruit from "./recruit.model";
 
 const CandidateSchema = new Schema({
   image: { type: String, required: true },
@@ -12,7 +13,7 @@ const CandidateSchema = new Schema({
   status: { type: String, enum: statuses.map((status) => status.value) },
   recruit: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Recruit",
+    ref: Recruit,
     required: true,
   },
 });

@@ -26,6 +26,16 @@ export async function createCandidate(candidate: CandidateType) {
   }
 }
 
+export async function getAllCandidates() {
+  try {
+    await connectToDatabase();
+    const candidate = await Candidate.find().populate("recruit");
+    return JSON.parse(JSON.stringify(candidate));
+  } catch (error) {
+    handleError(error);
+  }
+}
+
 export async function getCandidateById(candidateId: string) {
   try {
     await connectToDatabase();

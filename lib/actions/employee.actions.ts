@@ -7,6 +7,7 @@ import { connectToDatabase } from "@/lib/database";
 import { handleError } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 import Employee from "../database/models/employee.model";
+import { z } from "zod";
 
 export async function createBatchEmployee(data: EmployeeType[]) {
   try {
@@ -32,7 +33,7 @@ export async function getAllEmployees() {
   try {
     await connectToDatabase();
     const employees = await Employee.find().populate("department");
-    return JSON.parse(JSON.stringify(employees));
+    return z.array(EmployeeValidation).parse(employees);
   } catch (error) {
     handleError(error);
   }

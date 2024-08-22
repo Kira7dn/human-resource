@@ -9,11 +9,11 @@ import { statuses } from "@/constants";
 
 export const columns: ColumnDef<Candidate>[] = [
   {
-    accessorKey: "id",
+    accessorKey: "_id",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Candidate" />
     ),
-    cell: ({ row }) => <div className="w-[80px]">{row.getValue("id")}</div>,
+    cell: ({ row }) => <div className="w-[80px]">{row.getValue("_id")}</div>,
     enableSorting: false,
     enableHiding: false,
   },
@@ -60,7 +60,8 @@ export const columns: ColumnDef<Candidate>[] = [
     cell: ({ row }) => {
       return (
         <span className="max-w-[200px] truncate font-medium">
-          {row.getValue("level")}
+          {typeof row.original.recruit === "object" &&
+            row.original.recruit.level}
         </span>
       );
     },
@@ -77,7 +78,8 @@ export const columns: ColumnDef<Candidate>[] = [
     cell: ({ row }) => {
       return (
         <span className="max-w-[200px] truncate font-medium">
-          {row.getValue("position")}
+          {typeof row.original.recruit === "object" &&
+            row.original.recruit.position}
         </span>
       );
     },

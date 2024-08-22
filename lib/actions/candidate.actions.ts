@@ -1,9 +1,13 @@
 "use server";
-import { Candidate as CandidateType } from "@/lib/validations";
+import {
+  Candidate as CandidateType,
+  CandidateValidation,
+} from "@/lib/validations";
 import { connectToDatabase } from "@/lib/database";
 import { handleError } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 import Candidate from "../database/models/candidate.model";
+import { z } from "zod";
 
 export async function createBatchCandidate(data: CandidateType[]) {
   try {
@@ -29,8 +33,8 @@ export async function createCandidate(candidate: CandidateType) {
 export async function getAllCandidates() {
   try {
     await connectToDatabase();
-    const candidate = await Candidate.find().populate("recruit");
-    return JSON.parse(JSON.stringify(candidate));
+    const candidates = await Candidate.find().populate("recruit");
+    return z.array(CandidateValidation).parse(candidates);
   } catch (error) {
     handleError(error);
   }

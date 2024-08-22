@@ -1,10 +1,6 @@
-import { promises as fs } from "fs";
-import path from "path";
 import { Metadata } from "next";
 import { columns } from "./_components/columns";
 import { DataTable } from "./_components/data-table";
-import { z } from "zod";
-import { EmployeeValidation } from "@/lib/validations";
 import { getAllEmployees } from "@/lib/actions/employee.actions";
 
 export const metadata: Metadata = {
@@ -21,7 +17,7 @@ export default async function TaskPage() {
         <div className="flex h-8 items-center justify-between space-y-2">
           <h2 className="text-large-semibold tracking-tight">Employee List</h2>
         </div>
-        <DataTable data={allEmployees} columns={columns} />
+        {allEmployees && <DataTable data={allEmployees} columns={columns} />}
       </div>
     </div>
   );

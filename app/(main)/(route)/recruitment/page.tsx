@@ -27,7 +27,7 @@ export default async function Component() {
   return (
     <div className="mx-auto grid w-full max-w-6xl items-stretch gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {recruits.map((recruit) => (
-        <Card key={recruit.id} className="flex flex-col">
+        <Card key={recruit._id} className="flex flex-col">
           <CardHeader className="">
             <CardTitle className="truncate pb-2 text-base-semibold">
               {recruit.position}

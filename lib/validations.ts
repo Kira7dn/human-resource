@@ -1,8 +1,7 @@
-import { department, genders, levels, statuses } from "@/constants";
+import { genders, levels, statuses } from "@/constants";
 import * as z from "zod";
 
 const level = levels.map((item) => item.value) as [string, ...string[]];
-const departments = department as [string, ...string[]];
 const status = statuses.map((item) => item.value) as [string, ...string[]];
 const gender = genders.map((item) => item.value) as [string, ...string[]];
 export const InterviewValidation = z.object({
@@ -90,9 +89,7 @@ export const RecruitValidation = z.object({
   level: z.enum(level, {
     message: "Select level",
   }),
-  department: z.enum(departments, {
-    message: "Select department",
-  }),
+  department: z.union([z.string(), DepartmentValidation]),
   salary: z.string(),
   description: z.string(),
   requirements: z.string(),
@@ -110,7 +107,7 @@ export const CandidateValidation = z.object({
   phone: z
     .string()
     .refine((phone) => /^\+\d{10,15}$/.test(phone), "Invalid phone number"),
-  gender: z.enum(["Male", "Female", "Other"]),
+  gender: z.enum(gender),
   address: z
     .string()
     .min(5, "Address must be at least 5 characters")

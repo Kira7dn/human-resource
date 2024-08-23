@@ -1,9 +1,10 @@
 "use server";
-import { Recruit as RecruitType } from "@/lib/validations";
+import { Recruit as RecruitType, RecruitValidation } from "@/lib/validations";
 import { connectToDatabase } from "@/lib/database";
 import { handleError } from "@/lib/utils";
 import Recruit from "../database/models/recruit.model";
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
 
 export async function createBatchRecruit(data: RecruitType[]) {
   try {
@@ -30,7 +31,7 @@ export async function getAllRecruits() {
   try {
     await connectToDatabase();
     const recruits = await Recruit.find();
-    return JSON.parse(JSON.stringify(recruits));
+    return z.array(RecruitValidation).parse(recruits);
   } catch (error) {
     handleError(error);
   }

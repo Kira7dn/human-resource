@@ -53,10 +53,10 @@ export const CandidateDialog = ({
           name: "",
           birthDate: new Date("1990/1/1"),
           phone: "",
-          gender: "Male",
+          gender: "male",
           address: "",
-          position: recruitment ? recruitment.position : "",
-          level: recruitment ? recruitment.level : "",
+          status: "active",
+          recruit: recruitment ? recruitment._id : "",
         },
   });
   const onSubmit = async (values: z.infer<typeof CandidateValidation>) => {

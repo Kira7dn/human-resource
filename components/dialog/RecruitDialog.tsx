@@ -46,7 +46,7 @@ export const RecruitDialog = ({
           level: "",
           salary: "",
           description: "",
-          requirement: "",
+          requirements: "",
         },
   });
   const onSubmit = async (values: z.infer<typeof RecruitValidation>) => {

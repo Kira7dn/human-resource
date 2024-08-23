@@ -1,3 +1,5 @@
+import { RecruitDialog } from "@/components/dialog/RecruitDialog";
+import { Button } from "@/components/ui/button";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -27,6 +29,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <h2 className="text-large-semibold tracking-tight">
             Recruit Announcement
           </h2>
+          <RecruitDialog>
+            <Button size="sm">Create Recruit</Button>
+          </RecruitDialog>
         </div>
         {children}
       </div>

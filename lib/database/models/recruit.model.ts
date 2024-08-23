@@ -1,5 +1,6 @@
 import mongoose, { Schema, model, models } from "mongoose";
 import { levels } from "@/constants";
+import Department from "./department.model";
 
 const RecruitSchema = new Schema({
   expried_date: { type: String, required: true },
@@ -8,7 +9,7 @@ const RecruitSchema = new Schema({
   level: { type: String, enum: levels.map((level) => level.value) },
   department: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Department",
+    ref: Department,
     required: true,
   },
   salary: { type: String, required: true },

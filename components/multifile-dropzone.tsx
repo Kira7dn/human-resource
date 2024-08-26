@@ -12,6 +12,7 @@ import {
 import * as React from "react";
 import { useDropzone, type DropzoneOptions } from "react-dropzone";
 import { twMerge } from "tailwind-merge";
+import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 
 const variants = {
   base: "relative rounded-md p-4 w-full flex justify-center items-center flex-col cursor-pointer border border-dashed border-gray-400 dark:border-gray-300 transition-colors duration-200 ease-in-out",
@@ -159,73 +160,78 @@ const MultiFileDropzone = React.forwardRef<HTMLInputElement, InputProps>(
           </div>
 
           {/* Selected Files */}
-          {value?.map(({ file, abortController, progress }, i) => (
-            <div
-              key={i}
-              className="flex h-16 w-full flex-col justify-center rounded border border-gray-300 px-4 py-2"
-            >
-              <div className="flex items-center gap-2 text-gray-500 dark:text-white">
-                <FileIcon size="30" className="shrink-0" />
-                <div className="text-sm min-w-0">
-                  <div className="overflow-hidden overflow-ellipsis whitespace-nowrap">
-                    {file.name}
-                  </div>
-                  <div className="text-xs text-gray-400 dark:text-gray-400">
-                    {formatFileSize(file.size)}
-                  </div>
-                </div>
-                <div className="grow" />
-                <div className="text-xs flex w-12 justify-end">
-                  {progress === "PENDING" ? (
-                    <button
-                      type="button"
-                      className="rounded-md p-1 transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                      onClick={() => {
-                        void onChange?.(
-                          value.filter((_, index) => index !== i),
-                        );
-                      }}
-                    >
-                      <Trash2Icon className="shrink-0" />
-                    </button>
-                  ) : progress === "ERROR" ? (
-                    <LucideFileWarning className="shrink-0 text-red-600 dark:text-red-400" />
-                  ) : progress !== "COMPLETE" ? (
-                    <div className="flex flex-col items-end gap-0.5">
-                      {abortController && (
-                        <button
-                          type="button"
-                          className="rounded-md p-0.5 transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                          disabled={progress === 100}
-                          onClick={() => {
-                            abortController.abort();
-                          }}
-                        >
-                          <XIcon className="h-4 w-4 shrink-0 text-gray-400 dark:text-gray-400" />
-                        </button>
-                      )}
-                      <div>{Math.round(progress)}%</div>
+          {value && value.length > 0 && (
+            <ScrollArea className="w-96 whitespace-nowrap rounded-md border">
+              <div className="flex w-max space-x-4 p-4">
+                {value.map(({ file, abortController, progress }, i) => (
+                  <div
+                    key={i}
+                    className="relative rounded border border-gray-300 px-2 py-1"
+                  >
+                    <div className="flex items-center gap-2 text-gray-500 dark:text-white">
+                      <FileIcon size="30" className="shrink-0" />
+                      <div className="min-w-0 max-w-10 text-tiny-medium">
+                        <div className="overflow-hidden overflow-ellipsis whitespace-nowrap">
+                          {file.name}
+                        </div>
+                        <div className="text-tiny-medium text-gray-400 dark:text-gray-400">
+                          {formatFileSize(file.size)}
+                        </div>
+                      </div>
+                      <div className="flex justify-end text-small-medium">
+                        {progress === "PENDING" ? (
+                          <button
+                            type="button"
+                            className="h-8 w-8 rounded-md p-1 transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                            onClick={() => {
+                              void onChange?.(
+                                value.filter((_, index) => index !== i),
+                              );
+                            }}
+                          >
+                            <Trash2Icon className="absolute -right-1 -top-1 h-4 w-4 shrink-0 text-gray-500" />
+                          </button>
+                        ) : progress === "ERROR" ? (
+                          <LucideFileWarning className="absolute -right-1 -top-1 h-4 w-4 shrink-0 text-red-500" />
+                        ) : progress !== "COMPLETE" ? (
+                          <div className="flex flex-col items-end gap-0.5">
+                            {abortController && (
+                              <button
+                                type="button"
+                                className="rounded-md p-0.5 transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                disabled={progress === 100}
+                                onClick={() => {
+                                  abortController.abort();
+                                }}
+                              >
+                                <XIcon className="absolute -right-1 -top-1 h-4 w-4 shrink-0 text-green-500" />
+                              </button>
+                            )}
+                          </div>
+                        ) : (
+                          <CheckCircleIcon className="absolute -right-1 -top-1 h-4 w-4 shrink-0 text-green-500" />
+                        )}
+                      </div>
                     </div>
-                  ) : (
-                    <CheckCircleIcon className="shrink-0 text-green-600 dark:text-gray-400" />
-                  )}
-                </div>
-              </div>
-              {/* Progress Bar */}
-              {typeof progress === "number" && (
-                <div className="relative h-0">
-                  <div className="absolute top-1 h-1 w-full overflow-clip rounded-full bg-gray-200 dark:bg-gray-700">
-                    <div
-                      className="h-full bg-gray-400 transition-all duration-300 ease-in-out dark:bg-white"
-                      style={{
-                        width: progress ? `${progress}%` : "0%",
-                      }}
-                    />
+                    {/* Progress Bar */}
+                    {typeof progress === "number" && (
+                      <div className="relative h-0 w-full">
+                        <div className="absolute top-1 h-1 w-full overflow-clip rounded-full bg-gray-200 dark:bg-gray-700">
+                          <div
+                            className="h-2 w-full bg-gray-400 transition-all duration-300 ease-in-out dark:bg-white"
+                            style={{
+                              width: progress ? `${progress}%` : "0%",
+                            }}
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
-                </div>
-              )}
-            </div>
-          ))}
+                ))}
+              </div>
+              <ScrollBar orientation="horizontal" data-state="visible" />
+            </ScrollArea>
+          )}
         </div>
       </div>
     );

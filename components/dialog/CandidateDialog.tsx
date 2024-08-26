@@ -12,7 +12,7 @@ import { Form, FormControl } from "@/components/ui//form";
 import CustomFormField, { FormFieldType } from "../custom-form-field";
 import SubmitButton from "../submit-btn";
 import { Candidate, CandidateValidation, Recruit } from "@/lib/validations";
-import { genders, levels, statuses } from "@/constants";
+import { genders, levels } from "@/constants";
 import {
   Tooltip,
   TooltipContent,
@@ -26,12 +26,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui//scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
-import { Label } from "../ui/label";
-import { FaRegCalendarAlt } from "react-icons/fa";
-import { MultiFileDropzoneUsage } from "../drop-zone";
 import {
   MultiFileDropzone,
   type FileState,
@@ -250,46 +245,41 @@ export const CandidateDialog = ({
                     placeholder="123, Street, City"
                   />
                 </div>
-                <div className="h-32">
-                  <MultiFileDropzone
-                    value={fileStates}
-                    onChange={(files) => {
-                      setFileStates(files);
-                    }}
-                    onFilesAdded={async (addedFiles) => {
-                      setFileStates([...fileStates, ...addedFiles]);
-                      await Promise.all(
-                        addedFiles.map(async (addedFileState) => {
-                          try {
-                            const res = await edgestore.publicFiles.upload({
-                              file: addedFileState.file,
-                              onProgressChange: async (progress: number) => {
+                <MultiFileDropzone
+                  value={fileStates}
+                  onChange={(files) => {
+                    setFileStates(files);
+                  }}
+                  onFilesAdded={async (addedFiles) => {
+                    setFileStates([...fileStates, ...addedFiles]);
+                    await Promise.all(
+                      addedFiles.map(async (addedFileState) => {
+                        try {
+                          const res = await edgestore.publicFiles.upload({
+                            file: addedFileState.file,
+                            onProgressChange: async (progress: number) => {
+                              updateFileProgress(addedFileState.key, progress);
+                              if (progress === 100) {
+                                // wait 1 second to set it to complete
+                                // so that the user can see the progress bar at 100%
+                                await new Promise((resolve) =>
+                                  setTimeout(resolve, 1000),
+                                );
                                 updateFileProgress(
                                   addedFileState.key,
-                                  progress,
+                                  "COMPLETE",
                                 );
-                                if (progress === 100) {
-                                  // wait 1 second to set it to complete
-                                  // so that the user can see the progress bar at 100%
-                                  await new Promise((resolve) =>
-                                    setTimeout(resolve, 1000),
-                                  );
-                                  updateFileProgress(
-                                    addedFileState.key,
-                                    "COMPLETE",
-                                  );
-                                }
-                              },
-                            });
-                            console.log(res);
-                          } catch (err) {
-                            updateFileProgress(addedFileState.key, "ERROR");
-                          }
-                        }),
-                      );
-                    }}
-                  />
-                </div>
+                              }
+                            },
+                          });
+                          console.log(res);
+                        } catch (err) {
+                          updateFileProgress(addedFileState.key, "ERROR");
+                        }
+                      }),
+                    );
+                  }}
+                />
               </div>
             </div>
 

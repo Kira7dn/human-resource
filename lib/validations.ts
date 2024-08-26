@@ -39,6 +39,12 @@ export const DepartmentValidation = z.object({
     }),
   description: z.string().optional(),
 });
+
+export const FileVadidate = z.object({
+  name: z.string().optional(),
+  url: z.string().optional(),
+});
+
 export const EmployeeValidation = z.object({
   _id: z.string().optional(),
   employee_id: z.string(),
@@ -114,9 +120,11 @@ export const CandidateValidation = z.object({
     .max(500, "Address must be at most 500 characters"),
   status: z.enum(status),
   recruit: z.union([z.string(), RecruitValidation]),
+  files: z.array(FileVadidate).optional(),
 });
 
 export type Employee = z.infer<typeof EmployeeValidation>;
 export type Candidate = z.infer<typeof CandidateValidation>;
 export type Recruit = z.infer<typeof RecruitValidation>;
 export type Department = z.infer<typeof DepartmentValidation>;
+export type File = z.infer<typeof FileVadidate>;

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import createLocalFont from "next/font/local";
 import "./globals.css";
+import { EdgeStoreProvider } from "@/lib/edgestore";
 
 const LGEI = createLocalFont({
   src: [
@@ -53,7 +54,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${LGEI.className}`}>{children}</body>
+      <body className={`${LGEI.className}`}>
+        <EdgeStoreProvider>{children}</EdgeStoreProvider>
+      </body>
     </html>
   );
 }

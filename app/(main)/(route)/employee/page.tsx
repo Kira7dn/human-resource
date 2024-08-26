@@ -10,7 +10,6 @@ export const metadata: Metadata = {
 
 export default async function TaskPage() {
   const allEmployees = await getAllEmployees();
-
   return (
     <div className="">
       <div className="flex flex-col justify-start space-y-2 py-4">

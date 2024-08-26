@@ -11,7 +11,7 @@ const __dirname = dirname(__filename);
 
 async function getRecruitIds() {
   const data = await getAllRecruits();
-  const ids = data.map((item: { _id: string }) => item._id);
+  const ids = data ? data.map((item) => item._id) : [];
   return ids;
 }
 getRecruitIds().then((data) => {

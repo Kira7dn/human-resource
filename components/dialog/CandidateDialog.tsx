@@ -12,7 +12,7 @@ import { Form, FormControl } from "@/components/ui//form";
 import CustomFormField, { FormFieldType } from "../custom-form-field";
 import SubmitButton from "../submit-btn";
 import { Candidate, CandidateValidation, Recruit } from "@/lib/validations";
-import { genders, levels } from "@/constants";
+import { genders, levels, statuses } from "@/constants";
 import {
   Tooltip,
   TooltipContent,
@@ -27,7 +27,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui//scroll-area";
-import { Avatar, AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { Label } from "../ui/label";
+import { FaRegCalendarAlt } from "react-icons/fa";
+import { MultiFileDropzoneUsage } from "../drop-zone";
 
 export const CandidateDialog = ({
   candidate,
@@ -87,62 +91,68 @@ export const CandidateDialog = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-2xl">
         <DialogHeader className="mb-4 space-y-3">
           <DialogTitle className="capitalize">
             {candidate ? "Edit" : "Create"} Candidate profile
           </DialogTitle>
         </DialogHeader>
-        <ScrollArea className="h-[80vh] rounded-md">
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="flex-1 space-y-6"
-            >
-              <CustomFormField
-                fieldType={FormFieldType.SKELETON}
-                control={form.control}
-                name="image"
-                label=""
-                renderSkeleton={(field) => (
-                  <div className="flex items-center gap-4">
-                    <FormControl className="flex-1 text-base-semibold text-secondary">
-                      <>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          name="file"
-                          id="file"
-                          className="absolute -z-10 h-0 w-0 opacity-0"
-                          onChange={(e) => handleImage(e, field.onChange)}
-                        />
-                        <label htmlFor="file">
-                          <div className="cursor-pointer rounded-full border border-transparent hover:border-primary">
-                            <TooltipProvider delayDuration={200}>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Avatar className="h-16 w-16">
-                                    <AvatarImage
-                                      src={
-                                        field.value ||
-                                        "https://github.com/shadcn.png"
-                                      }
-                                    />
-                                  </Avatar>
-                                </TooltipTrigger>
-                                <TooltipContent className="bg-secondary">
-                                  <p>Change Image</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          </div>
-                        </label>
-                      </>
-                    </FormControl>
-                  </div>
-                )}
-              />
-              <div className={`flex flex-col gap-6 md:flex-row`}>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-1 flex-col space-y-6"
+          >
+            <div className={`flex flex-col gap-6 md:flex-row`}>
+              <div className="basis-1/3 space-y-2">
+                <CustomFormField
+                  fieldType={FormFieldType.SKELETON}
+                  control={form.control}
+                  name="image"
+                  label=""
+                  renderSkeleton={(field) => (
+                    <div className="flex items-center justify-center gap-4">
+                      <FormControl className="flex-1  text-base-semibold text-secondary">
+                        <>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            name="file"
+                            id="file"
+                            className="absolute -z-10 h-0 w-0 opacity-0"
+                            onChange={(e) => handleImage(e, field.onChange)}
+                          />
+                          <label htmlFor="file">
+                            <div className="cursor-pointer rounded-full border border-transparent hover:border-primary">
+                              <TooltipProvider delayDuration={200}>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Avatar className="h-28 w-28">
+                                      <AvatarImage
+                                        src={
+                                          field.value ||
+                                          "https://github.com/shadcn.png"
+                                        }
+                                      />
+                                      <AvatarFallback className="h-full w-full text-heading4-bold font-light">
+                                        {form
+                                          .getValues()
+                                          .name.split(" ")
+                                          .map((n) => n[0])}
+                                      </AvatarFallback>
+                                    </Avatar>
+                                  </TooltipTrigger>
+                                  <TooltipContent className="bg-secondary">
+                                    <p>Change Image</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            </div>
+                          </label>
+                        </>
+                      </FormControl>
+                    </div>
+                  )}
+                />
                 <CustomFormField
                   fieldType={FormFieldType.INPUT}
                   control={form.control}
@@ -165,8 +175,6 @@ export const CandidateDialog = ({
                     </SelectItem>
                   ))}
                 </CustomFormField>
-              </div>
-              <div className={`flex flex-col gap-6 md:flex-row`}>
                 <CustomFormField
                   fieldType={FormFieldType.DATE_PICKER}
                   control={form.control}
@@ -181,47 +189,61 @@ export const CandidateDialog = ({
                   placeholder="(+84) 123-4567"
                 />
               </div>
-              <div className={`flex flex-col gap-6 md:flex-row`}>
-                <CustomFormField
-                  fieldType={FormFieldType.INPUT}
-                  control={form.control}
-                  name="position"
-                  label="Position"
-                  placeholder="Frontend Developer"
-                />
-                <CustomFormField
-                  fieldType={FormFieldType.SELECT}
-                  control={form.control}
-                  name="level"
-                  label="Level"
-                  placeholder="Select"
-                >
-                  {levels.map((item, i) => (
-                    <SelectItem key={i} value={item.value}>
-                      <div className="flex cursor-pointer items-center gap-2">
-                        <p className="capitalize">{item.label}</p>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </CustomFormField>
-              </div>
-              <CustomFormField
-                fieldType={FormFieldType.INPUT}
-                control={form.control}
-                name="address"
-                label="Address"
-                placeholder="123, Street, City"
-              />
+              <div className="flex flex-1 flex-col gap-2">
+                <div className="flex flex-1 flex-col justify-between ">
+                  <CustomFormField
+                    fieldType={FormFieldType.INPUT}
+                    control={form.control}
+                    name="position"
+                    label="Position"
+                    placeholder="Frontend Developer"
+                  />
 
-              <SubmitButton
-                isLoading={isLoading}
-                className={`shad-primary-btn w-full`}
-              >
-                {buttonLabel}
-              </SubmitButton>
-            </form>
-          </Form>
-        </ScrollArea>
+                  <CustomFormField
+                    fieldType={FormFieldType.INPUT}
+                    control={form.control}
+                    name="address"
+                    label="Address"
+                    placeholder="123, Street, City"
+                  />
+                  <CustomFormField
+                    fieldType={FormFieldType.SELECT}
+                    control={form.control}
+                    name="level"
+                    label="Level"
+                    placeholder="Select"
+                  >
+                    {levels.map((item, i) => (
+                      <SelectItem key={i} value={item.value}>
+                        <div className="flex cursor-pointer items-center gap-2">
+                          <item.icon />
+                          <p className="capitalize">{item.label}</p>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </CustomFormField>
+                  <CustomFormField
+                    fieldType={FormFieldType.INPUT}
+                    control={form.control}
+                    name="email"
+                    label="Email"
+                    placeholder="123, Street, City"
+                  />
+                </div>
+                <div className="h-32">
+                  <MultiFileDropzoneUsage />
+                </div>
+              </div>
+            </div>
+
+            <SubmitButton
+              isLoading={isLoading}
+              className={`shad-primary-btn w-full`}
+            >
+              {buttonLabel}
+            </SubmitButton>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

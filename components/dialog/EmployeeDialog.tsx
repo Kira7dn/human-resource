@@ -64,8 +64,10 @@ export const EmployeeDialog = ({
   const [isLoadingdata, setLoadingdata] = useState(true);
   useEffect(() => {
     getAllDepartments().then((data) => {
-      setDepartmentdata(data);
-      setLoadingdata(false);
+      if (data) {
+        setDepartmentdata(data);
+        setLoadingdata(false);
+      }
     });
   }, []);
 

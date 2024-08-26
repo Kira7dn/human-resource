@@ -69,6 +69,7 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
             <Input
               placeholder={props.placeholder}
               type={props.type}
+              disabled={props.disabled}
               {...field}
               className="h-11 border-0 border-gray-500 bg-card placeholder:text-gray-600 focus-visible:ring-0 focus-visible:ring-offset-0"
             />

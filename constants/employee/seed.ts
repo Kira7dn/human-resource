@@ -11,7 +11,7 @@ const __dirname = dirname(__filename);
 
 async function getDeptIds() {
   const data = await getAllDepartments();
-  const ids = data.map((item: { _id: any }) => item._id);
+  const ids = data ? data.map((item) => item._id) : [];
   return ids;
 }
 getDeptIds().then((departments) => {

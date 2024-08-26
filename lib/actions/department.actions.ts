@@ -1,9 +1,13 @@
 "use server";
-import { Department as DepartmentType } from "@/lib/validations";
+import {
+  Department as DepartmentType,
+  DepartmentValidation,
+} from "@/lib/validations";
 import { connectToDatabase } from "@/lib/database";
 import { handleError } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 import Department from "../database/models/department.model";
+import { z } from "zod";
 
 export async function createBatchDepartment(data: DepartmentType[]) {
   try {
@@ -30,7 +34,9 @@ export async function getAllDepartments() {
   try {
     await connectToDatabase();
     const departments = await Department.find();
-    return JSON.parse(JSON.stringify(departments));
+    return z
+      .array(DepartmentValidation)
+      .parse(JSON.parse(JSON.stringify(departments)));
   } catch (error) {
     handleError(error);
   }

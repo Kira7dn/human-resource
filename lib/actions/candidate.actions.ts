@@ -34,7 +34,9 @@ export async function getAllCandidates() {
   try {
     await connectToDatabase();
     const candidates = await Candidate.find().populate("recruit");
-    return z.array(CandidateValidation).parse(candidates);
+    return z
+      .array(CandidateValidation)
+      .parse(JSON.parse(JSON.stringify(candidates)));
   } catch (error) {
     handleError(error);
   }

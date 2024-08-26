@@ -132,7 +132,7 @@ export const columns: ColumnDef<Employee>[] = [
     cell: ({ row }) => {
       return (
         <span className="max-w-[200px] truncate font-medium">
-          {row.getValue("birthDate")}
+          {row.original.birthDate.toLocaleDateString("en-US")}
         </span>
       );
     },
@@ -145,7 +145,7 @@ export const columns: ColumnDef<Employee>[] = [
     cell: ({ row }) => {
       return (
         <span className="max-w-[200px] truncate font-medium">
-          {row.getValue("hired_date")}
+          {row.original.hired_date.toLocaleDateString("en-US")}
         </span>
       );
     },

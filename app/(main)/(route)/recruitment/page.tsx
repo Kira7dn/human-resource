@@ -12,7 +12,6 @@ import { getAllRecruits } from "@/lib/actions/recruit.actions";
 
 export default async function Component() {
   const recruits = await getAllRecruits();
-
   return (
     <div className="mx-auto grid w-full max-w-6xl items-stretch gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {recruits ? (

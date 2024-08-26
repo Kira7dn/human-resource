@@ -8,15 +8,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { statuses } from "@/constants";
 
 export const columns: ColumnDef<Candidate>[] = [
-  {
-    accessorKey: "_id",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Candidate" />
-    ),
-    cell: ({ row }) => <div className="w-[80px]">{row.getValue("_id")}</div>,
-    enableSorting: false,
-    enableHiding: false,
-  },
+  // {
+  //   accessorKey: "_id",
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title="Candidate" />
+  //   ),
+  //   cell: ({ row }) => <div className="w-[80px]">{row.getValue("_id")}</div>,
+  //   enableSorting: false,
+  //   enableHiding: false,
+  // },
   {
     accessorKey: "name",
     header: ({ column }) => (

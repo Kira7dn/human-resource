@@ -33,7 +33,9 @@ export async function getAllEmployees() {
   try {
     await connectToDatabase();
     const employees = await Employee.find().populate("department");
-    return z.array(EmployeeValidation).parse(employees);
+    return z
+      .array(EmployeeValidation)
+      .parse(JSON.parse(JSON.stringify(employees)));
   } catch (error) {
     handleError(error);
   }

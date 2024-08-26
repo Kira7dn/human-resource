@@ -38,7 +38,7 @@ export function MultiFileDropzoneUsage() {
               try {
                 const res = await edgestore.publicFiles.upload({
                   file: addedFileState.file,
-                  onProgressChange: async (progress) => {
+                  onProgressChange: async (progress: number) => {
                     updateFileProgress(addedFileState.key, progress);
                     if (progress === 100) {
                       // wait 1 second to set it to complete

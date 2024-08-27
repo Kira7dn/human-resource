@@ -2,12 +2,11 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { SelectItem } from "@/components/ui/select";
 import "react-datepicker/dist/react-datepicker.css";
-
 import { Form, FormControl } from "@/components/ui//form";
 import CustomFormField, { FormFieldType } from "../custom-form-field";
 import SubmitButton from "../submit-btn";
@@ -27,11 +26,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import {
-  MultiFileDropzone,
-  type FileState,
-} from "@/components/multifile-dropzone";
-import { useEdgeStore } from "@/lib/edgestore";
+import MultiFilesUpload from "@/components/upload/multifile-dropzone";
+import SingleImageUpload from "../upload/single-image";
 
 export const CandidateDialog = ({
   candidate,
@@ -46,21 +42,6 @@ export const CandidateDialog = ({
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [file, setFile] = useState<File>();
-  const [fileStates, setFileStates] = useState<FileState[]>([]);
-  const { edgestore } = useEdgeStore();
-
-  function updateFileProgress(key: string, progress: FileState["progress"]) {
-    setFileStates((fileStates) => {
-      const newFileStates = structuredClone(fileStates);
-      const fileState = newFileStates.find(
-        (fileState) => fileState.key === key,
-      );
-      if (fileState) {
-        fileState.progress = progress;
-      }
-      return newFileStates;
-    });
-  }
 
   const form = useForm<z.infer<typeof CandidateValidation>>({
     resolver: zodResolver(CandidateValidation),
@@ -245,40 +226,41 @@ export const CandidateDialog = ({
                     placeholder="123, Street, City"
                   />
                 </div>
-                <MultiFileDropzone
-                  value={fileStates}
-                  onChange={(files) => {
-                    setFileStates(files);
-                  }}
-                  onFilesAdded={async (addedFiles) => {
-                    setFileStates([...fileStates, ...addedFiles]);
-                    await Promise.all(
-                      addedFiles.map(async (addedFileState) => {
-                        try {
-                          const res = await edgestore.publicFiles.upload({
-                            file: addedFileState.file,
-                            onProgressChange: async (progress: number) => {
-                              updateFileProgress(addedFileState.key, progress);
-                              if (progress === 100) {
-                                // wait 1 second to set it to complete
-                                // so that the user can see the progress bar at 100%
-                                await new Promise((resolve) =>
-                                  setTimeout(resolve, 1000),
-                                );
-                                updateFileProgress(
-                                  addedFileState.key,
-                                  "COMPLETE",
-                                );
-                              }
-                            },
-                          });
-                          console.log(res);
-                        } catch (err) {
-                          updateFileProgress(addedFileState.key, "ERROR");
-                        }
-                      }),
-                    );
-                  }}
+                <CustomFormField
+                  fieldType={FormFieldType.SKELETON}
+                  control={form.control}
+                  name="files"
+                  label="Upload your CV"
+                  renderSkeleton={(field) => (
+                    <div className="flex items-center justify-center gap-4">
+                      <FormControl className="flex-1  text-base-semibold text-secondary">
+                        <MultiFilesUpload
+                          onChange={(values) => {
+                            field.onChange(values);
+                          }}
+                        />
+                      </FormControl>
+                    </div>
+                  )}
+                />
+                <CustomFormField
+                  fieldType={FormFieldType.SKELETON}
+                  control={form.control}
+                  name="image"
+                  label=""
+                  renderSkeleton={(field) => (
+                    <div className="flex items-center justify-center gap-4">
+                      <FormControl className="flex-1  text-base-semibold text-secondary">
+                        <SingleImageUpload
+                          onChange={(values) => {
+                            field.onChange(values);
+                          }}
+                          height={200}
+                          width={200}
+                        />
+                      </FormControl>
+                    </div>
+                  )}
                 />
               </div>
             </div>

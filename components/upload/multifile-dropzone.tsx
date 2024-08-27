@@ -12,7 +12,8 @@ import {
 import * as React from "react";
 import { useDropzone, type DropzoneOptions } from "react-dropzone";
 import { twMerge } from "tailwind-merge";
-import { ScrollArea, ScrollBar } from "./ui/scroll-area";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
+import { useEdgeStore } from "@/lib/edgestore";
 
 const variants = {
   base: "relative rounded-md p-4 w-full flex justify-center items-center flex-col cursor-pointer border border-dashed border-gray-400 dark:border-gray-300 transition-colors duration-200 ease-in-out",
@@ -240,3 +241,87 @@ const MultiFileDropzone = React.forwardRef<HTMLInputElement, InputProps>(
 MultiFileDropzone.displayName = "MultiFileDropzone";
 
 export { MultiFileDropzone };
+
+function MultiFilesUpload(params: {
+  onChange?: (
+    value: { url: string; filename: string }[],
+  ) => void | Promise<void>;
+}) {
+  const [fileStates, setFileStates] = React.useState<FileState[]>([]);
+  const [values, setValues] = React.useState<
+    { key: string; url: string; filename: string }[]
+  >([]);
+
+  React.useEffect(() => {
+    void params.onChange?.(
+      values.map(({ url, filename }) => ({ url, filename })),
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values]);
+
+  const { edgestore } = useEdgeStore();
+
+  function updateFileProgress(key: string, progress: FileState["progress"]) {
+    setFileStates((fileStates) => {
+      const newFileStates = structuredClone(fileStates);
+      const fileState = newFileStates.find(
+        (fileState) => fileState.key === key,
+      );
+      if (fileState) {
+        fileState.progress = progress;
+      }
+      return newFileStates;
+    });
+  }
+
+  return (
+    <div className="flex flex-col items-center">
+      <MultiFileDropzone
+        value={fileStates}
+        dropzoneOptions={{
+          maxFiles: 2,
+          maxSize: 1024 * 1024 * 1, // 1 MB
+        }}
+        onFilesAdded={async (addedFiles) => {
+          setFileStates([...fileStates, ...addedFiles]);
+          setValues([
+            ...values,
+            ...addedFiles.map((file) => ({
+              key: file.key,
+              filename: file.file.name,
+              url: "",
+            })),
+          ]);
+          await Promise.all(
+            addedFiles.map(async (addedFileState) => {
+              try {
+                const res = await edgestore.myPublicFiles.upload({
+                  file: addedFileState.file,
+                  onProgressChange: async (progress: number) => {
+                    updateFileProgress(addedFileState.key, progress);
+                    if (progress === 100) {
+                      // wait 1 second to set it to complete
+                      // so that the user can see the progress bar
+                      await new Promise((resolve) => setTimeout(resolve, 1000));
+                      updateFileProgress(addedFileState.key, "COMPLETE");
+                    }
+                  },
+                });
+                setValues((values) =>
+                  values.map((value) =>
+                    value.key === addedFileState.key
+                      ? { ...value, url: res.url }
+                      : value,
+                  ),
+                );
+              } catch (err) {
+                updateFileProgress(addedFileState.key, "ERROR");
+              }
+            }),
+          );
+        }}
+      />
+    </div>
+  );
+}
+export default MultiFilesUpload;

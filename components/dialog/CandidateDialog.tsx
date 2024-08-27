@@ -13,12 +13,6 @@ import SubmitButton from "../submit-btn";
 import { Candidate, CandidateValidation, Recruit } from "@/lib/validations";
 import { genders, levels } from "@/constants";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui//tooltip";
-import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -48,7 +42,6 @@ export const CandidateDialog = ({
     defaultValues: candidate
       ? candidate
       : {
-          image: "https://github.com/shadcn.png",
           email: "",
           name: "",
           birthDate: new Date("1990/1/1"),
@@ -104,47 +97,18 @@ export const CandidateDialog = ({
                   fieldType={FormFieldType.SKELETON}
                   control={form.control}
                   name="image"
-                  label=""
+                  label="Avatar"
                   renderSkeleton={(field) => (
-                    <div className="flex items-center justify-center gap-4">
-                      <FormControl className="flex-1  text-base-semibold text-secondary">
-                        <>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            name="file"
-                            id="file"
-                            className="absolute -z-10 h-0 w-0 opacity-0"
-                            onChange={(e) => handleImage(e, field.onChange)}
-                          />
-                          <label htmlFor="file">
-                            <div className="cursor-pointer rounded-full border border-transparent hover:border-primary">
-                              <TooltipProvider delayDuration={200}>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Avatar className="h-28 w-28">
-                                      <AvatarImage
-                                        src={
-                                          field.value ||
-                                          "https://github.com/shadcn.png"
-                                        }
-                                      />
-                                      <AvatarFallback className="h-full w-full text-heading4-bold font-light">
-                                        {form
-                                          .getValues()
-                                          .name.split(" ")
-                                          .map((n) => n[0])}
-                                      </AvatarFallback>
-                                    </Avatar>
-                                  </TooltipTrigger>
-                                  <TooltipContent className="bg-secondary">
-                                    <p>Change Image</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                            </div>
-                          </label>
-                        </>
+                    <div className="flex w-full items-center justify-center gap-4">
+                      <FormControl className="flex-1 text-base-semibold text-secondary">
+                        <SingleImageUpload
+                          onChange={(values) => {
+                            field.onChange(values);
+                          }}
+                          height={140}
+                          width={140}
+                          image={field.value}
+                        />
                       </FormControl>
                     </div>
                   )}
@@ -177,16 +141,16 @@ export const CandidateDialog = ({
                   name="birthDate"
                   label="Birth date"
                 />
-                <CustomFormField
-                  fieldType={FormFieldType.PHONE_INPUT}
-                  control={form.control}
-                  name="phone"
-                  label="Phone Number"
-                  placeholder="(+84) 123-4567"
-                />
               </div>
               <div className="flex flex-1 flex-col gap-2">
                 <div className="flex flex-1 flex-col justify-between ">
+                  <CustomFormField
+                    fieldType={FormFieldType.PHONE_INPUT}
+                    control={form.control}
+                    name="phone"
+                    label="Phone Number"
+                    placeholder="(+84) 123-4567"
+                  />
                   <CustomFormField
                     fieldType={FormFieldType.INPUT}
                     control={form.control}
@@ -232,31 +196,12 @@ export const CandidateDialog = ({
                   name="files"
                   label="Upload your CV"
                   renderSkeleton={(field) => (
-                    <div className="flex items-center justify-center gap-4">
-                      <FormControl className="flex-1  text-base-semibold text-secondary">
+                    <div className="flex w-full items-center justify-center gap-4">
+                      <FormControl className="w-fullflex flex-1 flex-col items-center text-base-semibold text-secondary">
                         <MultiFilesUpload
                           onChange={(values) => {
                             field.onChange(values);
                           }}
-                        />
-                      </FormControl>
-                    </div>
-                  )}
-                />
-                <CustomFormField
-                  fieldType={FormFieldType.SKELETON}
-                  control={form.control}
-                  name="image"
-                  label=""
-                  renderSkeleton={(field) => (
-                    <div className="flex items-center justify-center gap-4">
-                      <FormControl className="flex-1  text-base-semibold text-secondary">
-                        <SingleImageUpload
-                          onChange={(values) => {
-                            field.onChange(values);
-                          }}
-                          height={200}
-                          width={200}
                         />
                       </FormControl>
                     </div>

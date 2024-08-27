@@ -6,9 +6,10 @@ import { UploadCloudIcon, X } from "lucide-react";
 import * as React from "react";
 import { useDropzone, type DropzoneOptions } from "react-dropzone";
 import { twMerge } from "tailwind-merge";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 const variants = {
-  base: "relative rounded-md flex justify-center items-center flex-col cursor-pointer min-h-[150px] min-w-[200px] border border-dashed border-gray-400 dark:border-gray-300 transition-colors duration-200 ease-in-out",
+  base: "relative text-center rounded-md flex justify-center items-center flex-col cursor-pointer border border-dashed border-gray-400 dark:border-gray-300 transition-colors duration-200 ease-in-out",
   image:
     "border-0 p-0 min-h-0 min-w-0 relative shadow-md bg-slate-200 dark:bg-slate-900 rounded-md",
   active: "border-2",
@@ -26,6 +27,7 @@ type InputProps = {
   onChange?: (file?: File) => void | Promise<void>;
   disabled?: boolean;
   dropzoneOptions?: Omit<DropzoneOptions, "disabled">;
+  initialImageUrl?: string;
 };
 
 const ERROR_MESSAGES = {
@@ -45,7 +47,16 @@ const ERROR_MESSAGES = {
 
 const SingleImageDropzone = React.forwardRef<HTMLInputElement, InputProps>(
   (
-    { dropzoneOptions, width, height, value, className, disabled, onChange },
+    {
+      dropzoneOptions,
+      width,
+      height,
+      value,
+      className,
+      disabled,
+      onChange,
+      initialImageUrl,
+    },
     ref,
   ) => {
     const imageUrl = React.useMemo(() => {
@@ -89,6 +100,7 @@ const SingleImageDropzone = React.forwardRef<HTMLInputElement, InputProps>(
           isFocused && variants.active,
           disabled && variants.disabled,
           imageUrl && variants.image,
+          initialImageUrl && variants.image,
           (isDragReject ?? fileRejections[0]) && variants.reject,
           isDragAccept && variants.accept,
           className,
@@ -134,42 +146,30 @@ const SingleImageDropzone = React.forwardRef<HTMLInputElement, InputProps>(
         >
           {/* Main File Input */}
           <input ref={ref} {...getInputProps()} />
-
-          {imageUrl ? (
-            // Image Preview
-            <img
-              className="h-full w-full rounded-md object-cover"
-              src={imageUrl}
-              alt={acceptedFiles[0]?.name}
-            />
+          {initialImageUrl ? (
+            <Avatar className="h-full w-full rounded-md object-cover">
+              <AvatarImage
+                src={initialImageUrl || "https://github.com/shadcn.png"}
+              />
+              <AvatarFallback className="h-full w-full text-heading4-bold font-light">
+                Avatar
+              </AvatarFallback>
+            </Avatar>
+          ) : imageUrl ? (
+            <Avatar className="h-full w-full rounded-md object-cover">
+              <AvatarImage src={imageUrl || "https://github.com/shadcn.png"} />
+              <AvatarFallback className="h-full w-full text-heading4-bold font-light">
+                {acceptedFiles[0]?.name}
+              </AvatarFallback>
+            </Avatar>
           ) : (
-            // Upload Icon
-            <div className="text-xs flex flex-col items-center justify-center text-gray-400">
+            <div className="flex flex-col items-center justify-center p-2 text-small-medium text-gray-400">
               <UploadCloudIcon className="mb-2 h-7 w-7" />
-              <div className="text-gray-400">drag & drop to upload</div>
+              <div className="text-gray-400">Drag & Drop to upload</div>
               <div className="mt-3">
                 <Button type="button" disabled={disabled}>
                   select
                 </Button>
-              </div>
-            </div>
-          )}
-
-          {/* Remove Image Icon */}
-          {imageUrl && !disabled && (
-            <div
-              className="group absolute right-0 top-0 -translate-y-1/4 translate-x-1/4 transform"
-              onClick={(e) => {
-                e.stopPropagation();
-                void onChange?.(undefined);
-              }}
-            >
-              <div className="flex h-5 w-5 items-center justify-center rounded-md border border-solid border-gray-500 bg-white transition-all duration-300 hover:h-6 hover:w-6 dark:border-gray-400 dark:bg-black">
-                <X
-                  className="text-gray-500 dark:text-gray-400"
-                  width={16}
-                  height={16}
-                />
               </div>
             </div>
           )}
@@ -208,74 +208,66 @@ Button.displayName = "Button";
 export { SingleImageDropzone };
 
 export default function SingleImageUpload(params: {
-  onChange?: (value: { url: string; filename: string }) => void | Promise<void>;
+  onChange?: (value: string) => void | Promise<void>;
   height?: number;
   width?: number;
+  image?: string;
 }) {
   const [file, setFile] = React.useState<File>();
   const [progress, setProgress] = React.useState<
     "PENDING" | "COMPLETE" | "ERROR" | number
   >("PENDING");
-  const [uploadRes, setUploadRes] = React.useState<{
-    url: string;
-    filename: string;
-  }>();
+  const [uploadRes, setUploadRes] = React.useState<string>();
+  const { edgestore } = useEdgeStore();
   React.useEffect(() => {
     if (uploadRes) {
       void params.onChange?.(uploadRes);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uploadRes]);
-  const { edgestore } = useEdgeStore();
+
+  React.useEffect(() => {
+    if (file) {
+      uploadFile(file);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [file]);
+
+  const uploadFile = async (file: File) => {
+    try {
+      const res = await edgestore.publicFiles.upload({
+        file,
+        onProgressChange: async (newProgress: number) => {
+          setProgress(newProgress);
+          if (newProgress === 100) {
+            // wait 1 second to set it to complete
+            // so that the user can see it at 100%
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            setProgress("COMPLETE");
+          }
+        },
+      });
+      setUploadRes(res.url);
+    } catch (err) {
+      setProgress("ERROR");
+    }
+  };
 
   return (
     <div className="flex flex-col items-center">
       <SingleImageDropzone
         height={params.height || 200}
         width={params.width || 200}
+        initialImageUrl={params.image}
         value={file}
-        onChange={setFile}
+        onChange={async (addedFile) => {
+          setFile(addedFile);
+        }}
         disabled={progress !== "PENDING"}
         dropzoneOptions={{
           maxSize: 1024 * 1024 * 1, // 1 MB
         }}
       />
-      <Button
-        className="mt-2"
-        onClick={async () => {
-          if (file) {
-            try {
-              const res = await edgestore.myPublicImages.upload({
-                file,
-                onProgressChange: async (newProgress: number) => {
-                  setProgress(newProgress);
-                  if (newProgress === 100) {
-                    // wait 1 second to set it to complete
-                    // so that the user can see it at 100%
-                    await new Promise((resolve) => setTimeout(resolve, 1000));
-                    setProgress("COMPLETE");
-                  }
-                },
-              });
-              setUploadRes({
-                url: res.url,
-                filename: file.name,
-              });
-            } catch (err) {
-              setProgress("ERROR");
-            }
-          }
-        }}
-        disabled={!file || progress !== "PENDING"}
-      >
-        {progress === "PENDING"
-          ? "Upload"
-          : progress === "COMPLETE"
-            ? "Done"
-            : typeof progress === "number"
-              ? `Uploading (${Math.round(progress)}%)`
-              : "Error"}
-      </Button>
     </div>
   );
 }

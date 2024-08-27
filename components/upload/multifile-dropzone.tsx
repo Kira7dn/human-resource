@@ -14,6 +14,7 @@ import { useDropzone, type DropzoneOptions } from "react-dropzone";
 import { twMerge } from "tailwind-merge";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { useEdgeStore } from "@/lib/edgestore";
+import { IoDocumentAttachOutline } from "react-icons/io5";
 
 const variants = {
   base: "relative rounded-md p-4 w-full flex justify-center items-center flex-col cursor-pointer border border-dashed border-gray-400 dark:border-gray-300 transition-colors duration-200 ease-in-out",
@@ -137,8 +138,8 @@ const MultiFileDropzone = React.forwardRef<HTMLInputElement, InputProps>(
 
     return (
       <div className="w-full">
-        <div className="flex w-full flex-col gap-2">
-          <div className="w-full">
+        <div className="flex w-full justify-between gap-2">
+          <div className="w-40">
             {/* Main File Input */}
             <div
               {...getRootProps({
@@ -146,9 +147,9 @@ const MultiFileDropzone = React.forwardRef<HTMLInputElement, InputProps>(
               })}
             >
               <input ref={ref} {...getInputProps()} />
-              <div className="text-xs flex flex-col items-center justify-center text-gray-400">
-                <UploadCloudIcon className="mb-1 h-7 w-7" />
-                <div className="text-gray-400">
+              <div className="flex items-center justify-center gap-2 text-small-semibold text-gray-400">
+                <UploadCloudIcon className="mb-1 h-12 w-12" />
+                <div className="text-center text-gray-400">
                   drag & drop or click to upload
                 </div>
               </div>
@@ -160,79 +161,65 @@ const MultiFileDropzone = React.forwardRef<HTMLInputElement, InputProps>(
             </div>
           </div>
 
-          {/* Selected Files */}
-          {value && value.length > 0 && (
-            <ScrollArea className="w-96 whitespace-nowrap rounded-md border">
-              <div className="flex w-max space-x-4 p-4">
-                {value.map(({ file, abortController, progress }, i) => (
-                  <div
-                    key={i}
-                    className="relative rounded border border-gray-300 px-2 py-1"
-                  >
-                    <div className="flex items-center gap-2 text-gray-500 dark:text-white">
-                      <FileIcon size="30" className="shrink-0" />
-                      <div className="min-w-0 max-w-10 text-tiny-medium">
-                        <div className="overflow-hidden overflow-ellipsis whitespace-nowrap">
-                          {file.name}
-                        </div>
-                        <div className="text-tiny-medium text-gray-400 dark:text-gray-400">
-                          {formatFileSize(file.size)}
-                        </div>
-                      </div>
-                      <div className="flex justify-end text-small-medium">
-                        {progress === "PENDING" ? (
+          <div className="flex flex-1 flex-col items-center justify-between py-1">
+            {value?.map(({ file, abortController, progress }, i) => (
+              <div key={i} className="relative w-full">
+                <div className="flex w-full items-center gap-2 text-gray-500 dark:text-white">
+                  <IoDocumentAttachOutline size="24" className="shrink-0" />
+                  <div className="w-1 flex-1 text-tiny-medium">
+                    <div className="truncate">{file.name}</div>
+                  </div>
+                  <div className="flex justify-end text-small-medium">
+                    {progress === "PENDING" ? (
+                      <button
+                        type="button"
+                        className="h-8 w-8 rounded-md p-1 transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                        onClick={() => {
+                          void onChange?.(
+                            value.filter((_, index) => index !== i),
+                          );
+                        }}
+                      >
+                        <Trash2Icon className="absolute -right-1 -top-1 h-4 w-4 shrink-0 text-gray-500" />
+                      </button>
+                    ) : progress === "ERROR" ? (
+                      <LucideFileWarning className="absolute -right-1 -top-1 h-4 w-4 shrink-0 text-red-500" />
+                    ) : progress !== "COMPLETE" ? (
+                      <div className="flex flex-col items-end gap-0.5">
+                        {abortController && (
                           <button
                             type="button"
-                            className="h-8 w-8 rounded-md p-1 transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                            className="rounded-md p-0.5 transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                            disabled={progress === 100}
                             onClick={() => {
-                              void onChange?.(
-                                value.filter((_, index) => index !== i),
-                              );
+                              abortController.abort();
                             }}
                           >
-                            <Trash2Icon className="absolute -right-1 -top-1 h-4 w-4 shrink-0 text-gray-500" />
+                            <XIcon className="absolute -right-1 -top-1 h-4 w-4 shrink-0 text-green-500" />
                           </button>
-                        ) : progress === "ERROR" ? (
-                          <LucideFileWarning className="absolute -right-1 -top-1 h-4 w-4 shrink-0 text-red-500" />
-                        ) : progress !== "COMPLETE" ? (
-                          <div className="flex flex-col items-end gap-0.5">
-                            {abortController && (
-                              <button
-                                type="button"
-                                className="rounded-md p-0.5 transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                                disabled={progress === 100}
-                                onClick={() => {
-                                  abortController.abort();
-                                }}
-                              >
-                                <XIcon className="absolute -right-1 -top-1 h-4 w-4 shrink-0 text-green-500" />
-                              </button>
-                            )}
-                          </div>
-                        ) : (
-                          <CheckCircleIcon className="absolute -right-1 -top-1 h-4 w-4 shrink-0 text-green-500" />
                         )}
                       </div>
-                    </div>
-                    {/* Progress Bar */}
-                    {typeof progress === "number" && (
-                      <div className="relative h-0 w-full">
-                        <div className="absolute top-1 h-1 w-full overflow-clip rounded-full bg-gray-200 dark:bg-gray-700">
-                          <div
-                            className="h-2 w-full bg-gray-400 transition-all duration-300 ease-in-out dark:bg-white"
-                            style={{
-                              width: progress ? `${progress}%` : "0%",
-                            }}
-                          />
-                        </div>
-                      </div>
+                    ) : (
+                      <CheckCircleIcon className="absolute -right-1 -top-1 h-4 w-4 shrink-0 text-green-500" />
                     )}
                   </div>
-                ))}
+                </div>
+                {/* Progress Bar */}
+                {typeof progress === "number" && (
+                  <div className="relative h-0 w-full">
+                    <div className="absolute top-1 h-1 w-full overflow-clip rounded-full bg-gray-200 dark:bg-gray-700">
+                      <div
+                        className="h-2 w-full bg-gray-400 transition-all duration-300 ease-in-out dark:bg-white"
+                        style={{
+                          width: progress ? `${progress}%` : "0%",
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
-              <ScrollBar orientation="horizontal" data-state="visible" />
-            </ScrollArea>
-          )}
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -275,53 +262,52 @@ function MultiFilesUpload(params: {
   }
 
   return (
-    <div className="flex flex-col items-center">
-      <MultiFileDropzone
-        value={fileStates}
-        dropzoneOptions={{
-          maxFiles: 2,
-          maxSize: 1024 * 1024 * 1, // 1 MB
-        }}
-        onFilesAdded={async (addedFiles) => {
-          setFileStates([...fileStates, ...addedFiles]);
-          setValues([
-            ...values,
-            ...addedFiles.map((file) => ({
-              key: file.key,
-              filename: file.file.name,
-              url: "",
-            })),
-          ]);
-          await Promise.all(
-            addedFiles.map(async (addedFileState) => {
-              try {
-                const res = await edgestore.myPublicFiles.upload({
-                  file: addedFileState.file,
-                  onProgressChange: async (progress: number) => {
-                    updateFileProgress(addedFileState.key, progress);
-                    if (progress === 100) {
-                      // wait 1 second to set it to complete
-                      // so that the user can see the progress bar
-                      await new Promise((resolve) => setTimeout(resolve, 1000));
-                      updateFileProgress(addedFileState.key, "COMPLETE");
-                    }
-                  },
-                });
-                setValues((values) =>
-                  values.map((value) =>
-                    value.key === addedFileState.key
-                      ? { ...value, url: res.url }
-                      : value,
-                  ),
-                );
-              } catch (err) {
-                updateFileProgress(addedFileState.key, "ERROR");
-              }
-            }),
-          );
-        }}
-      />
-    </div>
+    <MultiFileDropzone
+      value={fileStates}
+      dropzoneOptions={{
+        maxFiles: 2,
+        maxSize: 1024 * 1024 * 1, // 1 MB
+      }}
+      className="p-2"
+      onFilesAdded={async (addedFiles) => {
+        setFileStates([...fileStates, ...addedFiles]);
+        setValues([
+          ...values,
+          ...addedFiles.map((file) => ({
+            key: file.key,
+            filename: file.file.name,
+            url: "",
+          })),
+        ]);
+        await Promise.all(
+          addedFiles.map(async (addedFileState) => {
+            try {
+              const res = await edgestore.publicFiles.upload({
+                file: addedFileState.file,
+                onProgressChange: async (progress: number) => {
+                  updateFileProgress(addedFileState.key, progress);
+                  if (progress === 100) {
+                    // wait 1 second to set it to complete
+                    // so that the user can see the progress bar
+                    await new Promise((resolve) => setTimeout(resolve, 1000));
+                    updateFileProgress(addedFileState.key, "COMPLETE");
+                  }
+                },
+              });
+              setValues((values) =>
+                values.map((value) =>
+                  value.key === addedFileState.key
+                    ? { ...value, url: res.url }
+                    : value,
+                ),
+              );
+            } catch (err) {
+              updateFileProgress(addedFileState.key, "ERROR");
+            }
+          }),
+        );
+      }}
+    />
   );
 }
 export default MultiFilesUpload;

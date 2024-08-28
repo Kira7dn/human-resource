@@ -27,7 +27,6 @@ type InputProps = {
   onChange?: (file?: File) => void | Promise<void>;
   disabled?: boolean;
   dropzoneOptions?: Omit<DropzoneOptions, "disabled">;
-  initialImageUrl?: string;
 };
 
 const ERROR_MESSAGES = {
@@ -55,7 +54,6 @@ const SingleImageDropzone = React.forwardRef<HTMLInputElement, InputProps>(
       className,
       disabled,
       onChange,
-      initialImageUrl,
     },
     ref,
   ) => {
@@ -100,7 +98,6 @@ const SingleImageDropzone = React.forwardRef<HTMLInputElement, InputProps>(
           isFocused && variants.active,
           disabled && variants.disabled,
           imageUrl && variants.image,
-          initialImageUrl && variants.image,
           (isDragReject ?? fileRejections[0]) && variants.reject,
           isDragAccept && variants.accept,
           className,
@@ -146,18 +143,9 @@ const SingleImageDropzone = React.forwardRef<HTMLInputElement, InputProps>(
         >
           {/* Main File Input */}
           <input ref={ref} {...getInputProps()} />
-          {initialImageUrl ? (
+          {imageUrl ? (
             <Avatar className="h-full w-full rounded-md object-cover">
-              <AvatarImage
-                src={initialImageUrl || "https://github.com/shadcn.png"}
-              />
-              <AvatarFallback className="h-full w-full text-heading4-bold font-light">
-                Avatar
-              </AvatarFallback>
-            </Avatar>
-          ) : imageUrl ? (
-            <Avatar className="h-full w-full rounded-md object-cover">
-              <AvatarImage src={imageUrl || "https://github.com/shadcn.png"} />
+              <AvatarImage src={imageUrl} />
               <AvatarFallback className="h-full w-full text-heading4-bold font-light">
                 {acceptedFiles[0]?.name}
               </AvatarFallback>
@@ -213,21 +201,14 @@ export default function SingleImageUpload(params: {
   width?: number;
   image?: string;
 }) {
-  const [file, setFile] = React.useState<File>();
+  const [file, setFile] = React.useState<File | string>(params.image || "");
   const [progress, setProgress] = React.useState<
     "PENDING" | "COMPLETE" | "ERROR" | number
   >("PENDING");
-  const [uploadRes, setUploadRes] = React.useState<string>();
   const { edgestore } = useEdgeStore();
-  React.useEffect(() => {
-    if (uploadRes) {
-      void params.onChange?.(uploadRes);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [uploadRes]);
 
   React.useEffect(() => {
-    if (file) {
+    if (file instanceof File) {
       uploadFile(file);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -247,27 +228,39 @@ export default function SingleImageUpload(params: {
           }
         },
       });
-      setUploadRes(res.url);
+      params.onChange?.(res.url);
     } catch (err) {
       setProgress("ERROR");
     }
   };
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="relative flex flex-col items-center">
       <SingleImageDropzone
         height={params.height || 200}
         width={params.width || 200}
-        initialImageUrl={params.image}
         value={file}
         onChange={async (addedFile) => {
-          setFile(addedFile);
+          if (addedFile instanceof File) {
+            setFile(addedFile);
+          }
         }}
         disabled={progress !== "PENDING"}
         dropzoneOptions={{
           maxSize: 1024 * 1024 * 1, // 1 MB
         }}
       />
+      {/* Progress Bar */}
+      {typeof progress === "number" && (
+        <div className="absolute top-1/2 bottom-1/2 h-1 w-full overflow-clip rounded-full bg-gray-200 dark:bg-gray-700">
+          <div
+            className="h-2 w-full bg-gray-400 transition-all duration-300 ease-in-out dark:bg-white"
+            style={{
+              width: progress ? `${progress}%` : "0%",
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 }

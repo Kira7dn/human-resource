@@ -3,7 +3,6 @@
 import { formatFileSize } from "@edgestore/react/utils";
 import {
   CheckCircleIcon,
-  FileIcon,
   LucideFileWarning,
   Trash2Icon,
   UploadCloudIcon,
@@ -33,7 +32,9 @@ export type FileState = {
 
 type InputProps = {
   className?: string;
-  value?: FileState[];
+  fileState?: FileState[];
+  initialValues?: { key: string; url: string; filename: string }[];
+  onInitChange?: (values: { key: string; url: string; filename: string }[]) => void | Promise<void>;
   onChange?: (files: FileState[]) => void | Promise<void>;
   onFilesAdded?: (addedFiles: FileState[]) => void | Promise<void>;
   disabled?: boolean;
@@ -57,12 +58,12 @@ const ERROR_MESSAGES = {
 
 const MultiFileDropzone = React.forwardRef<HTMLInputElement, InputProps>(
   (
-    { dropzoneOptions, value, className, disabled, onFilesAdded, onChange },
+    { dropzoneOptions, fileState, className, disabled, initialValues, onInitChange, onFilesAdded, onChange },
     ref,
   ) => {
     const [customError, setCustomError] = React.useState<string>();
-    if (dropzoneOptions?.maxFiles && value?.length) {
-      disabled = disabled ?? value.length >= dropzoneOptions.maxFiles;
+    if (dropzoneOptions?.maxFiles && fileState?.length) {
+      disabled = disabled ?? fileState.length >= dropzoneOptions.maxFiles;
     }
     // dropzone configuration
     const {
@@ -79,7 +80,7 @@ const MultiFileDropzone = React.forwardRef<HTMLInputElement, InputProps>(
         setCustomError(undefined);
         if (
           dropzoneOptions?.maxFiles &&
-          (value?.length ?? 0) + files.length > dropzoneOptions.maxFiles
+          (fileState?.length ?? 0) + files.length + (initialValues?.length ?? 0) > dropzoneOptions.maxFiles
         ) {
           setCustomError(ERROR_MESSAGES.tooManyFiles(dropzoneOptions.maxFiles));
           return;
@@ -91,7 +92,7 @@ const MultiFileDropzone = React.forwardRef<HTMLInputElement, InputProps>(
             progress: "PENDING",
           }));
           void onFilesAdded?.(addedFiles);
-          void onChange?.([...(value ?? []), ...addedFiles]);
+          void onChange?.([...(fileState ?? []), ...addedFiles]);
         }
       },
       ...dropzoneOptions,
@@ -161,65 +162,92 @@ const MultiFileDropzone = React.forwardRef<HTMLInputElement, InputProps>(
           </div>
 
           <div className="flex flex-1 flex-col items-center justify-between py-1">
-            {value?.map(({ file, abortController, progress }, i) => (
-              <div key={i} className="relative w-full">
+            {fileState?.map(({ file, abortController, progress }, i) => {
+              if (progress === "COMPLETE") {
+                return null;
+              }
+              return (
+                <div key={i} className="relative w-full">
+                  <div className="flex w-full items-center gap-2 text-gray-500 dark:text-white">
+                    <IoDocumentAttachOutline size="24" className="shrink-0" />
+                    <div className="w-1 flex-1 text-tiny-medium">
+                      <div className="truncate">{file.name}</div>
+                    </div>
+                    <div className="flex justify-end text-small-medium">
+                      {progress === "PENDING" ? (
+                        <button
+                          type="button"
+                          className="h-8 w-8 rounded-md p-1 transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                          onClick={() => {
+                            void onChange?.(
+                              fileState.filter((_, index) => index !== i),
+                            );
+                          }}
+                        >
+                          <Trash2Icon className="absolute -right-1 -top-1 h-4 w-4 shrink-0 text-gray-500" />
+                        </button>
+                      ) : progress === "ERROR" ? (
+                        <LucideFileWarning className="absolute -right-1 -top-1 h-4 w-4 shrink-0 text-red-500" />
+                      ) : (
+                        <div className="flex flex-col items-end gap-0.5">
+                          {abortController && (
+                            <button
+                              type="button"
+                              className="rounded-md p-0.5 transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                              disabled={progress === 100}
+                              onClick={() => {
+                                abortController.abort();
+                              }}
+                            >
+                              <XIcon className="absolute -right-1 -top-1 h-4 w-4 shrink-0 text-green-500" />
+                            </button>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  {/* Progress Bar */}
+                  {typeof progress === "number" && (
+                    <div className="relative h-0 w-full">
+                      <div className="absolute top-1 h-1 w-full overflow-clip rounded-full bg-gray-200 dark:bg-gray-700">
+                        <div
+                          className="h-2 w-full bg-gray-400 transition-all duration-300 ease-in-out dark:bg-white"
+                          style={{
+                            width: progress ? `${progress}%` : "0%",
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+            {initialValues?.map(({ key, url, filename }) => (
+              <div key={key} className="relative w-full">
                 <div className="flex w-full items-center gap-2 text-gray-500 dark:text-white">
                   <IoDocumentAttachOutline size="24" className="shrink-0" />
                   <div className="w-1 flex-1 text-tiny-medium">
-                    <div className="truncate">{file.name}</div>
+                    <div className="truncate">{filename}</div>
                   </div>
                   <div className="flex justify-end text-small-medium">
-                    {progress === "PENDING" ? (
-                      <button
-                        type="button"
-                        className="h-8 w-8 rounded-md p-1 transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                        onClick={() => {
-                          void onChange?.(
-                            value.filter((_, index) => index !== i),
-                          );
-                        }}
-                      >
-                        <Trash2Icon className="absolute -right-1 -top-1 h-4 w-4 shrink-0 text-gray-500" />
-                      </button>
-                    ) : progress === "ERROR" ? (
-                      <LucideFileWarning className="absolute -right-1 -top-1 h-4 w-4 shrink-0 text-red-500" />
-                    ) : progress !== "COMPLETE" ? (
-                      <div className="flex flex-col items-end gap-0.5">
-                        {abortController && (
-                          <button
-                            type="button"
-                            className="rounded-md p-0.5 transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                            disabled={progress === 100}
-                            onClick={() => {
-                              abortController.abort();
-                            }}
-                          >
-                            <XIcon className="absolute -right-1 -top-1 h-4 w-4 shrink-0 text-green-500" />
-                          </button>
-                        )}
-                      </div>
-                    ) : (
-                      <CheckCircleIcon className="absolute -right-1 -top-1 h-4 w-4 shrink-0 text-green-500" />
-                    )}
+                    <button
+                      type="button"
+                      className="h-8 w-8 rounded-md p-1 transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      onClick={() => {
+                        void onInitChange?.(
+                          initialValues.filter(value => value.key !== key),
+                        );
+                      }}
+                    >
+                      <Trash2Icon className="absolute -right-1 -top-1 h-4 w-4 shrink-0 text-green-500" />
+                    </button>
                   </div>
                 </div>
-                {/* Progress Bar */}
-                {typeof progress === "number" && (
-                  <div className="relative h-0 w-full">
-                    <div className="absolute top-1 h-1 w-full overflow-clip rounded-full bg-gray-200 dark:bg-gray-700">
-                      <div
-                        className="h-2 w-full bg-gray-400 transition-all duration-300 ease-in-out dark:bg-white"
-                        style={{
-                          width: progress ? `${progress}%` : "0%",
-                        }}
-                      />
-                    </div>
-                  </div>
-                )}
               </div>
             ))}
           </div>
         </div>
+
       </div>
     );
   },
@@ -253,7 +281,7 @@ function MultiFilesUpload(params: {
 
   const { edgestore } = useEdgeStore();
 
-  function updateFileProgress(key: string, progress: FileState["progress"]) {
+  function updateFileProgress(key: string, progress: FileState["progress"], abortController?: AbortController) {
     setFileStates((fileStates) => {
       const newFileStates = structuredClone(fileStates);
       const fileState = newFileStates.find(
@@ -261,6 +289,7 @@ function MultiFilesUpload(params: {
       );
       if (fileState) {
         fileState.progress = progress;
+        fileState.abortController = abortController;
       }
       return newFileStates;
     });
@@ -268,12 +297,15 @@ function MultiFilesUpload(params: {
 
   return (
     <MultiFileDropzone
-      value={fileStates}
+      fileState={fileStates}
+      initialValues={values}
       dropzoneOptions={{
         maxFiles: 2,
         maxSize: 1024 * 1024 * 1, // 1 MB
       }}
       className="p-2"
+      onChange={setFileStates}
+      onInitChange={setValues}
       onFilesAdded={async (addedFiles) => {
         setFileStates([...fileStates, ...addedFiles]);
         setValues([
@@ -286,11 +318,12 @@ function MultiFilesUpload(params: {
         ]);
         await Promise.all(
           addedFiles.map(async (addedFileState) => {
+            const abortController = new AbortController();
             try {
               const res = await edgestore.publicFiles.upload({
                 file: addedFileState.file,
                 onProgressChange: async (progress: number) => {
-                  updateFileProgress(addedFileState.key, progress);
+                  updateFileProgress(addedFileState.key, progress, abortController);
                   if (progress === 100) {
                     // wait 1 second to set it to complete
                     // so that the user can see the progress bar
@@ -298,6 +331,7 @@ function MultiFilesUpload(params: {
                     updateFileProgress(addedFileState.key, "COMPLETE");
                   }
                 },
+                signal: abortController.signal,
               });
               setValues((values) =>
                 values.map((value) =>

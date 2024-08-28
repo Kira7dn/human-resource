@@ -12,7 +12,6 @@ import {
 import * as React from "react";
 import { useDropzone, type DropzoneOptions } from "react-dropzone";
 import { twMerge } from "tailwind-merge";
-import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { useEdgeStore } from "@/lib/edgestore";
 import { IoDocumentAttachOutline } from "react-icons/io5";
 
@@ -233,11 +232,17 @@ function MultiFilesUpload(params: {
   onChange?: (
     value: { url: string; filename: string }[],
   ) => void | Promise<void>;
+  files?: { url: string; filename: string }[];
 }) {
+  const inititalValues = params.files?.map((file) => ({
+    key: Math.random().toString(36).slice(2),
+    url: file.url,
+    filename: file.filename,
+  }));
   const [fileStates, setFileStates] = React.useState<FileState[]>([]);
   const [values, setValues] = React.useState<
     { key: string; url: string; filename: string }[]
-  >([]);
+  >(inititalValues || []);
 
   React.useEffect(() => {
     void params.onChange?.(

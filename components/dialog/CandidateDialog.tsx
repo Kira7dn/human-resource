@@ -19,7 +19,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import MultiFilesUpload from "@/components/upload/multifile-dropzone";
 import SingleImageUpload from "../upload/single-image";
 
@@ -35,7 +34,6 @@ export const CandidateDialog = ({
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [file, setFile] = useState<File>();
 
   const form = useForm<z.infer<typeof CandidateValidation>>({
     resolver: zodResolver(CandidateValidation),
@@ -59,24 +57,6 @@ export const CandidateDialog = ({
   };
 
   let buttonLabel = candidate ? "Update Candidate" : "Submit Candidate";
-
-  const handleImage = (
-    e: ChangeEvent<HTMLInputElement>,
-    fieldChange: (value: string) => void,
-  ) => {
-    e.preventDefault();
-    const fileReader = new FileReader();
-    if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0];
-      setFile(file);
-      if (!file.type.includes("image")) return;
-      fileReader.onload = async (event) => {
-        const imageDataUrl = event.target?.result?.toString() || "";
-        fieldChange(imageDataUrl);
-      };
-      fileReader.readAsDataURL(file);
-    }
-  };
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -202,6 +182,7 @@ export const CandidateDialog = ({
                           onChange={(values) => {
                             field.onChange(values);
                           }}
+                          files={field.value}
                         />
                       </FormControl>
                     </div>

@@ -10,7 +10,7 @@ import { Form, FormControl } from "@/components/ui/form";
 import CustomFormField, { FormFieldType } from "../custom-form-field";
 import SubmitButton from "../submit-btn";
 import { Candidate, CandidateValidation, Recruit } from "@/lib/validations";
-import { genders, levels } from "@/constants";
+import { genders, levels, statuses } from "@/constants";
 import {
   Dialog,
   DialogContent,
@@ -20,7 +20,12 @@ import {
 } from "@/components/ui/dialog";
 import MultiFilesUpload from "@/components/upload/multifile-dropzone";
 import SingleImageUpload from "../upload/single-image";
-import { createCandidate, updateCandidate } from "@/lib/actions/candidate.actions";
+import {
+  createCandidate,
+  updateCandidate,
+} from "@/lib/actions/candidate.actions";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { Label } from "../ui/label";
 
 export const CandidateDialog = ({
   candidate,
@@ -39,22 +44,21 @@ export const CandidateDialog = ({
     defaultValues: candidate
       ? candidate
       : {
-        email: "",
-        name: "",
-        birthDate: new Date("1990/1/1"),
-        phone: "",
-        gender: "male",
-        address: "",
-        status: "active",
-        recruit: recruitment ? recruitment._id : "",
-      },
+          email: "",
+          name: "",
+          birthDate: new Date("1990/1/1"),
+          phone: "",
+          gender: "male",
+          address: "",
+          status: "active",
+          recruit: recruitment ? recruitment._id : "",
+        },
   });
   const onSubmit = async (values: z.infer<typeof CandidateValidation>) => {
     setIsLoading(true);
     if (candidate?._id) {
       await updateCandidate(candidate._id, values);
-    }
-    else {
+    } else {
       await createCandidate(values);
     }
     setIsLoading(false);
@@ -124,6 +128,36 @@ export const CandidateDialog = ({
                   name="birthDate"
                   label="Birth date"
                 />
+                <CustomFormField
+                  fieldType={FormFieldType.SKELETON}
+                  control={form.control}
+                  name="status"
+                  label="Status"
+                  renderSkeleton={(field) => (
+                    <FormControl>
+                      <RadioGroup
+                        className="flex h-11 gap-6 xl:justify-between"
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        {statuses.map((option, i) => (
+                          <div key={option.value + i} className="radio-group">
+                            <RadioGroupItem
+                              value={option.value}
+                              id={option.value}
+                            />
+                            <Label
+                              htmlFor={option.value}
+                              className="cursor-pointer"
+                            >
+                              {option.label}
+                            </Label>
+                          </div>
+                        ))}
+                      </RadioGroup>
+                    </FormControl>
+                  )}
+                />
               </div>
               <div className="flex flex-1 flex-col gap-2">
                 <div className="flex flex-1 flex-col justify-between ">
@@ -137,24 +171,32 @@ export const CandidateDialog = ({
                   <CustomFormField
                     fieldType={FormFieldType.INPUT}
                     control={form.control}
-                    name="position"
-                    label="Position"
-                    placeholder="Frontend Developer"
-                  />
-
-                  <CustomFormField
-                    fieldType={FormFieldType.INPUT}
-                    control={form.control}
                     name="address"
                     label="Address"
                     placeholder="123, Street, City"
                   />
                   <CustomFormField
+                    fieldType={FormFieldType.INPUT}
+                    control={form.control}
+                    name="email"
+                    label="Email"
+                    placeholder="123, Street, City"
+                  />
+                  <CustomFormField
+                    fieldType={FormFieldType.INPUT}
+                    control={form.control}
+                    name="recruit.position"
+                    label="Position"
+                    disabled
+                  />
+
+                  <CustomFormField
                     fieldType={FormFieldType.SELECT}
                     control={form.control}
-                    name="level"
+                    name="recruit.level"
                     label="Level"
                     placeholder="Select"
+                    disabled
                   >
                     {levels.map((item, i) => (
                       <SelectItem key={i} value={item.value}>
@@ -165,13 +207,6 @@ export const CandidateDialog = ({
                       </SelectItem>
                     ))}
                   </CustomFormField>
-                  <CustomFormField
-                    fieldType={FormFieldType.INPUT}
-                    control={form.control}
-                    name="email"
-                    label="Email"
-                    placeholder="123, Street, City"
-                  />
                 </div>
                 <CustomFormField
                   fieldType={FormFieldType.SKELETON}

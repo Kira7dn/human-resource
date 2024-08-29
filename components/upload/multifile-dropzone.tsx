@@ -34,7 +34,9 @@ type InputProps = {
   className?: string;
   fileState?: FileState[];
   initialValues?: { key: string; url: string; filename: string }[];
-  onInitChange?: (values: { key: string; url: string; filename: string }[]) => void | Promise<void>;
+  onInitChange?: (
+    values: { key: string; url: string; filename: string }[],
+  ) => void | Promise<void>;
   onChange?: (files: FileState[]) => void | Promise<void>;
   onFilesAdded?: (addedFiles: FileState[]) => void | Promise<void>;
   disabled?: boolean;
@@ -58,7 +60,16 @@ const ERROR_MESSAGES = {
 
 const MultiFileDropzone = React.forwardRef<HTMLInputElement, InputProps>(
   (
-    { dropzoneOptions, fileState, className, disabled, initialValues, onInitChange, onFilesAdded, onChange },
+    {
+      dropzoneOptions,
+      fileState,
+      className,
+      disabled,
+      initialValues,
+      onInitChange,
+      onFilesAdded,
+      onChange,
+    },
     ref,
   ) => {
     const [customError, setCustomError] = React.useState<string>();
@@ -77,10 +88,15 @@ const MultiFileDropzone = React.forwardRef<HTMLInputElement, InputProps>(
       disabled,
       onDrop: (acceptedFiles) => {
         const files = acceptedFiles;
+        // create new Set of keys from fileState and initialValues
+        const setofkeys = new Set([
+          ...(fileState ?? []).map(({ key }) => key),
+          ...(initialValues ?? []).map(({ key }) => key),
+        ]);
         setCustomError(undefined);
         if (
           dropzoneOptions?.maxFiles &&
-          (fileState?.length ?? 0) + files.length + (initialValues?.length ?? 0) > dropzoneOptions.maxFiles
+          files.length + setofkeys.size > dropzoneOptions.maxFiles
         ) {
           setCustomError(ERROR_MESSAGES.tooManyFiles(dropzoneOptions.maxFiles));
           return;
@@ -155,22 +171,56 @@ const MultiFileDropzone = React.forwardRef<HTMLInputElement, InputProps>(
               </div>
             </div>
             {/* Error Text */}
-            <div className="text-xs mt-1 text-red-500">
+            <div className="mt-1 text-small-medium text-red-500">
               {customError ?? errorMessage}
             </div>
           </div>
 
           <div className="flex flex-1 flex-col items-center justify-between py-1">
-            {fileState?.map(({ file, abortController, progress }, i) => {
+            {fileState?.map(({ key, file, abortController, progress }) => {
               if (progress === "COMPLETE") {
-                return null;
+                const fileUrl = initialValues?.filter(
+                  (value) => value.key === key,
+                )[0];
+                if (!fileUrl) return null;
+                return (
+                  <div key={key} className="relative w-full">
+                    <div className="flex gap-2">
+                      <Link
+                        className="flex w-full items-center gap-2 text-gray-500 dark:text-white"
+                        href={fileUrl.url}
+                      >
+                        <IoDocumentAttachOutline
+                          size="24"
+                          className="shrink-0"
+                        />
+                        <div className="w-1 flex-1 truncate text-tiny-medium">
+                          {fileUrl.filename}
+                        </div>
+                      </Link>
+                      <button
+                        type="button"
+                        className="h-8 w-8 rounded-md p-1 transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                        onClick={() => {
+                          void onInitChange?.(
+                            initialValues.filter((value) => value.key !== key),
+                          );
+                        }}
+                      >
+                        <Trash2Icon className="h-4 w-4 shrink-0 text-green-500" />
+                      </button>
+                    </div>
+                  </div>
+                );
               }
               return (
-                <div key={i} className="relative w-full">
-                  <div className="flex w-full items-center gap-2 text-gray-500 dark:text-white">
-                    <IoDocumentAttachOutline size="24" className="shrink-0" />
-                    <div className="w-1 flex-1 text-tiny-medium">
-                      <div className="truncate">{file.name}</div>
+                <div key={key} className="relative w-full">
+                  <div className="flex gap-2">
+                    <div className="flex w-full items-center gap-2 text-gray-500 dark:text-white">
+                      <IoDocumentAttachOutline size="24" className="shrink-0" />
+                      <div className="w-1 flex-1 truncate text-tiny-medium">
+                        {file.name}
+                      </div>
                     </div>
                     <div className="flex justify-end text-small-medium">
                       {progress === "PENDING" ? (
@@ -179,73 +229,74 @@ const MultiFileDropzone = React.forwardRef<HTMLInputElement, InputProps>(
                           className="h-8 w-8 rounded-md p-1 transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                           onClick={() => {
                             void onChange?.(
-                              fileState.filter((_, index) => index !== i),
+                              fileState.filter((item) => item.key !== key),
                             );
                           }}
                         >
-                          <Trash2Icon className="absolute -right-1 -top-1 h-4 w-4 shrink-0 text-gray-500" />
+                          <Trash2Icon className="h-4 w-4 shrink-0 text-gray-500" />
                         </button>
                       ) : progress === "ERROR" ? (
-                        <LucideFileWarning className="absolute -right-1 -top-1 h-4 w-4 shrink-0 text-red-500" />
+                        <LucideFileWarning className="h-4 w-4 shrink-0 text-red-500" />
                       ) : (
-                        <div className="flex flex-col items-end gap-0.5">
-                          {abortController && (
-                            <button
-                              type="button"
-                              className="rounded-md p-0.5 transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                              disabled={progress === 100}
-                              onClick={() => {
-                                abortController.abort();
-                              }}
-                            >
-                              <XIcon className="absolute -right-1 -top-1 h-4 w-4 shrink-0 text-green-500" />
-                            </button>
-                          )}
-                        </div>
+                        abortController && (
+                          <button
+                            type="button"
+                            className="rounded-md p-0.5 transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                            disabled={progress === 100}
+                            onClick={() => {
+                              abortController.abort();
+                            }}
+                          >
+                            <XIcon className="h-4 w-4 shrink-0 text-green-500" />
+                          </button>
+                        )
                       )}
                     </div>
                   </div>
                   {/* Progress Bar */}
                   {typeof progress === "number" && (
-                    <div className="relative h-0 w-full">
-                      <div className="absolute top-1 h-1 w-full overflow-clip rounded-full bg-gray-200 dark:bg-gray-700">
-                        <div
-                          className="h-2 w-full bg-gray-400 transition-all duration-300 ease-in-out dark:bg-white"
-                          style={{
-                            width: progress ? `${progress}%` : "0%",
-                          }}
-                        />
-                      </div>
+                    <div className="absolute -bottom-1 h-1 w-full overflow-clip rounded-full bg-gray-200 dark:bg-gray-700">
+                      <div
+                        className="h-2 w-full bg-gray-400 transition-all duration-300 ease-in-out dark:bg-white"
+                        style={{
+                          width: progress ? `${progress}%` : "0%",
+                        }}
+                      />
                     </div>
                   )}
                 </div>
-              )
+              );
             })}
-            {initialValues?.map(({ key, url, filename }) => (
-              <div key={key} className="relative w-full">
-                <div className="flex w-full items-center gap-2 text-gray-500 dark:text-white">
-                  <Link href={url}>
-                    <IoDocumentAttachOutline size="24" className="shrink-0" />
-                    <div className="w-1 flex-1 text-tiny-medium">
-                      <div className="truncate">{filename}</div>
-                    </div>
-                  </Link>
-                  <div className="flex justify-end text-small-medium">
+            {initialValues?.map(({ key, url, filename }) => {
+              // check if key is already in the fileState
+              if (fileState?.find((file) => file.key === key)) return null;
+              return (
+                <div key={key} className="relative w-full">
+                  <div className="flex gap-2">
+                    <Link
+                      className="flex w-full items-center gap-2 text-gray-500 dark:text-white"
+                      href={url}
+                    >
+                      <IoDocumentAttachOutline size="24" className="shrink-0" />
+                      <div className="w-1 flex-1 truncate text-tiny-medium">
+                        {filename}
+                      </div>
+                    </Link>
                     <button
                       type="button"
                       className="h-8 w-8 rounded-md p-1 transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                       onClick={() => {
                         void onInitChange?.(
-                          initialValues.filter(value => value.key !== key),
+                          initialValues.filter((value) => value.key !== key),
                         );
                       }}
                     >
-                      <Trash2Icon className="absolute -right-1 -top-1 h-4 w-4 shrink-0 text-green-500" />
+                      <Trash2Icon className="h-4 w-4 shrink-0 text-green-500" />
                     </button>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
@@ -281,16 +332,23 @@ function MultiFilesUpload(params: {
 
   const { edgestore } = useEdgeStore();
 
-  function updateFileProgress(key: string, progress: FileState["progress"], abortController?: AbortController) {
+  function updateFileProgress(
+    key: string,
+    progress: FileState["progress"],
+    abortController?: AbortController,
+  ) {
     setFileStates((fileStates) => {
-      const newFileStates = structuredClone(fileStates);
-      const fileState = newFileStates.find(
-        (fileState) => fileState.key === key,
-      );
-      if (fileState) {
-        fileState.progress = progress;
-        fileState.abortController = abortController;
-      }
+      // Manually clone the fileStates array
+      const newFileStates = fileStates.map((fileState) => {
+        if (fileState.key === key) {
+          return {
+            ...fileState,
+            progress,
+            abortController, // Directly assign the abortController
+          };
+        }
+        return fileState;
+      });
       return newFileStates;
     });
   }
@@ -301,7 +359,7 @@ function MultiFilesUpload(params: {
       initialValues={values}
       dropzoneOptions={{
         maxFiles: 2,
-        maxSize: 1024 * 1024 * 1
+        maxSize: 1024 * 1024 * 1,
       }}
       className="p-2"
       onChange={setFileStates}
@@ -323,7 +381,11 @@ function MultiFilesUpload(params: {
               const res = await edgestore.publicFiles.upload({
                 file: addedFileState.file,
                 onProgressChange: async (progress: number) => {
-                  updateFileProgress(addedFileState.key, progress, abortController);
+                  updateFileProgress(
+                    addedFileState.key,
+                    progress,
+                    abortController,
+                  );
                   if (progress === 100) {
                     // wait 1 second to set it to complete
                     // so that the user can see the progress bar

@@ -46,15 +46,7 @@ const ERROR_MESSAGES = {
 
 const SingleImageDropzone = React.forwardRef<HTMLInputElement, InputProps>(
   (
-    {
-      dropzoneOptions,
-      width,
-      height,
-      value,
-      className,
-      disabled,
-      onChange,
-    },
+    { dropzoneOptions, width, height, value, className, disabled, onChange },
     ref,
   ) => {
     const imageUrl = React.useMemo(() => {
@@ -252,7 +244,7 @@ export default function SingleImageUpload(params: {
       />
       {/* Progress Bar */}
       {typeof progress === "number" && (
-        <div className="absolute top-1/2 bottom-1/2 h-1 w-full overflow-clip rounded-full bg-gray-200 dark:bg-gray-700">
+        <div className="absolute -bottom-1 h-1 w-full overflow-clip rounded-full bg-gray-200 dark:bg-gray-700">
           <div
             className="h-2 w-full bg-gray-400 transition-all duration-300 ease-in-out dark:bg-white"
             style={{

@@ -1,13 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import React, { ChangeEvent, useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { SelectItem } from "@/components/ui/select";
 import "react-datepicker/dist/react-datepicker.css";
-import { Form, FormControl } from "@/components/ui//form";
+import { Form, FormControl } from "@/components/ui/form";
 import CustomFormField, { FormFieldType } from "../custom-form-field";
 import SubmitButton from "../submit-btn";
 import { Candidate, CandidateValidation, Recruit } from "@/lib/validations";
@@ -21,6 +20,7 @@ import {
 } from "@/components/ui/dialog";
 import MultiFilesUpload from "@/components/upload/multifile-dropzone";
 import SingleImageUpload from "../upload/single-image";
+import { createCandidate, updateCandidate } from "@/lib/actions/candidate.actions";
 
 export const CandidateDialog = ({
   candidate,
@@ -31,7 +31,6 @@ export const CandidateDialog = ({
   recruitment?: Recruit;
   children: React.ReactNode;
 }) => {
-  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -40,23 +39,27 @@ export const CandidateDialog = ({
     defaultValues: candidate
       ? candidate
       : {
-          email: "",
-          name: "",
-          birthDate: new Date("1990/1/1"),
-          phone: "",
-          gender: "male",
-          address: "",
-          status: "active",
-          recruit: recruitment ? recruitment._id : "",
-        },
+        email: "",
+        name: "",
+        birthDate: new Date("1990/1/1"),
+        phone: "",
+        gender: "male",
+        address: "",
+        status: "active",
+        recruit: recruitment ? recruitment._id : "",
+      },
   });
   const onSubmit = async (values: z.infer<typeof CandidateValidation>) => {
     setIsLoading(true);
-    console.log(values);
+    if (candidate?._id) {
+      await updateCandidate(candidate._id, values);
+    }
+    else {
+      await createCandidate(values);
+    }
     setIsLoading(false);
   };
 
-  let buttonLabel = candidate ? "Update Candidate" : "Submit Candidate";
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -195,7 +198,7 @@ export const CandidateDialog = ({
               isLoading={isLoading}
               className={`shad-primary-btn w-full`}
             >
-              {buttonLabel}
+              {candidate ? "Update Candidate" : "Submit Candidate"}
             </SubmitButton>
           </form>
         </Form>

@@ -13,7 +13,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import "react-datepicker/dist/react-datepicker.css";
-
 import {
   Form,
   FormControl,
@@ -48,6 +47,7 @@ import { IoLocationOutline } from "react-icons/io5";
 import { FaRegUser } from "react-icons/fa6";
 import { PiIdentificationCard } from "react-icons/pi";
 import { FaRegCalendarAlt } from "react-icons/fa";
+import { createEmployee, updateEmployee } from "@/lib/actions/employee.actions";
 
 export const EmployeeDialog = ({
   employee,
@@ -76,22 +76,25 @@ export const EmployeeDialog = ({
     defaultValues: employee
       ? employee
       : {
-          name: "",
-          position: "",
-          level: "",
-          department: "",
-          birthDate: new Date("1990/1/1"),
-          hired_date: new Date(Date.now()),
-          status: "Active",
-        },
+        name: "",
+        position: "",
+        level: "",
+        department: "",
+        birthDate: new Date("1990/1/1"),
+        hired_date: new Date(Date.now()),
+        status: "Active",
+      },
   });
   const onSubmit = async (values: z.infer<typeof EmployeeValidation>) => {
     setIsLoading(true);
-    console.log(values);
+    if (employee?._id) {
+      await updateEmployee(employee._id, values);
+    }
+    else {
+      await createEmployee(values);
+    }
     setIsLoading(false);
   };
-
-  let buttonLabel = employee ? "Update Employee" : "Submit Employee";
 
   const handleImage = (
     e: ChangeEvent<HTMLInputElement>,
@@ -356,7 +359,7 @@ export const EmployeeDialog = ({
                     isLoading={isLoading}
                     className={`shad-primary-btn w-36`}
                   >
-                    {buttonLabel}
+                    {employee ? "Update Employee" : "Submit Employee"}
                   </SubmitButton>
                 </div>
               </div>

@@ -16,6 +16,10 @@ const CandidateSchema = new Schema({
     ref: Recruit,
     required: true,
   },
+  files: {
+    url: { type: String },
+    filename: { type: String },
+  },
 });
 
 const Candidate = models.Candidate || model("Candidate", CandidateSchema);

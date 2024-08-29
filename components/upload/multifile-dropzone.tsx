@@ -2,7 +2,6 @@
 
 import { formatFileSize } from "@edgestore/react/utils";
 import {
-  CheckCircleIcon,
   LucideFileWarning,
   Trash2Icon,
   UploadCloudIcon,
@@ -13,6 +12,7 @@ import { useDropzone, type DropzoneOptions } from "react-dropzone";
 import { twMerge } from "tailwind-merge";
 import { useEdgeStore } from "@/lib/edgestore";
 import { IoDocumentAttachOutline } from "react-icons/io5";
+import Link from "next/link";
 
 const variants = {
   base: "relative rounded-md p-4 w-full flex justify-center items-center flex-col cursor-pointer border border-dashed border-gray-400 dark:border-gray-300 transition-colors duration-200 ease-in-out",
@@ -154,7 +154,6 @@ const MultiFileDropzone = React.forwardRef<HTMLInputElement, InputProps>(
                 </div>
               </div>
             </div>
-
             {/* Error Text */}
             <div className="text-xs mt-1 text-red-500">
               {customError ?? errorMessage}
@@ -225,10 +224,12 @@ const MultiFileDropzone = React.forwardRef<HTMLInputElement, InputProps>(
             {initialValues?.map(({ key, url, filename }) => (
               <div key={key} className="relative w-full">
                 <div className="flex w-full items-center gap-2 text-gray-500 dark:text-white">
-                  <IoDocumentAttachOutline size="24" className="shrink-0" />
-                  <div className="w-1 flex-1 text-tiny-medium">
-                    <div className="truncate">{filename}</div>
-                  </div>
+                  <Link href={url}>
+                    <IoDocumentAttachOutline size="24" className="shrink-0" />
+                    <div className="w-1 flex-1 text-tiny-medium">
+                      <div className="truncate">{filename}</div>
+                    </div>
+                  </Link>
                   <div className="flex justify-end text-small-medium">
                     <button
                       type="button"
@@ -247,7 +248,6 @@ const MultiFileDropzone = React.forwardRef<HTMLInputElement, InputProps>(
             ))}
           </div>
         </div>
-
       </div>
     );
   },
@@ -301,7 +301,7 @@ function MultiFilesUpload(params: {
       initialValues={values}
       dropzoneOptions={{
         maxFiles: 2,
-        maxSize: 1024 * 1024 * 1, // 1 MB
+        maxSize: 1024 * 1024 * 1
       }}
       className="p-2"
       onChange={setFileStates}

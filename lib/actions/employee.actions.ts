@@ -24,6 +24,7 @@ export async function createEmployee(employee: EmployeeType) {
   try {
     await connectToDatabase();
     const newEmployee = await Employee.create(employee);
+    revalidatePath("/employee");
     return JSON.parse(JSON.stringify(newEmployee));
   } catch (error) {
     handleError(error);
@@ -45,8 +46,8 @@ export async function getEmployeeById(employeeId: string) {
   try {
     await connectToDatabase();
     const employee = await Employee.findById(employeeId);
-    if (!Employee) throw new Error("Employee not found");
-    return JSON.parse(JSON.stringify(Employee));
+    if (!employee) throw new Error("Employee not found");
+    return JSON.parse(JSON.stringify(employee));
   } catch (error) {
     handleError(error);
   }
@@ -66,6 +67,7 @@ export async function updateEmployee(
       },
     );
     if (!updatedEmployee) throw new Error("Employee update failed");
+    revalidatePath("/employee");
     return JSON.parse(JSON.stringify(updatedEmployee));
   } catch (error) {
     handleError(error);
@@ -79,7 +81,7 @@ export async function deleteEmployee(employeeId: string) {
     if (!employeeDelete) {
       throw new Error("Employee deleted failed");
     }
-    revalidatePath("/");
+    revalidatePath("/employee");
     return employeeDelete ? JSON.parse(JSON.stringify(employeeDelete)) : null;
   } catch (error) {
     handleError(error);

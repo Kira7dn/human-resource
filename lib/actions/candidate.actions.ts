@@ -24,6 +24,7 @@ export async function createCandidate(candidate: CandidateType) {
   try {
     await connectToDatabase();
     const newCandidate = await Candidate.create(candidate);
+    revalidatePath("/candidate");
     return JSON.parse(JSON.stringify(newCandidate));
   } catch (error) {
     handleError(error);
@@ -67,6 +68,7 @@ export async function updateCandidate(
       },
     );
     if (!updatedCandidate) throw new Error("Candidate update failed");
+    revalidatePath("/candidate");
     return JSON.parse(JSON.stringify(updatedCandidate));
   } catch (error) {
     handleError(error);
@@ -80,7 +82,7 @@ export async function deleteCandidate(candidateId: string) {
     if (!candidateDelete) {
       throw new Error("Candidate deleted failed");
     }
-    revalidatePath("/");
+    revalidatePath("/candidate");
     return candidateDelete ? JSON.parse(JSON.stringify(candidateDelete)) : null;
   } catch (error) {
     handleError(error);

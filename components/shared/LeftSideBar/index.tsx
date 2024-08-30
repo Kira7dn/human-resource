@@ -8,6 +8,7 @@ import { LucideIcon } from "lucide-react";
 
 import { mainLinks, otherLinks, preferenceLinks } from "@/constants";
 import { usePathname } from "next/navigation";
+import { IconType } from "react-icons/lib";
 
 const LeftSideBar = () => {
   return (
@@ -41,7 +42,7 @@ type Props = {
   links: {
     route: string;
     label: string;
-    component: LucideIcon;
+    component: IconType | LucideIcon;
   }[];
 };
 
@@ -61,9 +62,8 @@ function Links({ links }: Props) {
           <Link
             href={link.route}
             key={link.label}
-            className={`flex rounded-lg px-2 py-2 hover:text-secondary-foreground ${
-              isActive && "bg-secondary-gradient shadow-inner shadow-gray-400"
-            }`}
+            className={`flex rounded-lg px-2 py-2 hover:text-secondary-foreground ${isActive && "bg-secondary-gradient shadow-inner shadow-gray-400"
+              }`}
           >
             <div className={cn("pr-2", isActive && "text-primary-foreground")}>
               <Component />

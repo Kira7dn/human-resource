@@ -18,7 +18,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import MultiFilesUpload from "@/components/upload/multifile-dropzone";
+import MultiFilesUpload from "@/components/upload/multifile-dropzone2";
 import SingleImageUpload from "../upload/single-image";
 import {
   createCandidate,
@@ -44,15 +44,15 @@ export const CandidateDialog = ({
     defaultValues: candidate
       ? candidate
       : {
-          email: "",
-          name: "",
-          birthDate: new Date("1990/1/1"),
-          phone: "",
-          gender: "male",
-          address: "",
-          status: "active",
-          recruit: recruitment ? recruitment._id : "",
-        },
+        email: "",
+        name: "",
+        birthDate: new Date("1990/1/1"),
+        phone: "",
+        gender: "male",
+        address: "",
+        status: "active",
+        recruit: recruitment ? recruitment._id : "",
+      },
   });
   const onSubmit = async (values: z.infer<typeof CandidateValidation>) => {
     setIsLoading(true);

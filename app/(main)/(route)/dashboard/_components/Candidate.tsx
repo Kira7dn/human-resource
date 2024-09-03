@@ -1,6 +1,6 @@
-import { CandidateDialog } from "@/components/dialog/CandidateDialog";
 import { Card } from "@/components/ui/card";
-import { PlusCircle, UserCheck2 } from "lucide-react";
+import { PlusCircle } from "lucide-react";
+import Link from "next/link";
 import React from "react";
 import { FaUserClock } from "react-icons/fa6";
 
@@ -20,9 +20,12 @@ function Candidate({}: Props) {
           </div>
           <div className="flex items-center text-large-bold">Candidates</div>
         </div>
-        <CandidateDialog>
+        {/* <CandidateDialog>
           <PlusCircle className="h-8 w-8 cursor-pointer text-secondary transition delay-75 ease-in-out hover:scale-125 hover:fill-secondary hover:text-secondary-foreground" />
-        </CandidateDialog>
+        </CandidateDialog> */}
+        <Link href="/recruitment">
+          <PlusCircle className="h-8 w-8 cursor-pointer text-secondary transition delay-75 ease-in-out hover:scale-125 hover:fill-secondary hover:text-secondary-foreground" />
+        </Link>
       </div>
       <div className="h-1/2">
         <p className="text-large-bold">{candidate_quantity}</p>

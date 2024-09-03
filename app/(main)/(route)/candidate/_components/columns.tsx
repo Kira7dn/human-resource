@@ -46,7 +46,7 @@ export const columns: ColumnDef<Candidate>[] = [
     ),
     cell: ({ row }) => {
       return (
-        <span className="max-w-[200px] truncate font-medium">
+        <span className="max-w-[200px] truncate font-medium capitalize">
           {row.getValue("gender")}
         </span>
       );
@@ -85,19 +85,19 @@ export const columns: ColumnDef<Candidate>[] = [
     },
   },
 
-  {
-    accessorKey: "email",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Email" />
-    ),
-    cell: ({ row }) => {
-      return (
-        <span className="max-w-[200px] truncate font-medium">
-          {row.getValue("email")}
-        </span>
-      );
-    },
-  },
+  // {
+  //   accessorKey: "email",
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title="Email" />
+  //   ),
+  //   cell: ({ row }) => {
+  //     return (
+  //       <span className="max-w-[200px] truncate font-medium">
+  //         {row.getValue("email")}
+  //       </span>
+  //     );
+  //   },
+  // },
   {
     accessorKey: "phone",
     header: ({ column }) => (
@@ -153,19 +153,19 @@ export const columns: ColumnDef<Candidate>[] = [
       return value.includes(row.getValue(id));
     },
   },
-  {
-    accessorKey: "address",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Address" />
-    ),
-    cell: ({ row }) => {
-      return (
-        <span className="max-w-[200px] truncate font-medium">
-          {row.getValue("address")}
-        </span>
-      );
-    },
-  },
+  // {
+  //   accessorKey: "address",
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title="Address" />
+  //   ),
+  //   cell: ({ row }) => {
+  //     return (
+  //       <span className="max-w-[200px] truncate font-medium">
+  //         {row.getValue("address")}
+  //       </span>
+  //     );
+  //   },
+  // },
   {
     id: "action",
     cell: ({ row }) => <DataTableRowActions row={row} />,

@@ -1,7 +1,8 @@
 "use client";
 
-import { formatFileSize } from "@edgestore/react/utils";
+import { formatFileSize, getDownloadUrl } from "@edgestore/react/utils";
 import {
+  DownloadIcon,
   LucideFileWarning,
   Trash2Icon,
   UploadCloudIcon,
@@ -13,6 +14,7 @@ import { twMerge } from "tailwind-merge";
 import { useEdgeStore } from "@/lib/edgestore";
 import { IoDocumentAttachOutline } from "react-icons/io5";
 import Link from "next/link";
+import clsx from "clsx";
 
 const variants = {
   base: "relative rounded-md p-4 w-full flex justify-center items-center flex-col cursor-pointer border border-dashed border-gray-400 dark:border-gray-300 transition-colors duration-200 ease-in-out",
@@ -24,8 +26,10 @@ const variants = {
 };
 
 export type FileState = {
-  file: File;
+  file?: File;
   key: string; // used to identify the file in the progress callback
+  url?: string;
+  filename?: string;
   progress: "PENDING" | "COMPLETE" | "ERROR" | number;
   abortController?: AbortController;
 };
@@ -33,10 +37,6 @@ export type FileState = {
 type InputProps = {
   className?: string;
   fileState?: FileState[];
-  initialValues?: { key: string; url: string; filename: string }[];
-  onInitChange?: (
-    values: { key: string; url: string; filename: string }[],
-  ) => void | Promise<void>;
   onChange?: (files: FileState[]) => void | Promise<void>;
   onFilesAdded?: (addedFiles: FileState[]) => void | Promise<void>;
   disabled?: boolean;
@@ -60,16 +60,7 @@ const ERROR_MESSAGES = {
 
 const MultiFileDropzone = React.forwardRef<HTMLInputElement, InputProps>(
   (
-    {
-      dropzoneOptions,
-      fileState,
-      className,
-      disabled,
-      initialValues,
-      onInitChange,
-      onFilesAdded,
-      onChange,
-    },
+    { dropzoneOptions, fileState, className, disabled, onFilesAdded, onChange },
     ref,
   ) => {
     const [customError, setCustomError] = React.useState<string>();
@@ -89,14 +80,10 @@ const MultiFileDropzone = React.forwardRef<HTMLInputElement, InputProps>(
       onDrop: (acceptedFiles) => {
         const files = acceptedFiles;
         // create new Set of keys from fileState and initialValues
-        const setofkeys = new Set([
-          ...(fileState ?? []).map(({ key }) => key),
-          ...(initialValues ?? []).map(({ key }) => key),
-        ]);
         setCustomError(undefined);
         if (
           dropzoneOptions?.maxFiles &&
-          files.length + setofkeys.size > dropzoneOptions.maxFiles
+          files.length + (fileState?.length ?? 0) > dropzoneOptions.maxFiles
         ) {
           setCustomError(ERROR_MESSAGES.tooManyFiles(dropzoneOptions.maxFiles));
           return;
@@ -177,126 +164,77 @@ const MultiFileDropzone = React.forwardRef<HTMLInputElement, InputProps>(
           </div>
 
           <div className="flex flex-1 flex-col items-center justify-between py-1">
-            {fileState?.map(({ key, file, abortController, progress }) => {
-              if (progress === "COMPLETE") {
-                const fileUrl = initialValues?.filter(
-                  (value) => value.key === key,
-                )[0];
-                if (!fileUrl) return null;
+            {fileState?.map(
+              ({ key, file, abortController, progress, filename, url }) => {
                 return (
                   <div key={key} className="relative w-full">
-                    <div className="flex gap-2">
-                      <Link
-                        className="flex w-full items-center gap-2 text-gray-500 dark:text-white"
-                        href={fileUrl.url}
-                      >
+                    <div className="flex justify-between gap-2">
+                      <div className="flex w-full items-center gap-2 text-gray-500 dark:text-white">
                         <IoDocumentAttachOutline
                           size="24"
                           className="shrink-0"
                         />
                         <div className="w-1 flex-1 truncate text-tiny-medium">
-                          {fileUrl.filename}
+                          {filename || file?.name}
                         </div>
-                      </Link>
-                      <button
-                        type="button"
-                        className="h-8 w-8 rounded-md p-1 transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                        onClick={() => {
-                          void onInitChange?.(
-                            initialValues.filter((value) => value.key !== key),
-                          );
-                        }}
-                      >
-                        <Trash2Icon className="h-4 w-4 shrink-0 text-green-500" />
-                      </button>
-                    </div>
-                  </div>
-                );
-              }
-              return (
-                <div key={key} className="relative w-full">
-                  <div className="flex gap-2">
-                    <div className="flex w-full items-center gap-2 text-gray-500 dark:text-white">
-                      <IoDocumentAttachOutline size="24" className="shrink-0" />
-                      <div className="w-1 flex-1 truncate text-tiny-medium">
-                        {file.name}
                       </div>
-                    </div>
-                    <div className="flex justify-end text-small-medium">
-                      {progress === "PENDING" ? (
-                        <button
-                          type="button"
-                          className="h-8 w-8 rounded-md p-1 transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                          onClick={() => {
-                            void onChange?.(
-                              fileState.filter((item) => item.key !== key),
-                            );
-                          }}
-                        >
-                          <Trash2Icon className="h-4 w-4 shrink-0 text-gray-500" />
-                        </button>
-                      ) : progress === "ERROR" ? (
-                        <LucideFileWarning className="h-4 w-4 shrink-0 text-red-500" />
-                      ) : (
-                        abortController && (
+                      <div className="flex items-center justify-end gap-2">
+                        {url && (
+                          <a href={getDownloadUrl(url)}>
+                            <DownloadIcon className="h-4 w-4 shrink-0 text-green-500" />
+                          </a>
+                        )}
+
+                        {progress === "PENDING" || "COMPLETE" ? (
                           <button
-                            type="button"
-                            className="rounded-md p-0.5 transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                            disabled={progress === 100}
                             onClick={() => {
-                              abortController.abort();
+                              void onChange?.(
+                                fileState.filter((item) => item.key !== key),
+                              );
                             }}
                           >
-                            <XIcon className="h-4 w-4 shrink-0 text-green-500" />
+                            <Trash2Icon className="h-4 w-4 shrink-0 text-gray-500" />
                           </button>
-                        )
-                      )}
+                        ) : progress === "ERROR" ? (
+                          <LucideFileWarning className="h-4 w-4 shrink-0 text-red-500" />
+                        ) : (
+                          abortController && (
+                            <button
+                              type="button"
+                              className="flex h-8 w-8 items-center justify-center rounded-md p-1 transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                              disabled={progress === 100}
+                              onClick={() => {
+                                abortController.abort();
+                              }}
+                            >
+                              <XIcon className="h-4 w-4 shrink-0 text-green-500" />
+                            </button>
+                          )
+                        )}
+                      </div>
                     </div>
-                  </div>
-                  {/* Progress Bar */}
-                  {typeof progress === "number" && (
-                    <div className="absolute -bottom-1 h-1 w-full overflow-clip rounded-full bg-gray-200 dark:bg-gray-700">
+                    {/* Progress Bar */}
+                    <div
+                      className={clsx(
+                        "absolute -bottom-1 h-1 w-full overflow-clip rounded-full",
+                        typeof progress === "number" &&
+                          "bg-gray-200 dark:bg-gray-700",
+                      )}
+                    >
                       <div
                         className="h-2 w-full bg-gray-400 transition-all duration-300 ease-in-out dark:bg-white"
                         style={{
-                          width: progress ? `${progress}%` : "0%",
+                          width:
+                            typeof progress === "number"
+                              ? `${progress}%`
+                              : "0%",
                         }}
                       />
                     </div>
-                  )}
-                </div>
-              );
-            })}
-            {initialValues?.map(({ key, url, filename }) => {
-              // check if key is already in the fileState
-              if (fileState?.find((file) => file.key === key)) return null;
-              return (
-                <div key={key} className="relative w-full">
-                  <div className="flex gap-2">
-                    <Link
-                      className="flex w-full items-center gap-2 text-gray-500 dark:text-white"
-                      href={url}
-                    >
-                      <IoDocumentAttachOutline size="24" className="shrink-0" />
-                      <div className="w-1 flex-1 truncate text-tiny-medium">
-                        {filename}
-                      </div>
-                    </Link>
-                    <button
-                      type="button"
-                      className="h-8 w-8 rounded-md p-1 transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                      onClick={() => {
-                        void onInitChange?.(
-                          initialValues.filter((value) => value.key !== key),
-                        );
-                      }}
-                    >
-                      <Trash2Icon className="h-4 w-4 shrink-0 text-green-500" />
-                    </button>
                   </div>
-                </div>
-              );
-            })}
+                );
+              },
+            )}
           </div>
         </div>
       </div>
@@ -309,7 +247,7 @@ export { MultiFileDropzone };
 
 function MultiFilesUpload(params: {
   onChange?: (
-    value: { url: string; filename: string }[],
+    value: { url?: string; filename?: string }[],
   ) => void | Promise<void>;
   files?: { url: string; filename: string }[];
 }) {
@@ -317,17 +255,19 @@ function MultiFilesUpload(params: {
     key: Math.random().toString(36).slice(2),
     url: file.url,
     filename: file.filename,
+    progress: "COMPLETE" as const,
   }));
-  const [fileStates, setFileStates] = React.useState<FileState[]>([]);
-  const [values, setValues] = React.useState<
-    { key: string; url: string; filename: string }[]
-  >(inititalValues || []);
+  const [fileStates, setFileStates] = React.useState<FileState[]>(
+    inititalValues || [],
+  );
+
+  const values = React.useMemo(
+    () => fileStates.map(({ url, filename }) => ({ url, filename })),
+    [fileStates],
+  );
 
   React.useEffect(() => {
-    void params.onChange?.(
-      values.map(({ url, filename }) => ({ url, filename })),
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    void params.onChange?.(values);
   }, [values]);
 
   const { edgestore } = useEdgeStore();
@@ -338,17 +278,19 @@ function MultiFilesUpload(params: {
     abortController?: AbortController,
   ) {
     setFileStates((fileStates) => {
-      // Manually clone the fileStates array
-      const newFileStates = fileStates.map((fileState) => {
-        if (fileState.key === key) {
-          return {
-            ...fileState,
-            progress,
-            abortController, // Directly assign the abortController
-          };
-        }
-        return fileState;
-      });
+      const index = fileStates.findIndex((fileState) => fileState.key === key);
+      if (index === -1) return fileStates; // return the original array if no match is found
+
+      const newFileStates = [
+        ...fileStates.slice(0, index),
+        {
+          ...fileStates[index],
+          progress,
+          abortController,
+        },
+        ...fileStates.slice(index + 1),
+      ];
+
       return newFileStates;
     });
   }
@@ -356,27 +298,24 @@ function MultiFilesUpload(params: {
   return (
     <MultiFileDropzone
       fileState={fileStates}
-      initialValues={values}
       dropzoneOptions={{
         maxFiles: 2,
         maxSize: 1024 * 1024 * 1,
       }}
       className="p-2"
       onChange={setFileStates}
-      onInitChange={setValues}
       onFilesAdded={async (addedFiles) => {
-        setFileStates([...fileStates, ...addedFiles]);
-        setValues([
-          ...values,
+        setFileStates([
+          ...fileStates,
           ...addedFiles.map((file) => ({
-            key: file.key,
-            filename: file.file.name,
-            url: "",
+            ...file,
+            filename: file.file?.name,
           })),
         ]);
         await Promise.all(
           addedFiles.map(async (addedFileState) => {
             const abortController = new AbortController();
+            if (!addedFileState.file) return;
             try {
               const res = await edgestore.publicFiles.upload({
                 file: addedFileState.file,
@@ -395,7 +334,7 @@ function MultiFilesUpload(params: {
                 },
                 signal: abortController.signal,
               });
-              setValues((values) =>
+              setFileStates((values) =>
                 values.map((value) =>
                   value.key === addedFileState.key
                     ? { ...value, url: res.url }
@@ -411,4 +350,4 @@ function MultiFilesUpload(params: {
     />
   );
 }
-export default MultiFilesUpload;
+export default React.memo(MultiFilesUpload);

@@ -23,7 +23,6 @@ import {
 } from "@/components/ui//form";
 import CustomFormField, { FormFieldType } from "../custom-form-field";
 import SubmitButton from "../submit-btn";
-import { Department, Employee, EmployeeValidation } from "@/lib/validations";
 import { genders, levels, statuses } from "@/constants";
 import {
   Tooltip,
@@ -31,7 +30,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui//tooltip";
-import { RadioGroup, RadioGroupItem } from "@/components/ui//radio-group";
 import { Label } from "@/components/ui//label";
 import {
   Dialog,
@@ -48,6 +46,8 @@ import { FaRegUser } from "react-icons/fa6";
 import { PiIdentificationCard } from "react-icons/pi";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { createEmployee, updateEmployee } from "@/lib/actions/employee.actions";
+import { RadioGroup, RadioGroupItem } from "@/components/ui//radio-group";
+import { Department, Employee, EmployeeValidation } from "@/lib/validations";
 
 export const EmployeeDialog = ({
   employee,
@@ -76,21 +76,20 @@ export const EmployeeDialog = ({
     defaultValues: employee
       ? employee
       : {
-        name: "",
-        position: "",
-        level: "",
-        department: "",
-        birthDate: new Date("1990/1/1"),
-        hired_date: new Date(Date.now()),
-        status: "Active",
-      },
+          name: "",
+          position: "",
+          level: "",
+          department: "",
+          birthDate: new Date("1990/1/1"),
+          hired_date: new Date(Date.now()),
+          status: "Active",
+        },
   });
   const onSubmit = async (values: z.infer<typeof EmployeeValidation>) => {
     setIsLoading(true);
     if (employee?._id) {
       await updateEmployee(employee._id, values);
-    }
-    else {
+    } else {
       await createEmployee(values);
     }
     setIsLoading(false);

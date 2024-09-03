@@ -30,7 +30,7 @@ export async function createRecruit(recruit: RecruitType) {
 export async function getAllRecruits() {
   try {
     await connectToDatabase();
-    const recruits = await Recruit.find();
+    const recruits = await Recruit.find().populate("department");
     return z
       .array(RecruitValidation)
       .parse(JSON.parse(JSON.stringify(recruits)));

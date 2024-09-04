@@ -4,29 +4,7 @@ import * as z from "zod";
 const level = levels.map((item) => item.value) as [string, ...string[]];
 const status = statuses.map((item) => item.value) as [string, ...string[]];
 const gender = genders.map((item) => item.value) as [string, ...string[]];
-export const InterviewValidation = z.object({
-  _id: z.string().optional(),
-  name: z
-    .string()
-    .min(3, {
-      message: "Minimum 3 characters.",
-    })
-    .max(50, {
-      message: "Maximum 30 caracters.",
-    }),
-  position: z
-    .string()
-    .min(3, {
-      message: "Minimum 3 characters.",
-    })
-    .max(300, {
-      message: "Maximum 300 caracters.",
-    }),
-  level: z.enum(level, {
-    message: "Select level",
-  }),
-  appointment_date: z.coerce.date(),
-});
+
 export const DepartmentValidation = z.object({
   _id: z.string().optional(),
   name: z
@@ -123,8 +101,16 @@ export const CandidateValidation = z.object({
   files: z.array(FileVadidate).optional(),
 });
 
+export const InterviewValidation = z.object({
+  _id: z.string().optional(),
+  candidate: z.union([z.string(), CandidateValidation]),
+  recruit: z.union([z.string(), RecruitValidation]),
+  appointment_date: z.coerce.date(),
+});
+
 export type Employee = z.infer<typeof EmployeeValidation>;
 export type Candidate = z.infer<typeof CandidateValidation>;
 export type Recruit = z.infer<typeof RecruitValidation>;
 export type Department = z.infer<typeof DepartmentValidation>;
 export type File = z.infer<typeof FileVadidate>;
+export type Interview = z.infer<typeof InterviewValidation>;

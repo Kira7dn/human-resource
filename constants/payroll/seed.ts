@@ -3,7 +3,6 @@ import path from "path";
 import { faker } from "@faker-js/faker";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
-import { department, levels } from "..";
 import { getAllEmployees } from "@/lib/actions/employee.actions";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -14,7 +13,7 @@ async function getEmpployeeIds() {
   return data;
 }
 getEmpployeeIds().then((data) => {
-  const payrolls = data.map((item: any) => {
+  const payrolls = (data || []).map((item: any) => {
     return {
       employee: item._id,
       period_from: "2024-08-01",

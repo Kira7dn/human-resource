@@ -2,26 +2,43 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { SelectItem } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import "react-datepicker/dist/react-datepicker.css";
 
-import { Form } from "@/components/ui//form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui//form";
 import CustomFormField, { FormFieldType } from "../custom-form-field";
 import SubmitButton from "../submit-btn";
-import { Recruit, RecruitValidation } from "@/lib/validations";
+import { Department, Recruit, RecruitValidation } from "@/lib/validations";
 import { department, levels } from "@/constants";
 
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui//scroll-area";
+import { createRecruit, updateRecruit } from "@/lib/actions/recruit.actions";
+import { getAllDepartments } from "@/lib/actions/department.actions";
+import { Spinner } from "../spinner";
 
 export const RecruitDialog = ({
   recruitment,
@@ -33,6 +50,16 @@ export const RecruitDialog = ({
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [departmentdata, setDepartmentdata] = useState<Department[]>([]);
+  const [isLoadingdata, setLoadingdata] = useState(true);
+  useEffect(() => {
+    getAllDepartments().then((data) => {
+      if (data) {
+        setDepartmentdata(data);
+        setLoadingdata(false);
+      }
+    });
+  }, []);
 
   const form = useForm<z.infer<typeof RecruitValidation>>({
     resolver: zodResolver(RecruitValidation),
@@ -40,18 +67,22 @@ export const RecruitDialog = ({
       ? recruitment
       : {
           position: "",
-          department: "",
           quantity: 0,
           expried_date: new Date(),
           level: "",
           salary: "",
           description: "",
           requirements: "",
+          department: "",
         },
   });
   const onSubmit = async (values: z.infer<typeof RecruitValidation>) => {
     setIsLoading(true);
-    console.log(values);
+    if (recruitment?._id) {
+      await updateRecruit(recruitment._id, values);
+    } else {
+      await createRecruit(values);
+    }
     setIsLoading(false);
   };
 
@@ -63,8 +94,11 @@ export const RecruitDialog = ({
       <DialogContent className="max-w-lg">
         <DialogHeader className="mb-4 space-y-3">
           <DialogTitle className="capitalize">
-            {recruitment ? "Edit" : "Create"} Candidate profile
+            {recruitment ? "Edit" : "Create"} Recruit Information
           </DialogTitle>
+          <DialogDescription>
+            Make changes to your profile here. Click save when you're done.
+          </DialogDescription>
         </DialogHeader>
         <ScrollArea className="h-[80vh] rounded-md">
           <Form {...form}>
@@ -80,21 +114,52 @@ export const RecruitDialog = ({
                   label="Position"
                   placeholder="Frontend Developer"
                 />
-                <CustomFormField
-                  fieldType={FormFieldType.SELECT}
+                {/* query selection form field */}
+                <FormField
                   control={form.control}
                   name="department"
-                  label="Department"
-                  placeholder="Select"
-                >
-                  {department.map((item, i) => (
-                    <SelectItem key={i} value={item}>
-                      <div className="flex cursor-pointer items-center gap-2">
-                        <p className="capitalize">{item}</p>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </CustomFormField>
+                  render={({ field }) => (
+                    <FormItem className="flex-1 ">
+                      <FormLabel className="shad-input-label ">
+                        Department
+                      </FormLabel>
+                      <FormControl>
+                        {isLoadingdata ? (
+                          <Spinner />
+                        ) : (
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={
+                              typeof field.value === "string"
+                                ? field.value
+                                : field.value._id
+                            }
+                          >
+                            <FormControl>
+                              <SelectTrigger className="h-11 border-dark-500 bg-card placeholder:text-dark-600 focus:ring-0 focus:ring-offset-0">
+                                <SelectValue placeholder="Select Department" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent className="border-dark-500 bg-card">
+                              {departmentdata &&
+                                departmentdata.map((item: Department) => (
+                                  <SelectItem
+                                    key={item._id}
+                                    value={item._id || "0"}
+                                  >
+                                    <div className="flex cursor-pointer items-center gap-2">
+                                      <p className="capitalize">{item.name}</p>
+                                    </div>
+                                  </SelectItem>
+                                ))}
+                            </SelectContent>
+                          </Select>
+                        )}
+                      </FormControl>
+                      <FormMessage className="shad-error" />
+                    </FormItem>
+                  )}
+                />
               </div>
               <div className={`flex flex-col gap-6 md:flex-row`}>
                 <CustomFormField
@@ -124,7 +189,6 @@ export const RecruitDialog = ({
                   control={form.control}
                   name="level"
                   label="Level"
-                  placeholder="Select"
                 >
                   {levels.map((item, i) => (
                     <SelectItem key={i} value={item.value}>
@@ -136,7 +200,18 @@ export const RecruitDialog = ({
                   ))}
                 </CustomFormField>
               </div>
-              <div className={`flex flex-col gap-6 md:flex-row`}></div>
+              <CustomFormField
+                fieldType={FormFieldType.TEXTAREA}
+                control={form.control}
+                name="description"
+                label="Description"
+              />
+              <CustomFormField
+                fieldType={FormFieldType.TEXTAREA}
+                control={form.control}
+                name="requirements"
+                label="Requirements"
+              />
 
               <SubmitButton
                 isLoading={isLoading}

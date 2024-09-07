@@ -24,12 +24,6 @@ import {
 import CustomFormField, { FormFieldType } from "../custom-form-field";
 import SubmitButton from "../submit-btn";
 import { genders, levels, statuses } from "@/constants";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui//tooltip";
 import { Label } from "@/components/ui//label";
 import {
   Dialog,
@@ -38,7 +32,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { getAllDepartments } from "@/lib/actions/department.actions";
 import { Spinner } from "../spinner";
 import { IoLocationOutline } from "react-icons/io5";
@@ -48,6 +41,8 @@ import { FaRegCalendarAlt } from "react-icons/fa";
 import { createEmployee, updateEmployee } from "@/lib/actions/employee.actions";
 import { RadioGroup, RadioGroupItem } from "@/components/ui//radio-group";
 import { Department, Employee, EmployeeValidation } from "@/lib/validations";
+import SingleImageUpload from "../upload/single-image";
+import { toast } from "sonner";
 
 export const EmployeeDialog = ({
   employee,
@@ -87,31 +82,20 @@ export const EmployeeDialog = ({
   });
   const onSubmit = async (values: z.infer<typeof EmployeeValidation>) => {
     setIsLoading(true);
-    if (employee?._id) {
-      await updateEmployee(employee._id, values);
-    } else {
-      await createEmployee(values);
-    }
-    setIsLoading(false);
+    const promise = employee?._id
+      ? updateEmployee(employee._id, values)
+      : createEmployee(values);
+    toast.promise(promise, {
+      loading: employee?._id ? "Updating..." : "Creating...",
+      success: () => {
+        setIsLoading(false);
+        setOpen(false);
+        return employee?._id ? "Updated" : "Created" + " successfully!";
+      },
+      error: "Failed to " + employee?._id ? "create" : "update",
+    });
   };
 
-  const handleImage = (
-    e: ChangeEvent<HTMLInputElement>,
-    fieldChange: (value: string) => void,
-  ) => {
-    e.preventDefault();
-    const fileReader = new FileReader();
-    if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0];
-      setFile(file);
-      if (!file.type.includes("image")) return;
-      fileReader.onload = async (event) => {
-        const imageDataUrl = event.target?.result?.toString() || "";
-        fieldChange(imageDataUrl);
-      };
-      fileReader.readAsDataURL(file);
-    }
-  };
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -132,47 +116,18 @@ export const EmployeeDialog = ({
                   fieldType={FormFieldType.SKELETON}
                   control={form.control}
                   name="image"
+                  label="Avatar"
                   renderSkeleton={(field) => (
-                    <div className="flex items-center justify-center gap-4">
-                      <FormControl className="flex-1  text-base-semibold text-secondary">
-                        <>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            name="file"
-                            id="file"
-                            className="absolute -z-10 h-0 w-0  opacity-0"
-                            onChange={(e) => handleImage(e, field.onChange)}
-                          />
-                          <label htmlFor="file">
-                            <div className="cursor-pointer rounded-full border border-transparent hover:border-primary">
-                              <TooltipProvider delayDuration={200}>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Avatar className="h-28 w-28">
-                                      <AvatarImage
-                                        className=""
-                                        src={
-                                          field.value ||
-                                          "https://github.com/shadcn.png"
-                                        }
-                                      />
-                                      <AvatarFallback className="h-full w-full text-heading4-bold font-light">
-                                        {form
-                                          .getValues()
-                                          .name.split(" ")
-                                          .map((n) => n[0])}
-                                      </AvatarFallback>
-                                    </Avatar>
-                                  </TooltipTrigger>
-                                  <TooltipContent className="bg-secondary">
-                                    <p>Change Image</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                            </div>
-                          </label>
-                        </>
+                    <div className="flex w-full items-center justify-center gap-4">
+                      <FormControl className="flex-1 text-base-semibold text-secondary">
+                        <SingleImageUpload
+                          onChange={(values) => {
+                            field.onChange(values);
+                          }}
+                          height={140}
+                          width={140}
+                          image={field.value}
+                        />
                       </FormControl>
                     </div>
                   )}
@@ -184,13 +139,6 @@ export const EmployeeDialog = ({
                   label="Name"
                   // iconSrc="assets/icons/user.svg"
                   iconNode={FaRegUser}
-                />
-                <CustomFormField
-                  fieldType={FormFieldType.INPUT}
-                  control={form.control}
-                  name="employee_id"
-                  label="Employee ID"
-                  iconNode={PiIdentificationCard}
                 />
 
                 <CustomFormField
@@ -246,39 +194,39 @@ export const EmployeeDialog = ({
                             Department
                           </FormLabel>
                           <FormControl>
-                            {isLoadingdata ? (
-                              <Spinner />
-                            ) : (
-                              <Select
-                                onValueChange={field.onChange}
-                                defaultValue={
-                                  typeof field.value === "string"
-                                    ? field.value
-                                    : field.value._id
-                                }
-                              >
-                                <FormControl>
-                                  <SelectTrigger className="h-11 border-dark-500 bg-card placeholder:text-dark-600 focus:ring-0 focus:ring-offset-0">
-                                    <SelectValue placeholder="Select Department" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent className="border-dark-500 bg-card">
-                                  {departmentdata &&
-                                    departmentdata.map((item: Department) => (
-                                      <SelectItem
-                                        key={item._id}
-                                        value={item._id || "0"}
-                                      >
-                                        <div className="flex cursor-pointer items-center gap-2">
-                                          <p className="capitalize">
-                                            {item.name}
-                                          </p>
-                                        </div>
-                                      </SelectItem>
-                                    ))}
-                                </SelectContent>
-                              </Select>
-                            )}
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={
+                                typeof field.value === "string"
+                                  ? field.value
+                                  : field.value._id
+                              }
+                            >
+                              <FormControl>
+                                <SelectTrigger className="h-11 border-dark-500 bg-card placeholder:text-dark-600 focus:ring-0 focus:ring-offset-0">
+                                  <SelectValue placeholder="Select Department" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent className="border-dark-500 bg-card">
+                                {isLoadingdata ? (
+                                  <Spinner />
+                                ) : (
+                                  departmentdata &&
+                                  departmentdata.map((item: Department) => (
+                                    <SelectItem
+                                      key={item._id}
+                                      value={item._id || "0"}
+                                    >
+                                      <div className="flex cursor-pointer items-center gap-2">
+                                        <p className="capitalize">
+                                          {item.name}
+                                        </p>
+                                      </div>
+                                    </SelectItem>
+                                  ))
+                                )}
+                              </SelectContent>
+                            </Select>
                           </FormControl>
                           <FormMessage className="shad-error" />
                         </FormItem>

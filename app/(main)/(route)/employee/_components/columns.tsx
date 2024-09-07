@@ -8,17 +8,17 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { statuses } from "@/constants";
 
 export const columns: ColumnDef<Employee>[] = [
-  {
-    accessorKey: "employee_id",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Employee" />
-    ),
-    cell: ({ row }) => (
-      <div className="w-[80px]">{row.getValue("employee_id")}</div>
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
+  // {
+  //   accessorKey: "employee_id",
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title="Employee" />
+  //   ),
+  //   cell: ({ row }) => (
+  //     <div className="w-[80px]">{row.getValue("employee_id")}</div>
+  //   ),
+  //   enableSorting: false,
+  //   enableHiding: false,
+  // },
   {
     accessorKey: "name",
     header: ({ column }) => (
@@ -94,6 +94,7 @@ export const columns: ColumnDef<Employee>[] = [
       return (
         <span className="max-w-[200px] truncate font-medium">
           {typeof department === "string" ? department : department.name}
+          {/* {row.getValue("department")} */}
         </span>
       );
     },

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import createLocalFont from "next/font/local";
 import "./globals.css";
 import { EdgeStoreProvider } from "@/lib/edgestore";
+import { Toaster } from "sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const LGEI = createLocalFont({
   src: [
@@ -55,7 +57,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${LGEI.className}`}>
-        <EdgeStoreProvider>{children}</EdgeStoreProvider>
+        <EdgeStoreProvider>
+          <TooltipProvider>
+            <Toaster position="bottom-center" />
+            {children}
+          </TooltipProvider>
+        </EdgeStoreProvider>
       </body>
     </html>
   );

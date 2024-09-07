@@ -1,8 +1,12 @@
-import { genders, levels, statuses } from "@/constants";
+import { candidateStatuses, genders, levels, statuses } from "@/constants";
 import * as z from "zod";
 
 const level = levels.map((item) => item.value) as [string, ...string[]];
 const status = statuses.map((item) => item.value) as [string, ...string[]];
+const candidate_statuses = candidateStatuses.map((item) => item.value) as [
+  string,
+  ...string[],
+];
 const gender = genders.map((item) => item.value) as [string, ...string[]];
 
 export const DepartmentValidation = z.object({
@@ -25,7 +29,6 @@ export const FileVadidate = z.object({
 
 export const EmployeeValidation = z.object({
   _id: z.string().optional(),
-  employee_id: z.string(),
   image: z.string().optional(),
   name: z
     .string()
@@ -62,21 +65,14 @@ export const RecruitValidation = z.object({
   _id: z.string().optional(),
   expried_date: z.coerce.date(),
   quantity: z.number(),
-  position: z
-    .string()
-    .min(3, {
-      message: "Minimum 3 characters.",
-    })
-    .max(300, {
-      message: "Maximum 300 caracters.",
-    }),
+  position: z.string(),
   level: z.enum(level, {
     message: "Select level",
   }),
-  department: z.union([z.string(), DepartmentValidation]),
   salary: z.string(),
   description: z.string(),
   requirements: z.string(),
+  department: z.union([z.string(), DepartmentValidation]),
 });
 
 export const CandidateValidation = z.object({
@@ -96,16 +92,10 @@ export const CandidateValidation = z.object({
     .string()
     .min(5, "Address must be at least 5 characters")
     .max(500, "Address must be at most 500 characters"),
-  status: z.enum(status),
   recruit: z.union([z.string(), RecruitValidation]),
   files: z.array(FileVadidate).optional(),
-});
-
-export const InterviewValidation = z.object({
-  _id: z.string().optional(),
-  candidate: z.union([z.string(), CandidateValidation]),
-  recruit: z.union([z.string(), RecruitValidation]),
-  appointment_date: z.coerce.date(),
+  status: z.enum(candidate_statuses),
+  interview_date: z.coerce.date().optional(),
 });
 
 export type Employee = z.infer<typeof EmployeeValidation>;
@@ -113,4 +103,3 @@ export type Candidate = z.infer<typeof CandidateValidation>;
 export type Recruit = z.infer<typeof RecruitValidation>;
 export type Department = z.infer<typeof DepartmentValidation>;
 export type File = z.infer<typeof FileVadidate>;
-export type Interview = z.infer<typeof InterviewValidation>;

@@ -1,28 +1,26 @@
 import { CandidateDialog } from "@/components/dialog/CandidateDialog";
+import { RecruitDialog } from "@/components/dialog/RecruitDialog";
 import { Button } from "@/components/ui/button";
+import { getRecruitById } from "@/lib/actions/recruit.actions";
 
-const recruit = {
-  id: "REC-9814",
-  expried_date: new Date("2024-12-13"),
-  quantity: 3,
-  position: "Future Data Administrator",
-  level: "Senior",
-  department: "Mobile",
-  salary: "negotiable",
-  description:
-    "-Cupidatat minim in eu laborum.\n-Non cupidatat Lorem quis quis ullamco.\n-Deserunt dolore dolor ex id et cillum nisi amet adipisicing sit nisi qui nisi id.\n-Pariatur incididunt sint quis irure adipisicing sunt nisi.\n-Consequat veniam fugiat sint sunt quis anim.\n-Veniam aliqua ad aliqua reprehenderit culpa laboris sint consectetur exercitation.\n-Eiusmod occaecat ut labore laborum commodo incididunt et pariatur reprehenderit velit exercitation eiusmod duis non.\n-Enim Lorem laborum commodo minim ipsum quis esse irure elit fugiat veniam exercitation cillum.\n-Laborum proident in mollit aute ea eu velit.Occaecat excepteur sunt nulla ipsum pariatur commodo ullamco reprehenderit reprehenderit.\n-Consequat elit tempor mollit culpa ad.\n-Occaecat laborum pariatur elit ea adipisicing pariatur.\n-Ea aliquip velit pariatur et aliquip et proident elit dolore quis commodo fugiat do labore.\n-Labore magna elit Lorem ad eiusmod esse est ad.",
-  requirements:
-    "-Cupidatat minim in eu laborum.\n-Non cupidatat Lorem quis quis ullamco.\n-Deserunt dolore dolor ex id et cillum nisi amet adipisicing sit nisi qui nisi id.\n-Pariatur incididunt sint quis irure adipisicing sunt nisi.\n-Consequat veniam fugiat sint sunt quis anim.\n-Veniam aliqua ad aliqua reprehenderit culpa laboris sint consectetur exercitation.\n-Eiusmod occaecat ut labore laborum commodo incididunt et pariatur reprehenderit velit exercitation eiusmod duis non.\n-Enim Lorem laborum commodo minim ipsum quis esse irure elit fugiat veniam exercitation cillum.\n-Laborum proident in mollit aute ea eu velit.Occaecat excepteur sunt nulla ipsum pariatur commodo ullamco reprehenderit reprehenderit.\n-Consequat elit tempor mollit culpa ad.\n-Occaecat laborum pariatur elit ea adipisicing pariatur.\n-Ea aliquip velit pariatur et aliquip et proident elit dolore quis commodo fugiat do labore.\n-Labore magna elit Lorem ad eiusmod esse est ad.",
-};
-export default function Page({ params }: { params: { id: string } }) {
+export default async function Page({ params }: { params: { id: string } }) {
+  const recruit = await getRecruitById(params.id);
+  if (!recruit)
+    return (
+      <div className="p-4">
+        <p>Recruit not found</p>
+      </div>
+    );
   return (
     <div className="p-4">
       <div className="flex items-center justify-between border-b py-2 text-body-semibold">
         <p>{recruit.position}</p>
         <div className="flex gap-2">
-          <Button size="sm" variant="outline">
-            Edit
-          </Button>
+          <RecruitDialog recruitment={recruit}>
+            <Button size="sm" variant="outline">
+              Edit
+            </Button>
+          </RecruitDialog>
           <CandidateDialog recruitment={recruit}>
             <Button size="sm">Apply</Button>
           </CandidateDialog>

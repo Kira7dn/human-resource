@@ -41,9 +41,9 @@ export async function getAllRecruits() {
 export async function getRecruitById(recruitId: string) {
   try {
     await connectToDatabase();
-    const recruit = await Recruit.findById(recruitId);
+    const recruit = await Recruit.findById(recruitId).populate("department");
     if (!recruit) throw new Error("Recruit not found");
-    return JSON.parse(JSON.stringify(recruit));
+    return RecruitValidation.parse(JSON.parse(JSON.stringify(recruit)));
   } catch (error) {
     handleError(error);
   }
@@ -56,6 +56,7 @@ export async function updateRecruit(recruitId: string, recruit: RecruitType) {
       new: true,
     });
     if (!updatedRecruit) throw new Error("Recruit update failed");
+    revalidatePath("/recruitment");
     return JSON.parse(JSON.stringify(updatedRecruit));
   } catch (error) {
     handleError(error);

@@ -5,7 +5,8 @@ import { DataTableColumnHeader } from "./data-table-column-header";
 import { DataTableRowActions } from "./data-table-row-actions";
 import { Candidate } from "@/lib/validations";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { statuses } from "@/constants";
+import { candidateStatuses, statuses } from "@/constants";
+import { cn } from "@/lib/utils";
 
 export const columns: ColumnDef<Candidate>[] = [
   // {
@@ -132,7 +133,7 @@ export const columns: ColumnDef<Candidate>[] = [
       <DataTableColumnHeader column={column} title="Status" />
     ),
     cell: ({ row }) => {
-      const status = statuses.find(
+      const status = candidateStatuses.find(
         (status) => status.value === row.getValue("status"),
       );
 
@@ -143,7 +144,12 @@ export const columns: ColumnDef<Candidate>[] = [
       return (
         <div className="flex w-[100px] items-center">
           {status.icon && (
-            <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
+            <status.icon
+              className={cn(
+                "mr-2 h-4 w-4 text-muted-foreground",
+                status.className,
+              )}
+            />
           )}
           <span>{status.label}</span>
         </div>

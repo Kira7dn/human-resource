@@ -1,118 +1,70 @@
+import { EmployeeDialog } from "@/components/dialog/EmployeeDialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ChevronRight } from "lucide-react";
+import { getAllCandidates } from "@/lib/actions/candidate.actions";
+import { Candidate as CandidateType } from "@/lib/validations";
+import {
+  CheckCircle2,
+  ChevronRight,
+  Edit,
+  Edit2,
+  Settings2,
+} from "lucide-react";
 import React from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
+import {
+  Menubar,
+  MenubarCheckboxItem,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarRadioGroup,
+  MenubarRadioItem,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarSub,
+  MenubarSubContent,
+  MenubarSubTrigger,
+  MenubarTrigger,
+} from "@/components/ui/menubar";
+import { candidateStatuses, statuses } from "@/constants";
+import { cn } from "@/lib/utils";
+import { CandidateDialog } from "@/components/dialog/CandidateDialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { FaSquarePen } from "react-icons/fa6";
+import { TbEdit } from "react-icons/tb";
+import { FiAlertTriangle, FiCheckCircle } from "react-icons/fi";
 
 type Props = {};
 
-function InterviewSchedule({}: Props) {
-  const data = [
-    {
-      name: "Shad Chnev",
-      image: "",
-      position: "Software Engineer",
-      level: "Senior",
-      interview: "Technical Interview",
-      appointment_datetime: "2022-10-10 10:00:00",
-    },
-    {
-      name: "Jane Doe",
-      image: "https://example.com/jane.jpg",
-      position: "Product Manager",
-      level: "Mid-Level",
-      interview: "Managerial Interview",
-      appointment_datetime: "2022-11-15 14:00:00",
-    },
-    {
-      name: "John Smith",
-      image: "https://example.com/john.png",
-      position: "UI/UX Designer",
-      level: "Junior",
-      interview: "Design Interview",
-      appointment_datetime: "2022-12-01 09:30:00",
-    },
-    {
-      name: "Alice Johnson",
-      image: "https://example.com/alice.jpg",
-      position: "Data Scientist",
-      level: "Senior",
-      interview: "Technical Interview",
-      appointment_datetime: "2022-12-02 10:00:00",
-    },
-    {
-      name: "Bob Brown",
-      image: "https://example.com/bob.jpg",
-      position: "DevOps Engineer",
-      level: "Mid-Level",
-      interview: "Technical Interview",
-      appointment_datetime: "2022-12-03 11:30:00",
-    },
-    {
-      name: "Carol King",
-      image: "https://example.com/carol.jpg",
-      position: "Project Manager",
-      level: "Senior",
-      interview: "Managerial Interview",
-      appointment_datetime: "2022-12-04 09:00:00",
-    },
-    {
-      name: "Dave Wilson",
-      image: "https://example.com/dave.jpg",
-      position: "Backend Developer",
-      level: "Junior",
-      interview: "Technical Interview",
-      appointment_datetime: "2022-12-05 14:00:00",
-    },
-    {
-      name: "Eva Green",
-      image: "https://example.com/eva.jpg",
-      position: "Frontend Developer",
-      level: "Mid-Level",
-      interview: "Technical Interview",
-      appointment_datetime: "2022-12-06 10:30:00",
-    },
-    {
-      name: "Frank Moore",
-      image: "https://example.com/frank.jpg",
-      position: "Cybersecurity Specialist",
-      level: "Senior",
-      interview: "Technical Interview",
-      appointment_datetime: "2022-12-07 15:00:00",
-    },
-    {
-      name: "Grace Hall",
-      image: "https://example.com/grace.jpg",
-      position: "Mobile Developer",
-      level: "Junior",
-      interview: "Technical Interview",
-      appointment_datetime: "2022-12-08 11:00:00",
-    },
-    {
-      name: "Henry White",
-      image: "https://example.com/henry.jpg",
-      position: "Cloud Architect",
-      level: "Senior",
-      interview: "Technical Interview",
-      appointment_datetime: "2022-12-09 09:30:00",
-    },
-    {
-      name: "Ivy Black",
-      image: "https://example.com/ivy.jpg",
-      position: "System Analyst",
-      level: "Mid-Level",
-      interview: "Technical Interview",
-      appointment_datetime: "2022-12-10 14:30:00",
-    },
-    {
-      name: "Jack Fisher",
-      image: "https://example.com/jack.jpg",
-      position: "Quality Assurance Engineer",
-      level: "Junior",
-      interview: "Technical Interview",
-      appointment_datetime: "2022-12-11 10:00:00",
-    },
-  ];
+async function InterviewSchedule({}: Props) {
+  const filter = {
+    status: "waiting",
+    interview_date: { $gt: Date.now() }, // Example of a comparison filter
+  };
+  const data = await getAllCandidates(filter);
+  if (!data) return <div>Interview no found</div>;
 
   return (
     <Card className="flex h-full flex-col">
@@ -121,8 +73,8 @@ function InterviewSchedule({}: Props) {
       </div>
       <ScrollArea className="h-full p-4">
         <div className="flex flex-col gap-2">
-          {data.map((item, index) => (
-            <Interview interview_data={item} key={index} />
+          {data.map((item) => (
+            <Interview data={item} key={item._id} />
           ))}
         </div>
       </ScrollArea>
@@ -132,40 +84,53 @@ function InterviewSchedule({}: Props) {
 
 export default InterviewSchedule;
 
-type InterviewProps = {
-  interview_data: {
-    name: string;
-    image: string;
-    position: string;
-    level: string;
-    interview: string;
-    appointment_datetime: string;
-  };
-};
-
-const Interview = ({ interview_data }: InterviewProps) => {
-  const date = new Date(interview_data.appointment_datetime);
+const Interview = ({ data }: { data: CandidateType }) => {
+  const date = new Date(data.interview_date ?? "");
   const options: Intl.DateTimeFormatOptions = {
     month: "short",
     day: "numeric",
     year: "numeric",
+    hour: "numeric",
+    minute: "numeric",
   };
   const appointment_datetime = date.toLocaleDateString("en-US", options);
-  const fallback_name = interview_data.name.split(" ").map((n) => n[0]);
+  const fallback_name = data.name
+    .split(" ")
+    .map((n) => n[0])
+    .join("");
+  const department =
+    typeof data.recruit === "object" &&
+    typeof data.recruit.department === "object" &&
+    data.recruit.department &&
+    "name" in data.recruit.department
+      ? data.recruit.department.name
+      : "";
+  const initial_employee_data = {
+    image: data.image,
+    name: data.name,
+    email: data.email,
+    birthDate: data.birthDate,
+    phone: data.phone,
+    gender: data.gender,
+    address: data.address,
+    position: typeof data.recruit === "object" ? data.recruit.position : "",
+    level: typeof data.recruit === "object" ? data.recruit.level : "",
+    department: typeof data.recruit === "object" ? data.recruit.department : "",
+    status: statuses[0].value,
+    hired_date: new Date(),
+  };
   return (
-    <div className="flex cursor-pointer items-center justify-between rounded-lg border p-2 hover:bg-gray-200">
+    <div className="flex items-center justify-between rounded-lg border p-2">
       <div className="flex items-center gap-2">
         <Avatar>
-          <AvatarImage
-            src={interview_data.image || "https://github.com/shadcn.png"}
-          />
+          <AvatarImage src={data.image || "https://github.com/shadcn.png"} />
           <AvatarFallback>{fallback_name}</AvatarFallback>
         </Avatar>
         <div className="flex flex-col">
-          <p className="text-base-semibold">{interview_data.name}</p>
+          <p className="text-base-semibold">{data.name}</p>
           <div className="flex gap-4">
             <p className="max-w-32 truncate text-small-medium text-gray-500">
-              {interview_data.position}
+              {department}
             </p>
             <p className="truncate text-small-medium text-gray-500">
               {appointment_datetime}
@@ -173,7 +138,28 @@ const Interview = ({ interview_data }: InterviewProps) => {
           </div>
         </div>
       </div>
-      <ChevronRight />
+      <div className="flex gap-2">
+        <Tooltip delayDuration={200}>
+          <TooltipTrigger>
+            <CandidateDialog candidate={data}>
+              <TbEdit className="h-5 w-5 cursor-pointer text-secondary transition delay-75 ease-in-out hover:scale-125 hover:fill-secondary hover:text-secondary-foreground" />
+            </CandidateDialog>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Edit Interview</p>
+          </TooltipContent>
+        </Tooltip>
+        <Tooltip delayDuration={200}>
+          <TooltipTrigger>
+            <EmployeeDialog employee={initial_employee_data}>
+              <FiCheckCircle className="h-5 w-5 cursor-pointer text-primary transition delay-75 ease-in-out hover:scale-125 hover:fill-primary hover:text-primary-foreground" />
+            </EmployeeDialog>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Add employee</p>
+          </TooltipContent>
+        </Tooltip>
+      </div>
     </div>
   );
 };

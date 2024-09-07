@@ -5,6 +5,8 @@ import {
   UserCircle,
   Folders,
   Package,
+  XCircle,
+  PauseCircle,
 } from "lucide-react";
 
 import {
@@ -52,6 +54,26 @@ export const statuses = [
     value: "inactive",
     label: "Inactive",
     icon: MinusCircle,
+  },
+];
+export const candidateStatuses = [
+  {
+    value: "passed",
+    label: "Passed",
+    icon: CheckCircle2,
+    className: "text-green-500",
+  },
+  {
+    value: "failed",
+    label: "Failed",
+    icon: XCircle,
+    className: "text-red-500",
+  },
+  {
+    value: "waiting",
+    label: "Waiting",
+    icon: PauseCircle,
+    className: "text-yellow-500",
   },
 ];
 

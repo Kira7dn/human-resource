@@ -31,10 +31,10 @@ export async function createCandidate(candidate: CandidateType) {
   }
 }
 
-export async function getAllCandidates() {
+export async function getAllCandidates(filter = {}) {
   try {
     await connectToDatabase();
-    const candidates = await Candidate.find().populate("recruit");
+    const candidates = await Candidate.find(filter).populate("recruit");
     return z
       .array(CandidateValidation)
       .parse(JSON.parse(JSON.stringify(candidates)));

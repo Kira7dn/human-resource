@@ -9,7 +9,7 @@ import { Form, FormControl } from "@/components/ui/form";
 import CustomFormField, { FormFieldType } from "../custom-form-field";
 import SubmitButton from "../submit-btn";
 import { Candidate, CandidateValidation, Recruit } from "@/lib/validations";
-import { genders, levels, statuses } from "@/constants";
+import { candidateStatuses, genders, levels, statuses } from "@/constants";
 import {
   Dialog,
   DialogContent,
@@ -24,10 +24,10 @@ import {
   createCandidate,
   updateCandidate,
 } from "@/lib/actions/candidate.actions";
-import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
-import { Label } from "../ui/label";
 import { ScrollArea } from "../ui/scroll-area";
 import "react-datepicker/dist/react-datepicker.css";
+import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 export const CandidateDialog = ({
   candidate,
@@ -58,25 +58,30 @@ export const CandidateDialog = ({
   });
   const onSubmit = async (values: z.infer<typeof CandidateValidation>) => {
     setIsLoading(true);
-    if (candidate?._id) {
-      await updateCandidate(candidate._id, values);
-    } else {
-      await createCandidate(values);
-    }
-    setIsLoading(false);
+    const promise = candidate?._id
+      ? updateCandidate(candidate._id, values)
+      : createCandidate(values);
+    toast.promise(promise, {
+      loading: candidate?._id ? "Updating..." : "Creating...",
+      success: () => {
+        setIsLoading(false);
+        setOpen(false);
+        return candidate?._id ? "Updated" : "Created" + " successfully!";
+      },
+      error: "Failed to " + candidate?._id ? "create" : "update",
+    });
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-
       <DialogContent className="max-w-2xl">
         <DialogHeader className="mb-4 space-y-3">
           <DialogTitle className="capitalize">
             {candidate ? "Edit" : "Create"} Candidate profile
           </DialogTitle>
           <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
+            Make changes to candidate profile here. Click save when you're done.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -124,6 +129,7 @@ export const CandidateDialog = ({
                     {genders.map((item, i) => (
                       <SelectItem key={i} value={item.value}>
                         <div className="flex cursor-pointer items-center gap-2">
+                          <item.icon />
                           <p className="capitalize">{item.label}</p>
                         </div>
                       </SelectItem>
@@ -135,46 +141,17 @@ export const CandidateDialog = ({
                     name="birthDate"
                     label="Birth date"
                   />
+
                   <CustomFormField
-                    fieldType={FormFieldType.SKELETON}
+                    fieldType={FormFieldType.PHONE_INPUT}
                     control={form.control}
-                    name="status"
-                    label="Status"
-                    renderSkeleton={(field) => (
-                      <FormControl>
-                        <RadioGroup
-                          className="flex h-11 gap-6 xl:justify-between"
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          {statuses.map((option, i) => (
-                            <div key={option.value + i} className="radio-group">
-                              <RadioGroupItem
-                                value={option.value}
-                                id={option.value}
-                              />
-                              <Label
-                                htmlFor={option.value}
-                                className="cursor-pointer"
-                              >
-                                {option.label}
-                              </Label>
-                            </div>
-                          ))}
-                        </RadioGroup>
-                      </FormControl>
-                    )}
+                    name="phone"
+                    label="Phone Number"
+                    placeholder="(+84) 123-4567"
                   />
                 </div>
                 <div className="flex flex-1 flex-col gap-2">
                   <div className="flex flex-1 flex-col justify-between ">
-                    <CustomFormField
-                      fieldType={FormFieldType.PHONE_INPUT}
-                      control={form.control}
-                      name="phone"
-                      label="Phone Number"
-                      placeholder="(+84) 123-4567"
-                    />
                     <CustomFormField
                       fieldType={FormFieldType.INPUT}
                       control={form.control}
@@ -212,7 +189,37 @@ export const CandidateDialog = ({
                         </SelectItem>
                       ))}
                     </CustomFormField>
+                    <CustomFormField
+                      fieldType={FormFieldType.SELECT}
+                      control={form.control}
+                      name="status"
+                      label="Status"
+                      placeholder="Select"
+                    >
+                      {candidateStatuses.map((item, i) => (
+                        <SelectItem key={i} value={item.value}>
+                          <div className="flex cursor-pointer items-center gap-2">
+                            <item.icon
+                              className={cn(
+                                "mr-2 h-4 w-4 text-muted-foreground",
+                                item.className,
+                              )}
+                            />
+                            <p className="capitalize">{item.label}</p>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </CustomFormField>
+                    <CustomFormField
+                      fieldType={FormFieldType.DATE_PICKER}
+                      control={form.control}
+                      name="interview_date"
+                      label="Interview date"
+                      showTimeSelect
+                      dateFormat="MM/dd/yyyy h:mm aa"
+                    />
                   </div>
+
                   <CustomFormField
                     fieldType={FormFieldType.SKELETON}
                     control={form.control}

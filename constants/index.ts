@@ -196,3 +196,4 @@ export const months = [
   "Nov",
   "Dec",
 ];
+export const attendance_status = ["work", "paid_leave", "unpaid_leave"];

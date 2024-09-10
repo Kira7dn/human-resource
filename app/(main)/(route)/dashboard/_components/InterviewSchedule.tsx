@@ -4,57 +4,15 @@ import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { getAllCandidates } from "@/lib/actions/candidate.actions";
 import { Candidate as CandidateType } from "@/lib/validations";
-import {
-  CheckCircle2,
-  ChevronRight,
-  Edit,
-  Edit2,
-  Settings2,
-} from "lucide-react";
-import React from "react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { DotsHorizontalIcon } from "@radix-ui/react-icons";
-import {
-  Menubar,
-  MenubarCheckboxItem,
-  MenubarContent,
-  MenubarItem,
-  MenubarMenu,
-  MenubarRadioGroup,
-  MenubarRadioItem,
-  MenubarSeparator,
-  MenubarShortcut,
-  MenubarSub,
-  MenubarSubContent,
-  MenubarSubTrigger,
-  MenubarTrigger,
-} from "@/components/ui/menubar";
-import { candidateStatuses, statuses } from "@/constants";
-import { cn } from "@/lib/utils";
+import { statuses } from "@/constants";
 import { CandidateDialog } from "@/components/dialog/CandidateDialog";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { FaSquarePen } from "react-icons/fa6";
 import { TbEdit } from "react-icons/tb";
-import { FiAlertTriangle, FiCheckCircle } from "react-icons/fi";
+import { FiCheckCircle } from "react-icons/fi";
 
 type Props = {};
 

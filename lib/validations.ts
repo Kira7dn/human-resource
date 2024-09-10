@@ -1,4 +1,10 @@
-import { candidateStatuses, genders, levels, statuses } from "@/constants";
+import {
+  attendance_status,
+  candidateStatuses,
+  genders,
+  levels,
+  statuses,
+} from "@/constants";
 import * as z from "zod";
 
 const level = levels.map((item) => item.value) as [string, ...string[]];
@@ -8,6 +14,10 @@ const candidate_statuses = candidateStatuses.map((item) => item.value) as [
   ...string[],
 ];
 const gender = genders.map((item) => item.value) as [string, ...string[]];
+const attendance_statuses = attendance_status.map((item) => item) as [
+  string,
+  ...string[],
+];
 
 export const DepartmentValidation = z.object({
   _id: z.string().optional(),
@@ -98,8 +108,32 @@ export const CandidateValidation = z.object({
   interview_date: z.coerce.date().optional(),
 });
 
+export const AttendanceValidate = z.object({
+  _id: z.string().optional(),
+  employee: z.union([z.string(), EmployeeValidation]),
+  date: z.coerce.date(),
+  attendance_status: z.enum(attendance_statuses),
+  overtime: z.number().optional(),
+  id_scan_time: z.array(z.coerce.date()).optional(),
+});
+
+export const PayrollValidate = z.object({
+  _id: z.string().optional(),
+  employee: z.union([z.string(), EmployeeValidation]),
+  period: z.coerce.date(),
+  gross_salary: z.number().optional(),
+  position_allowance: z.number().optional(),
+  travel_allowance: z.number().optional(),
+  work_day: z.number().optional(),
+  overtime: z.number().optional(),
+  paid_leave: z.number().optional(),
+  unpaid_leave: z.array(z.coerce.date()).optional(),
+});
+
 export type Employee = z.infer<typeof EmployeeValidation>;
 export type Candidate = z.infer<typeof CandidateValidation>;
 export type Recruit = z.infer<typeof RecruitValidation>;
 export type Department = z.infer<typeof DepartmentValidation>;
 export type File = z.infer<typeof FileVadidate>;
+export type AttendanceType = z.infer<typeof AttendanceValidate>;
+export type PayrollType = z.infer<typeof PayrollValidate>;

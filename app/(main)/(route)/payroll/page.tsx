@@ -21,6 +21,7 @@ async function getPayrolls() {
 
 export default async function TaskPage() {
   const payroll = await getPayrolls();
+  console.log(payroll);
 
   return (
     <div className="">
@@ -28,7 +29,7 @@ export default async function TaskPage() {
         <div className="flex h-8 items-center justify-between space-y-2">
           <h2 className="text-large-semibold tracking-tight">Payroll</h2>
         </div>
-        <DataTable data={payroll} columns={columns} />
+        {/* <DataTable data={payroll} columns={columns} /> */}
       </div>
     </div>
   );

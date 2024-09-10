@@ -242,3 +242,35 @@ export function get_tax_level(tntt: number): number {
     return (tntt * 35) / 100 - 9850000;
   }
 }
+
+export function getDateMidnight(timestamp: string | number | Date): Date {
+  const date = new Date(timestamp);
+  date.setHours(0, 0, 0, 0);
+  return date;
+}
+
+export function getMonthFirst(date: Date): Date {
+  return new Date(date.getFullYear(), date.getMonth(), 1);
+}
+
+export function generateDatesForMonth(date: Date) {
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const dates = [];
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  for (let day = 1; day <= daysInMonth; day++) {
+    const newdate = new Date(year, month, day, 0, 0);
+    dates.push(newdate);
+  }
+  return dates;
+}
+
+export function generateTypeKey<Key extends string>(keys: Key[]) {
+  return keys.reduce(
+    (acc, key) => ({
+      ...acc,
+      [key]: true,
+    }),
+    {} as Record<Key, boolean>,
+  );
+}

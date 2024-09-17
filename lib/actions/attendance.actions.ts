@@ -2,9 +2,9 @@
 import { connectToDatabase } from "@/lib/database";
 import { getDateMidnight, getMonthFirst, handleError } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
-import { Attendance as AttendanceType } from "@/types";
 import Attendance from "../database/models/attendance.model";
 import { updatePayrollByEmployee } from "./payroll.actions";
+import { AttendanceType } from "../validations";
 
 export async function createBatchAttendance(data: AttendanceType[]) {
   try {
@@ -71,7 +71,7 @@ export async function getAttendanceListByMonth(
 export async function getAttendanceById(_id: string) {
   try {
     await connectToDatabase();
-    const data = await Attendance.findById(_id);
+    const data = await Attendance.findById(_id).populate("employee");
     if (!data) throw new Error("Attendance not found");
     return JSON.parse(JSON.stringify(data));
   } catch (error) {

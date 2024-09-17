@@ -113,8 +113,8 @@ export const AttendanceValidate = z.object({
   employee: z.union([z.string(), EmployeeValidation]),
   date: z.coerce.date(),
   attendance_status: z.enum(attendance_statuses),
-  overtime: z.number().optional(),
-  id_scan_time: z.array(z.coerce.date()).optional(),
+  overtime: z.number(),
+  id_scan_time: z.array(z.coerce.date()),
 });
 
 export const PayrollValidate = z.object({

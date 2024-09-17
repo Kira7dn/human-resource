@@ -15,6 +15,8 @@ import { CalendarIcon } from "lucide-react";
 import { CandidateDialog } from "@/components/dialog/CandidateDialog";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import { AttendanceForm } from "./attendance-form";
+import { useState } from "react";
 
 const date_month = new Date(2024, 7, 1);
 const date_range = generateDatesForMonth(date_month);
@@ -56,74 +58,76 @@ export const columns: ColumnDef<AttendanceList>[] = [
     cell: ({ row }: { row: Row<AttendanceList> }) => {
       const cell_data = row.original[date.toISOString()];
       const employee = row.original.employee;
-
+      const [open, setOpen] = useState(false);
       return (
-        <HoverCard>
-          <HoverCardTrigger asChild>
-            <Link
-              className={cn(
-                "flex h-6 transform cursor-pointer items-center justify-center border border-gray-200 text-center text-tiny-medium transition-all duration-100 ease-in-out hover:scale-105 hover:font-bold hover:shadow-lg",
-                cell_data.attendance_status === "work" && "bg-green-500",
-                cell_data.attendance_status === "paid_leave" && "bg-yellow-500",
-                cell_data.attendance_status === "unpaid_leave" && "bg-red-500",
-              )}
-              href={`/attendance/${cell_data._id || ""}`}
-            >
-              {cell_data.attendance_status === "work" && cell_data.overtime}
-            </Link>
-          </HoverCardTrigger>
-          <HoverCardContent
-          // className={cn(
-          //   "flex border border-gray-200",
-          //   cell_data.attendance_status === "work" && "bg-green-500",
-          //   cell_data.attendance_status === "paid_leave" && "bg-yellow-500",
-          //   cell_data.attendance_status === "unpaid_leave" && "bg-red-500",
-          // )}
-          >
-            <div className="flex flex-col justify-between">
-              <div className="flex gap-4">
-                <Avatar>
-                  <AvatarImage src={employee.image} />
-                  <AvatarFallback>
-                    {employee.name[0].toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="">
-                  <h4 className="max-w-40 truncate text-base-semibold">
-                    {employee.name}
-                  </h4>
-                  <p className="text-small-regular">
-                    <span>Status: </span>
-                    <Badge
-                      className="capitalize"
-                      variant={
-                        cell_data.attendance_status === "work"
-                          ? "default"
-                          : cell_data.attendance_status === "paid_leave"
-                            ? "secondary"
-                            : "outline"
-                      }
-                    >
-                      {cell_data.attendance_status}
-                    </Badge>
-                  </p>
-                  <p className="text-small-regular">
-                    <span>Overtime: </span>
-                    <span className="">
-                      {(cell_data.overtime || 0) + " hours"}
-                    </span>
-                  </p>
+        <>
+          <HoverCard>
+            <HoverCardTrigger asChild>
+              <div
+                className={cn(
+                  "flex h-6 transform cursor-pointer items-center justify-center border border-gray-200 text-center text-tiny-medium transition-all duration-100 ease-in-out hover:scale-105 hover:font-bold hover:shadow-lg",
+                  cell_data.attendance_status === "work" && "bg-green-500",
+                  cell_data.attendance_status === "paid_leave" &&
+                    "bg-yellow-500",
+                  cell_data.attendance_status === "unpaid_leave" &&
+                    "bg-red-500",
+                )}
+                onClick={() => setOpen(true)}
+              >
+                {cell_data.attendance_status === "work" && cell_data.overtime}
+              </div>
+            </HoverCardTrigger>
+            <HoverCardContent>
+              <div className="flex flex-col justify-between">
+                <div className="flex gap-4">
+                  <Avatar>
+                    <AvatarImage src={employee.image} />
+                    <AvatarFallback>
+                      {employee.name[0].toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="">
+                    <h4 className="max-w-40 truncate text-base-semibold">
+                      {employee.name}
+                    </h4>
+                    <div>
+                      <span className="text-small-regular">Status: </span>
+                      <Badge
+                        className="capitalize"
+                        variant={
+                          cell_data.attendance_status === "work"
+                            ? "default"
+                            : cell_data.attendance_status === "paid_leave"
+                              ? "secondary"
+                              : "outline"
+                        }
+                      >
+                        {cell_data.attendance_status}
+                      </Badge>
+                    </div>
+                    <p className="text-small-regular">
+                      <span>Overtime: </span>
+                      <span className="">
+                        {(cell_data.overtime || 0) + " hours"}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center pt-2">
+                  <CalendarIcon className="mr-2 h-4 w-4 opacity-70" />
+                  <span className="text-xs text-muted-foreground">
+                    {date.toDateString()}
+                  </span>
                 </div>
               </div>
-              <div className="flex items-center pt-2">
-                <CalendarIcon className="mr-2 h-4 w-4 opacity-70" />{" "}
-                <span className="text-xs text-muted-foreground">
-                  {date.toDateString()}
-                </span>
-              </div>
-            </div>
-          </HoverCardContent>
-        </HoverCard>
+            </HoverCardContent>
+          </HoverCard>
+          <AttendanceForm
+            open={open}
+            setOpen={setOpen}
+            attendance={row.original[date.toISOString()]}
+          />
+        </>
       );
     },
     enableSorting: false,

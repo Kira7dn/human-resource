@@ -21,7 +21,6 @@ async function getPayrolls() {
 
 export default async function TaskPage() {
   const payroll = await getPayrolls();
-  console.log(payroll);
 
   return (
     <div className="">

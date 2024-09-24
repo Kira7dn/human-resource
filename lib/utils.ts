@@ -274,3 +274,11 @@ export function generateTypeKey<Key extends string>(keys: Key[]) {
     {} as Record<Key, boolean>,
   );
 }
+
+export function encryptKey(passkey: string) {
+  return btoa(passkey);
+}
+
+export function decryptKey(passkey: string) {
+  return atob(passkey);
+}

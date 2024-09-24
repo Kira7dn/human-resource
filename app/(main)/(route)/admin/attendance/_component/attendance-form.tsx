@@ -6,7 +6,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
   Form,
-  FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -14,32 +13,25 @@ import {
 } from "@/components/ui/form";
 import { AttendanceType, AttendanceValidate } from "@/lib/validations";
 import "react-datepicker/dist/react-datepicker.css";
-import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import SubmitButton from "@/components/submit-btn";
-import {
-  createAttendance,
-  updateAttendance,
-} from "@/lib/actions/attendance.actions";
+import { updateAttendanceById } from "@/lib/actions/attendance.actions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
 import CustomFormField, { FormFieldType } from "@/components/custom-form-field";
 import { SelectItem } from "@/components/ui/select";
 import { attendance_status } from "@/constants";
-import { CalendarIcon, CircleSlash } from "lucide-react";
-import { FcCancel } from "react-icons/fc";
-import { IoAddCircle } from "react-icons/io5";
+import { CalendarIcon, CircleSlash, XCircle, XSquare } from "lucide-react";
+import ReactDatePicker from "react-datepicker";
+import Image from "next/image";
 
 export function AttendanceForm({
   open,
@@ -58,16 +50,15 @@ export function AttendanceForm({
   });
   const onSubmit = async (values: z.infer<typeof AttendanceValidate>) => {
     setIsLoading(true);
-    const promise = attendance?._id
-      ? updateAttendance({ _id: attendance._id, ...values })
-      : createAttendance(values);
+    const promise = updateAttendanceById(values._id ?? "", values);
     toast.promise(promise, {
-      loading: attendance?._id ? "Updating..." : "Creating...",
+      loading: "Updating...",
       success: () => {
         setIsLoading(false);
-        return attendance?._id ? "Updated" : "Created" + " successfully!";
+        setOpen(false);
+        return "Updated successfully";
       },
-      error: "Failed to " + attendance?._id ? "create" : "update",
+      error: "Failed to update",
     });
   };
   const date = attendance.date ? new Date(attendance.date) : new Date();
@@ -150,34 +141,49 @@ export function AttendanceForm({
                       <FormLabel className="shad-input-label">
                         ID scan
                       </FormLabel>
-                      {field.value.map((item, i) => (
-                        <div key={i} className="flex items-center gap-2">
-                          <p>{new Date(item).toTimeString()}</p>
-                          <Button
-                            onClick={() => {
-                              field.onChange([
-                                ...field.value.slice(0, i),
-                                ...field.value.slice(i + 1),
-                              ]);
-                            }}
-                            variant="ghost"
-                            size="icon"
+                      <div className="flex flex-col gap-2">
+                        {field.value.map((item, i) => (
+                          <div
+                            key={i}
+                            className="flex items-center gap-2 text-small-medium"
                           >
-                            <FcCancel className="h-6 w-6" />
-                          </Button>
+                            <p>{new Date(item).toLocaleString()}</p>
+                            <div
+                              onClick={() => {
+                                field.onChange([
+                                  ...field.value.slice(0, i),
+                                  ...field.value.slice(i + 1),
+                                ]);
+                              }}
+                              className="cursor-pointer "
+                            >
+                              <XCircle className="h-5 w-5 text-gray-500 hover:text-red-500" />
+                            </div>
+                          </div>
+                        ))}
+                        <div className="flex items-center rounded-md border border-dark-500 bg-card">
+                          <div className="flex flex-row">
+                            <Image
+                              src="/assets/icons/calendar.svg"
+                              height={24}
+                              width={24}
+                              alt="calendar"
+                              className="ml-2 bg-card"
+                            />
+                            <ReactDatePicker
+                              showTimeSelect
+                              showTimeSelectOnly
+                              timeIntervals={1}
+                              selected={date}
+                              onChange={(date: Date) =>
+                                field.onChange([...field.value, date])
+                              }
+                              dateFormat="MM/dd/yyyy h:mm aa"
+                              wrapperClassName="date-picker"
+                            />
+                          </div>
                         </div>
-                      ))}
-                      {/* add button to add new ID scan */}
-                      <Button
-                        onClick={() => {
-                          field.onChange([...field.value, new Date()]);
-                        }}
-                        variant="ghost"
-                        size="icon"
-                      >
-                        <IoAddCircle className="h-6 w-6" />
-                      </Button>
-
+                      </div>
                       <FormMessage className="shad-error" />
                     </FormItem>
                   )}

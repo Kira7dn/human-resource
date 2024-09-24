@@ -128,7 +128,7 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
               src="/assets/icons/calendar.svg"
               height={24}
               width={24}
-              alt="user"
+              alt="calendar"
               className="ml-2 bg-card"
             />
           )}

@@ -48,22 +48,24 @@ type Props = {
 
 function Links({ links }: Props) {
   const pathname = usePathname();
+  const lastPath = pathname.split("/").pop();
 
   return (
     <div className={cn("flex h-full flex-col justify-between gap-1")}>
       {links.map((link) => {
         const isActive =
-          (pathname &&
-            pathname.includes(link.route) &&
+          (lastPath &&
+            lastPath.includes(link.route) &&
             link.route.length > 1) ||
-          pathname === link.route;
+          lastPath === link.route.split("/").pop();
         const Component = link.component;
         return (
           <Link
             href={link.route}
             key={link.label}
-            className={`flex rounded-lg px-2 py-2 hover:text-secondary-foreground ${isActive && "bg-secondary-gradient shadow-inner shadow-gray-400"
-              }`}
+            className={`flex rounded-lg px-2 py-2 hover:text-secondary-foreground ${
+              isActive && "bg-secondary-gradient shadow-inner shadow-gray-400"
+            }`}
           >
             <div className={cn("pr-2", isActive && "text-primary-foreground")}>
               <Component />

@@ -157,6 +157,19 @@ export async function updateAttendance(data: AttendanceType, filter = {}) {
   }
 }
 
+export async function updateAttendanceById(_id: string, data: AttendanceType) {
+  try {
+    await connectToDatabase();
+    const updated_data = await Attendance.findByIdAndUpdate(_id, data, {
+      new: true,
+    });
+    if (!updated_data) throw new Error("Attendance update failed");
+    return JSON.parse(JSON.stringify(updated_data));
+  } catch (error) {
+    handleError(error);
+  }
+}
+
 export async function deleteAttendance(_id: string) {
   try {
     await connectToDatabase();

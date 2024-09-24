@@ -5,7 +5,7 @@ import { MdMenu, MdClose } from "react-icons/md";
 import clsx from "clsx";
 import ButtonLink from "./ButtonLink";
 import { Logo } from "./Logo";
-
+import Link from "next/link";
 
 export default function NavBar() {
   const [open, setOpen] = useState(false);
@@ -49,6 +49,9 @@ export default function NavBar() {
         {/* Desktop Nav */}
         <div className="z-40 hidden gap-6 md:flex">
           <ButtonLink href="/dashboard">Dashboards</ButtonLink>
+          <ButtonLink href="/?admin=true" className="text-green-500">
+            Admin
+          </ButtonLink>
         </div>
       </div>
     </nav>

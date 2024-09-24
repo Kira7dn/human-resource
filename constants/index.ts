@@ -97,39 +97,39 @@ export const levels = [
 
 export const mainLinks = [
   {
-    route: "/dashboard",
+    route: "/admin",
     label: "Dashboard",
     component: RiDashboard2Line,
   },
   {
-    route: "/employee",
+    route: "/admin/employee",
     label: "Employee",
     component: FaUserTie,
   },
   {
-    route: "/candidate",
+    route: "/admin/candidate",
     label: "Candidate",
     component: FaUserClock,
   },
   {
-    route: "/recruitment",
+    route: "/admin/recruitment",
     label: "Recruitment",
     component: FaHeadset,
   },
   {
-    route: "/payroll",
+    route: "/admin/payroll",
     label: "Payroll",
     component: MdPayments,
   },
 ];
 export const otherLinks = [
   {
-    route: "/attendance",
+    route: "/admin/attendance",
     label: "Attendance",
     component: TbFingerprintScan,
   },
   {
-    route: "/events",
+    route: "/admin/events",
     label: "Events",
     component: CalendarCheck,
   },
@@ -137,12 +137,12 @@ export const otherLinks = [
 export const preferenceLinks = [
   {
     route: "/",
-    label: "Home",
+    label: "Preferences1",
     component: HomeIcon,
   },
   {
-    route: "/sađá",
-    label: "Dashboard",
+    route: "/",
+    label: "Preferences2",
     component: LayoutTemplateIcon,
   },
 ];

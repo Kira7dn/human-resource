@@ -20,9 +20,9 @@ export default function Home({ searchParams }: HomeProps) {
 
       <Hero />
       <Bento />
-      <Showcase />
+      {/* <Showcase />
       <CallToAction />
-      <Integrations />
+      <Integrations /> */}
     </>
   );
 }

@@ -6,7 +6,6 @@ import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
 import StarGrid from "../StarGrid";
 import ButtonLink from "../ButtonLink";
 import Image from "next/image";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
   CarouselContent,

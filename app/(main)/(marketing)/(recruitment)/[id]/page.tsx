@@ -17,7 +17,7 @@ export default async function Page({ params }: { params: { id: string } }) {
         <p>{recruit.position}</p>
         <div className="flex gap-2">
           <RecruitDialog recruitment={recruit}>
-            <Button size="sm" variant="outline">
+            <Button size="sm" variant="ghost">
               Edit
             </Button>
           </RecruitDialog>
@@ -82,7 +82,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           Friday, overtime according to the law. <br />- Daily shuttle bus for
           employees, meals (free) at the factory <br />- Opportunity to study &
           be trained abroad <br />- Participate in Insurance (Social Insurance,
-          Health Insurance, Unemployment Insurance) & 24/24 Accident Insurance.{" "}
+          Health Insurance, Unemployment Insurance).
           <br />- Enjoy bonus policies & annual salary increase evaluation
           according to the Company's regulations
         </pre>

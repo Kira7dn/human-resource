@@ -23,8 +23,8 @@ export const metadata: Metadata = {
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="">
-      <div className="flex flex-col justify-start space-y-4 py-4">
+    <div className="mx-auto w-full max-w-6xl">
+      <div className=" flex-col justify-start space-y-4 py-4">
         <div className="flex items-center justify-between">
           <div className="text-large-semibold tracking-tight">
             Recruit Announcement

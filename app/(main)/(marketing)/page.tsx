@@ -1,5 +1,5 @@
 import { PasskeyModal } from "@/components/PassKeyModel";
-import Bento from "./_components/Bento";
+import Recruitment from "./_components/Recruitment";
 import CallToAction from "./_components/CallToAction";
 import Hero from "./_components/Hero";
 import Integrations from "./_components/Integrations";
@@ -19,7 +19,7 @@ export default function Home({ searchParams }: HomeProps) {
       {isAdmin && <PasskeyModal />}
 
       <Hero />
-      <Bento />
+      <Recruitment />
       {/* <Showcase />
       <CallToAction />
       <Integrations /> */}

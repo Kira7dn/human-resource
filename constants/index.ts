@@ -150,23 +150,23 @@ export const projecLinks = [
   { icon: HomeIcon, route: "/" },
   {
     icon: LayoutTemplateIcon,
-    route: "/dashboard",
+    route: "/?admin=true",
   },
   {
     icon: UserCircle,
-    route: "/profile",
+    route: "/?admin=true",
   },
   {
     icon: Folders,
-    route: "/workspaces",
+    route: "/?admin=true",
   },
   {
     icon: CalendarCheck,
-    route: "/events",
+    route: "/?admin=true",
   },
   {
     icon: Package,
-    route: "/workspaces",
+    route: "/?admin=true",
   },
 ];
 

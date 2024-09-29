@@ -17,12 +17,10 @@ export default function Home({ searchParams }: HomeProps) {
   return (
     <>
       {isAdmin && <PasskeyModal />}
-
       <Hero />
+      <Showcase />
       <Recruitment />
-      {/* <Showcase />
-      <CallToAction />
-      <Integrations /> */}
+      <Integrations />
     </>
   );
 }

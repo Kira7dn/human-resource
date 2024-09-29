@@ -20,10 +20,7 @@ function Candidate({}: Props) {
           </div>
           <div className="flex items-center text-large-bold">Candidates</div>
         </div>
-        {/* <CandidateDialog>
-          <PlusCircle className="h-8 w-8 cursor-pointer text-secondary transition delay-75 ease-in-out hover:scale-125 hover:fill-secondary hover:text-secondary-foreground" />
-        </CandidateDialog> */}
-        <Link href="/recruitment">
+        <Link href="/admin/recruitment">
           <PlusCircle className="h-8 w-8 cursor-pointer text-secondary transition delay-75 ease-in-out hover:scale-125 hover:fill-secondary hover:text-secondary-foreground" />
         </Link>
       </div>

@@ -12,7 +12,7 @@ export const Logo = ({ expanded, name = true, size, className }: props) => {
   return (
     <Link
       className={clsx("flex items-center justify-start gap-x-4", className)}
-      href="/dashboard"
+      href="/"
     >
       <Image
         src="/assets/logo.svg"

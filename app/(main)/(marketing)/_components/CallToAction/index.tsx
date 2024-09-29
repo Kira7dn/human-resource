@@ -15,7 +15,7 @@ const CallToAction = (): JSX.Element => {
         Evolution Workspace for your team
       </div>
 
-      <ButtonLink className="mt-8" href="/dashboard">
+      <ButtonLink className="mt-8" href="/">
         Start now
       </ButtonLink>
     </Bounded>

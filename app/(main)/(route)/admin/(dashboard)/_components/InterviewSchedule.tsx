@@ -22,8 +22,6 @@ async function InterviewSchedule({}: Props) {
     interview_date: { $gt: Date.now() }, // Example of a comparison filter
   };
   const data = await getAllCandidates(filter);
-  if (!data) return <div>Interview no found</div>;
-
   return (
     <Card className="flex h-full flex-col">
       <div className="p-4 pb-0">
@@ -31,9 +29,11 @@ async function InterviewSchedule({}: Props) {
       </div>
       <ScrollArea className="h-full p-4">
         <div className="flex flex-col gap-2">
-          {data.map((item) => (
-            <Interview data={item} key={item._id} />
-          ))}
+          {data && data.length > 0 ? (
+            data.map((item) => <Interview data={item} key={item._id} />)
+          ) : (
+            <div className="mx-auto">Interview no found</div>
+          )}
         </div>
       </ScrollArea>
     </Card>

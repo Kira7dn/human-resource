@@ -99,21 +99,13 @@ export default function AnimatedContent() {
       </div>
 
       <div className="hero__body mx-auto mt-6 max-w-3xl text-balance text-body-medium text-slate-300 opacity-0">
-        With a 17-year journey in Vietnam, we has not only created timeless
-        landmarks that transform the landscapes but also built a humane working
-        environment and human resource policies that bring international
-        standards closer to Vietnamese workers. Adhering to the philosophy "Good
-        seeds only sprout and grow in a favorable environment," we continues to
-        sustainably develop a professional working environment. At we, the Group
-        always considers human resources as the core factor and valuable asset.
-        This place gathers many talented, dynamic, and creative individuals who
-        possess both good character and excellent professional skills. With the
-        mission "The Pioneer," we always prioritizes discovering and nurturing
-        talents, contributing to building a new generation of Vietnamese people
-        with qualities, capabilities, and health that keep pace with the times.
+        At Workspace, we believe in creating a workplace where innovation
+        thrives and employees are empowered to reach their full potential. With
+        a commitment to excellence and a passion for progress, we have
+        established ourselves as leaders in our industry.
       </div>
 
-      <ButtonLink className="hero__button mt-8 opacity-0" href="/dashboard">
+      <ButtonLink className="hero__button mt-8 opacity-0" href="#recruitment">
         Discover jobs
       </ButtonLink>
       <div className="hero__image glass-container mt-16 w-fit opacity-0">

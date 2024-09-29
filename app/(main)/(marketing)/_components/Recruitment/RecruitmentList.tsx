@@ -25,7 +25,10 @@ const RecruitmentList = ({ recruits }: Props) => {
                 <div className="max-w-52 truncate text-body-bold">
                   {recruit.position}
                 </div>
-                <ButtonLink className="!py-1" href={`/${recruit._id}`}>
+                <ButtonLink
+                  className="!py-1"
+                  href={`/recruitment/${recruit._id}`}
+                >
                   Detail
                 </ButtonLink>
               </div>

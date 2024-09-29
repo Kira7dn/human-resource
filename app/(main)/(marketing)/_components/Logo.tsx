@@ -8,7 +8,7 @@ type props = {
 };
 export const Logo = ({ expanded, size }: props) => {
   return (
-    <Link className="flex items-center justify-start gap-x-4" href="/dashboard">
+    <Link className="flex items-center justify-start gap-x-4" href="/">
       <Image
         src="/assets/logo.svg"
         height={size}

@@ -97,11 +97,13 @@ export function AttendanceForm({
                       />
                       <AvatarFallback className="h-full w-full text-heading4-bold font-light">
                         {typeof attendance?.employee === "object"
-                          ? attendance.employee.name
+                          ? attendance.employee.name.split(" ")[0][0] +
+                            " " +
+                            attendance.employee.name.split(" ")[1][0]
                           : ""}
                       </AvatarFallback>
                     </Avatar>
-                    <div>
+                    <div className="mx-auto text-center">
                       {typeof attendance?.employee === "object"
                         ? attendance.employee.name
                         : ""}{" "}

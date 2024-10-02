@@ -9,11 +9,8 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
-import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CalendarIcon } from "lucide-react";
-import { CandidateDialog } from "@/components/dialog/CandidateDialog";
-import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { AttendanceForm } from "./attendance-form";
 import { useState } from "react";

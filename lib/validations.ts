@@ -69,6 +69,9 @@ export const EmployeeValidation = z.object({
   hired_date: z.coerce.date(),
   end_date: z.coerce.date().optional(),
   status: z.enum(status),
+  gross_salary: z.number(),
+  position_allowance: z.number(),
+  travel_allowance: z.number(),
 });
 
 export const RecruitValidation = z.object({

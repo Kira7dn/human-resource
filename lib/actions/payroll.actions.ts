@@ -27,6 +27,41 @@ export async function createPayroll(payroll: PayrollType) {
   }
 }
 
+export async function getPayrollListByYear(year: number) {
+  try {
+    await connectToDatabase();
+    const startDate = new Date(year, 0, 1);
+    const endDate = new Date(year + 1, 0, 1);
+
+    const filter = {
+      period: {
+        $gte: startDate,
+        $lt: endDate,
+      },
+    };
+
+    const payrolls = await Payroll.find(filter)
+      .populate("employee")
+      .sort({ period: 1 });
+
+    const groupedByEmployee = payrolls.reduce((acc, record) => {
+      const employeeId = record.employee._id.toString();
+      if (!acc.has(employeeId)) {
+        acc.set(employeeId, { employee: record.employee });
+      }
+      const dateKey = record.period.toISOString();
+      acc.get(employeeId)[dateKey] = record;
+      return acc;
+    }, new Map());
+
+    const result = Array.from(groupedByEmployee.values());
+    return JSON.parse(JSON.stringify(result));
+  } catch (error) {
+    handleError(error);
+    throw new Error("Failed to fetch payroll list");
+  }
+}
+
 export async function updatePayrollByEmployee(data: PayrollType) {
   try {
     await connectToDatabase();

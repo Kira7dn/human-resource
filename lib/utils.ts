@@ -265,6 +265,15 @@ export function generateDatesForMonth(date: Date) {
   return dates;
 }
 
+export function generateDatesForYear(year: number) {
+  const dates = [];
+  for (let month = 0; month < 12; month++) {
+    const newdate = new Date(year, month, 1, 0, 0);
+    dates.push(newdate);
+  }
+  return dates;
+}
+
 export function generateTypeKey<Key extends string>(keys: Key[]) {
   return keys.reduce(
     (acc, key) => ({

@@ -15,7 +15,6 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { DataTableToolbar } from "./data-table-toolbar";
 import {
   Table,
   TableBody,
@@ -25,6 +24,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { DataTablePagination } from "./data-table-pagination";
+import { DataTableToolbar } from "./data-table-toolbar";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -42,7 +42,10 @@ export function DataTable<TData, TValue>({
     [],
   );
   const [sorting, setSorting] = React.useState<SortingState>([]);
-
+  const [pagination, setPagination] = React.useState({
+    pageIndex: 0, //initial page index
+    pageSize: 20, //default page size
+  });
   const table = useReactTable({
     data,
     columns,
@@ -51,9 +54,10 @@ export function DataTable<TData, TValue>({
       columnVisibility,
       rowSelection,
       columnFilters,
+      pagination,
     },
     enableRowSelection: true,
-    sortDescFirst: true,
+    onPaginationChange: setPagination,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -69,14 +73,18 @@ export function DataTable<TData, TValue>({
   return (
     <div className="space-y-4 pb-8">
       <DataTableToolbar table={table} />
-      <div className="rounded-md border">
+      <div className="relative rounded-md border">
         <Table className="">
-          <TableHeader>
+          <TableHeader className="top-0 h-8 bg-slate-200">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} colSpan={header.colSpan}>
+                    <TableHead
+                      key={header.id}
+                      colSpan={header.colSpan}
+                      className="px-1 text-tiny-semibold"
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -95,10 +103,11 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  className="border-0"
                 >
                   {row.getVisibleCells().map((cell) => {
                     return (
-                      <TableCell key={cell.id}>
+                      <TableCell className="w-20 p-0" key={cell.id}>
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext(),

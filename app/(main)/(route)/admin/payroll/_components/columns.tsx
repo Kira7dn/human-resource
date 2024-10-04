@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/hover-card";
 import { Badge } from "@/components/ui/badge";
 import { CalendarIcon } from "lucide-react";
+import { PayrollDialog } from "./PayrollDialog";
 
 const date_range = generateDatesForYear(2024);
 
@@ -73,7 +74,6 @@ export const columns: ColumnDef<PayrollList>[] = [
                 onClick={() => setOpen(true)}
               >
                 {cell_data?.work_day || 0}
-                {/* {cell_data.work_day || 0} days */}
               </div>
             </HoverCardTrigger>
             <HoverCardContent>
@@ -105,9 +105,27 @@ export const columns: ColumnDef<PayrollList>[] = [
                       </Badge>
                     </div> */}
                     <p className="text-small-regular">
+                      <span>Work day: </span>
+                      <span className="">
+                        {(cell_data?.work_day || 0) + " days"}
+                      </span>
+                    </p>
+                    <p className="text-small-regular">
                       <span>Overtime: </span>
                       <span className="">
-                        {/* {(cell_data.overtime || 0) + " hours"} */}
+                        {(cell_data?.overtime || 0) + " hours"}
+                      </span>
+                    </p>
+                    <p className="text-small-regular">
+                      <span>Paid leave: </span>
+                      <span className="">
+                        {(cell_data?.paid_leave || 0) + " days"}
+                      </span>
+                    </p>
+                    <p className="text-small-regular">
+                      <span>Unpaid leave: </span>
+                      <span className="">
+                        {(cell_data?.unpaid_leave || 0) + " days"}
                       </span>
                     </p>
                   </div>
@@ -115,17 +133,20 @@ export const columns: ColumnDef<PayrollList>[] = [
                 <div className="flex items-center pt-2">
                   <CalendarIcon className="mr-2 h-4 w-4 opacity-70" />
                   <span className="text-xs text-muted-foreground">
-                    {date.toDateString()}
+                    {date.toLocaleDateString("en-US", {
+                      month: "long",
+                      year: "numeric",
+                    })}
                   </span>
                 </div>
               </div>
             </HoverCardContent>
           </HoverCard>
-          {/* <AttendanceForm
+          <PayrollDialog
             open={open}
             setOpen={setOpen}
-            attendance={row.original[date.toISOString()]}
-          /> */}
+            payroll={row.original[date.toISOString()]}
+          />
         </>
       );
     },

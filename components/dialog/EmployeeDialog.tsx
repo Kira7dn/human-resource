@@ -36,7 +36,6 @@ import { getAllDepartments } from "@/lib/actions/department.actions";
 import { Spinner } from "../spinner";
 import { IoLocationOutline } from "react-icons/io5";
 import { FaRegUser } from "react-icons/fa6";
-import { PiIdentificationCard } from "react-icons/pi";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { createEmployee, updateEmployee } from "@/lib/actions/employee.actions";
 import { RadioGroup, RadioGroupItem } from "@/components/ui//radio-group";

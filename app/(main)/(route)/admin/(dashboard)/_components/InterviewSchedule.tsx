@@ -76,6 +76,9 @@ const Interview = ({ data }: { data: CandidateType }) => {
     department: typeof data.recruit === "object" ? data.recruit.department : "",
     status: statuses[0].value,
     hired_date: new Date(),
+    gross_salary: 0,
+    position_allowance: 0,
+    travel_allowance: 0,
   };
   return (
     <div className="flex items-center justify-between rounded-lg border p-2">

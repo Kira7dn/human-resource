@@ -2,7 +2,6 @@
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import Image from "next/image";
 import { get_tax_level } from "@/lib/utils";
-import { months } from "@/constants";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { PayrollType } from "@/lib/validations";
 
@@ -143,7 +142,7 @@ export const PayrollDialog = ({
                   <div className="flex w-full flex-col">
                     <div className="text-base-medium">Salary</div>
                     <div className="flex w-full justify-between">
-                      <div className="pl-2">Basic Salary (24 days)</div>
+                      <div className="pl-2">{`Basic Salary (${work_day} days)`}</div>
                       <div className="">
                         {(gross_salary ?? 0).toLocaleString("en-US")}
                       </div>
@@ -158,7 +157,7 @@ export const PayrollDialog = ({
                   <div className="flex w-full flex-col">
                     <div className="text-base-medium">Leave</div>
                     <div className="flex w-full justify-between">
-                      <div className="pl-2">Paid leave ({paid_leave} days)</div>
+                      <div className="pl-2">{`Paid leave (${paid_leave} days)`}</div>
                       <div className="">
                         {Math.floor(paid_leave_salary).toLocaleString("en-US")}
                       </div>

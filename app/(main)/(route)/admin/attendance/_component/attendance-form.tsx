@@ -18,7 +18,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import SubmitButton from "@/components/submit-btn";
 import { updateAttendanceById } from "@/lib/actions/attendance.actions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,

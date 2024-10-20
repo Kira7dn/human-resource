@@ -3,7 +3,6 @@
 import { Column, ColumnDef, Row } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Payroll } from "@/types";
 import { Employee, PayrollType } from "@/lib/validations";
 import { cn, generateDatesForYear } from "@/lib/utils";
 import { useState } from "react";
@@ -12,7 +11,6 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
-import { Badge } from "@/components/ui/badge";
 import { CalendarIcon } from "lucide-react";
 import { PayrollDialog } from "./PayrollDialog";
 

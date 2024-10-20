@@ -1,90 +1,81 @@
 "use client";
-
-import { TrendingUp } from "lucide-react";
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
-
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
+  Bar,
+  BarChart,
+  Legend,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+import { generateColors } from "@/lib/utils";
 
 export const description = "A stacked bar chart with a legend";
 
-const chartData = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
-];
-
-const chartConfig = {
-  desktop: {
-    label: "Desktop",
-    color: "hsl(var(--chart-1))",
-  },
-  mobile: {
-    label: "Mobile",
-    color: "hsl(var(--chart-2))",
-  },
-} satisfies ChartConfig;
-
-export function PositionByGrade() {
+export function PositionByGrade({ data }: any) {
+  const COLORS = generateColors(3);
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Bar Chart - Stacked + Legend</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+    <Card className="flex h-full flex-col">
+      <CardHeader className="pb-2 pt-4">
+        <CardTitle>Position By Grade</CardTitle>
       </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig}>
-          <BarChart accessibilityLayer data={chartData}>
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="month"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-              tickFormatter={(value) => value.slice(0, 3)}
+      <CardContent className="flex-1">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={data} accessibilityLayer layout="vertical">
+            <Legend
+              align="center"
+              verticalAlign="top"
+              formatter={renderColorfulLegendText}
+              wrapperStyle={{ paddingBottom: "10px" }}
             />
-            <ChartTooltip content={<ChartTooltipContent hideLabel />} />
-            <ChartLegend content={<ChartLegendContent />} />
-            <Bar
-              dataKey="desktop"
-              stackId="a"
-              fill="var(--color-desktop)"
-              radius={[0, 0, 4, 4]}
+            <XAxis type="number" />
+            <YAxis
+              dataKey="unit"
+              type="category"
+              scale="auto"
+              interval={0}
+              tick={<CustomYAxisTick />}
+              width={80}
             />
+            <Tooltip />
+            <Bar dataKey="Junior" stackId="a" fill={COLORS[0]} />
+            <Bar dataKey="Mid-Level" stackId="a" fill={COLORS[1]} />
             <Bar
-              dataKey="mobile"
+              dataKey="Senior"
               stackId="a"
-              fill="var(--color-mobile)"
-              radius={[4, 4, 0, 0]}
+              fill={COLORS[2]}
+              radius={[0, 2, 2, 0]}
             />
           </BarChart>
-        </ChartContainer>
+        </ResponsiveContainer>
       </CardContent>
-      <CardFooter className="text-sm flex-col items-start gap-2">
-        <div className="flex gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
-        </div>
-      </CardFooter>
     </Card>
   );
 }
+const renderColorfulLegendText = (value: string, entry: any) => {
+  const { color } = entry;
+
+  return (
+    <span style={{ color }} className="text-tiny-semibold capitalize">
+      {value}
+    </span>
+  );
+};
+const CustomYAxisTick = (props: any) => {
+  const { x, y, payload } = props;
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <foreignObject x={-100} y={-10} width={90} height={20}>
+        <div
+          className="truncate text-tiny-medium"
+          style={{ textAlign: "right" }}
+        >
+          {payload.value}
+        </div>
+      </foreignObject>
+    </g>
+  );
+};

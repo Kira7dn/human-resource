@@ -87,3 +87,115 @@ export async function deleteEmployee(employeeId: string) {
     handleError(error);
   }
 }
+
+export async function aggregateEmployeeByGender() {
+  try {
+    await connectToDatabase();
+    const result = await Employee.aggregate([
+      {
+        $group: {
+          _id: "$gender",
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: {
+          _id: 1, // 1 for ascending order, -1 for descending order
+        },
+      },
+    ]);
+    return result;
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+export async function aggregateEmployeeByDepartment() {
+  try {
+    await connectToDatabase();
+    const result = await Employee.aggregate([
+      {
+        $lookup: {
+          from: "departments",
+          localField: "department",
+          foreignField: "_id",
+          as: "department",
+        },
+      },
+      {
+        $unwind: "$department",
+      },
+      {
+        $group: {
+          _id: "$department.name",
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: {
+          _id: 1,
+        },
+      },
+    ]);
+    return result;
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+interface AggregatedData {
+  unit: string;
+  [level: string]: number | string;
+}
+
+export async function aggregateEmployeeByDepartmentByLevel(): Promise<
+  AggregatedData[]
+> {
+  try {
+    await connectToDatabase();
+    const data = await Employee.aggregate([
+      {
+        $lookup: {
+          from: "departments",
+          localField: "department",
+          foreignField: "_id",
+          as: "department",
+        },
+      },
+      {
+        $unwind: "$department",
+      },
+      {
+        $group: {
+          _id: {
+            unit: "$department.name",
+            level: "$level",
+          },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: {
+          "_id.unit": 1,
+          "_id.level": 1,
+        },
+      },
+    ]);
+
+    const resultMap = new Map<string, AggregatedData>();
+
+    data.forEach((item) => {
+      const { unit, level } = item._id;
+      if (!resultMap.has(unit)) {
+        resultMap.set(unit, { unit });
+      }
+      const deptObj = resultMap.get(unit)!;
+      deptObj[level] = item.count;
+    });
+
+    return Array.from(resultMap.values());
+  } catch (error) {
+    handleError(error);
+    throw error; // Re-throw the error after handling it
+  }
+}

@@ -1,83 +1,64 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
-import { Bar, BarChart, XAxis, YAxis } from "recharts";
-
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
+  Bar,
+  BarChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
-export const description = "A horizontal bar chart";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
-];
-
-const chartConfig = {
-  desktop: {
-    label: "Desktop",
-    color: "hsl(var(--chart-1))",
-  },
-} satisfies ChartConfig;
-
-export function HireByBusinessUnit() {
+type Props = { data: { unit: string; request: number }[] };
+export function HireByBusinessUnit({ data }: Props) {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Bar Chart - Horizontal</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+    <Card className="flex h-full flex-col">
+      <CardHeader className="pb-2 pt-4">
+        <CardTitle>Hire request by Business Unit</CardTitle>
       </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig}>
-          <BarChart
-            accessibilityLayer
-            data={chartData}
-            layout="vertical"
-            margin={{
-              left: -20,
-            }}
-          >
-            <XAxis type="number" dataKey="desktop" hide />
+      <CardContent className="flex-1">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart layout="vertical" data={data}>
+            <XAxis type="number" />
             <YAxis
-              dataKey="month"
+              dataKey="unit"
               type="category"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-              tickFormatter={(value) => value.slice(0, 3)}
+              scale="auto"
+              interval={0}
+              tick={<CustomYAxisTick />}
+              width={80}
             />
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "rgba(255, 255, 255, 0.9)",
+                textTransform: "capitalize",
+              }}
             />
-            <Bar dataKey="desktop" fill="var(--color-desktop)" radius={5} />
+            <Bar
+              dataKey="request"
+              fill="var(--primary)"
+              radius={[0, 4, 4, 0]}
+            />
           </BarChart>
-        </ChartContainer>
+        </ResponsiveContainer>
       </CardContent>
-      <CardFooter className="text-sm flex-col items-start gap-2">
-        <div className="flex gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
-        </div>
-      </CardFooter>
     </Card>
   );
 }
+const CustomYAxisTick = (props: any) => {
+  const { x, y, payload } = props;
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <foreignObject x={-100} y={-10} width={90} height={20}>
+        <div
+          className="truncate text-tiny-medium"
+          style={{ textAlign: "right" }}
+        >
+          {payload.value}
+        </div>
+      </foreignObject>
+    </g>
+  );
+};

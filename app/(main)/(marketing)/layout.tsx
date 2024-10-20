@@ -7,7 +7,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main className="grid bg-[#070815] text-white">
+    <main className="bg-[#070815] text-white">
       <Header />
       {children}
       <Footer />

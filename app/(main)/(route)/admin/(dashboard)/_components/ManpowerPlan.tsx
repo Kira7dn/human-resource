@@ -2,12 +2,16 @@
 
 import { TrendingUp } from "lucide-react";
 import {
+  Area,
   Bar,
   BarChart,
   CartesianGrid,
   ComposedChart,
+  Legend,
   Line,
   ResponsiveContainer,
+  Scatter,
+  Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
@@ -28,6 +32,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+
 const chartData = [
   {
     month: "January",
@@ -114,50 +119,110 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function ManpowerPlan() {
+const data = [
+  {
+    name: "Page A",
+    uv: 590,
+    pv: 800,
+    amt: 1400,
+    cnt: 490,
+  },
+  {
+    name: "Page B",
+    uv: 868,
+    pv: 967,
+    amt: 1506,
+    cnt: 590,
+  },
+  {
+    name: "Page C",
+    uv: 1397,
+    pv: 1098,
+    amt: 989,
+    cnt: 350,
+  },
+  {
+    name: "Page D",
+    uv: 1480,
+    pv: 1200,
+    amt: 1228,
+    cnt: 480,
+  },
+  {
+    name: "Page E",
+    uv: 1520,
+    pv: 1108,
+    amt: 1100,
+    cnt: 460,
+  },
+  {
+    name: "Page F",
+    uv: 1400,
+    pv: 680,
+    amt: 1700,
+    cnt: 380,
+  },
+];
+
+export default function ManpowerPlan() {
   return (
     <Card className="flex h-full flex-col">
-      <CardHeader className="">
-        <CardTitle className="text-large-bold">Manpower Plan</CardTitle>
+      <CardHeader className="pb-2 pt-4">
+        <CardTitle>Manpower plan</CardTitle>
       </CardHeader>
-      <ChartContainer config={chartConfig} className="w-full px-4 pb-2">
-        <ComposedChart accessibilityLayer data={chartData}>
-          <CartesianGrid vertical={false} />
-          <XAxis
-            dataKey="month"
-            tickLine={false}
-            tickMargin={10}
-            axisLine={false}
-            tickFormatter={(value) => value.slice(0, 3)}
-          />
-          <ChartTooltip content={<ChartTooltipContent hideLabel />} />
-          <ChartLegend align="right" content={<ChartLegendContent />} />
-          <Bar
-            dataKey="employee"
-            stackId="a"
-            fill="var(--primary)"
-            radius={[0, 0, 4, 4]}
-          />
-          <Bar
-            dataKey="candidate"
-            stackId="a"
-            fill="var(--secondary)"
-            radius={[4, 4, 0, 0]}
-          />
-          <Line
-            dataKey="plan"
-            type="monotone"
-            stroke="var(--primary)"
-            strokeWidth={2}
-            dot={{
-              fill: "var(--secondary)",
-            }}
-            activeDot={{
-              r: 6,
-            }}
-          />
-        </ComposedChart>
-      </ChartContainer>
+      <CardContent className="flex-1">
+        <ResponsiveContainer width="100%" height="100%">
+          <ComposedChart data={chartData}>
+            <XAxis
+              dataKey="month"
+              tickLine={false}
+              tickMargin={10}
+              axisLine={false}
+              tickFormatter={(value) => value.slice(0, 3)}
+            />
+            <Tooltip cursor={false} />
+            <Legend
+              align="right"
+              verticalAlign="top"
+              formatter={renderColorfulLegendText}
+            />
+            <Bar
+              dataKey="employee"
+              stackId="a"
+              fill="var(--primary)"
+              radius={[0, 0, 4, 4]}
+            />
+            <Bar
+              dataKey="candidate"
+              stackId="a"
+              fill="var(--secondary)"
+              radius={[4, 4, 0, 0]}
+            />
+            <Line
+              dataKey="plan"
+              type="monotone"
+              stroke="var(--primary)"
+              strokeWidth={2}
+              dot={{
+                fill: "var(--secondary)",
+              }}
+              activeDot={{
+                r: 6,
+              }}
+            />
+          </ComposedChart>
+        </ResponsiveContainer>
+      </CardContent>
     </Card>
   );
 }
+
+const renderColorfulLegendText = (value: string, entry: any) => {
+  const { color } = entry;
+
+  return (
+    <span style={{ color }} className="text-tiny-semibold capitalize">
+      {value}
+    </span>
+  );
+};

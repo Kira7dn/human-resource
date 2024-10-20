@@ -1,5 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
-
+import * as d3 from "d3-scale-chromatic";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -291,3 +291,6 @@ export function encryptKey(passkey: string) {
 export function decryptKey(passkey: string) {
   return atob(passkey);
 }
+export const generateColors = (length: number) => {
+  return Array.from({ length }, (_, i) => d3.interpolateRainbow(i / length));
+};

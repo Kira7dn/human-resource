@@ -1,129 +1,117 @@
 "use client";
 
 import * as React from "react";
-import { TrendingUp } from "lucide-react";
-import { Label, Pie, PieChart } from "recharts";
-
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
+  Cell,
+  Legend,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+} from "recharts";
 
-export const description = "A donut chart with text";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-const chartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-  { browser: "firefox", visitors: 287, fill: "var(--color-firefox)" },
-  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-  { browser: "other", visitors: 190, fill: "var(--color-other)" },
-];
+import { generateColors } from "@/lib/utils";
 
-const chartConfig = {
-  visitors: {
-    label: "Visitors",
-  },
-  chrome: {
-    label: "Chrome",
-    color: "hsl(var(--chart-1))",
-  },
-  safari: {
-    label: "Safari",
-    color: "hsl(var(--chart-2))",
-  },
-  firefox: {
-    label: "Firefox",
-    color: "hsl(var(--chart-3))",
-  },
-  edge: {
-    label: "Edge",
-    color: "hsl(var(--chart-4))",
-  },
-  other: {
-    label: "Other",
-    color: "hsl(var(--chart-5))",
-  },
-} satisfies ChartConfig;
-
-export function EmployeeGenderTotal() {
-  const totalVisitors = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.visitors, 0);
+type Props = {
+  data: {
+    _id: string;
+    count: number;
+  }[];
+};
+export function EmployeeGenderTotal({ data }: Props) {
+  const totalEmployees = React.useMemo(() => {
+    return data.reduce((acc, curr) => acc + curr.count, 0);
   }, []);
-
+  const COLORS = generateColors(data.length);
   return (
-    <Card className="flex flex-col">
-      <CardHeader className="items-center pb-0">
-        <CardTitle>Pie Chart - Donut with Text</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+    <Card className="flex h-full flex-col">
+      <CardHeader className="pb-2 pt-4">
+        <CardTitle>Employees By Genders</CardTitle>
       </CardHeader>
-      <CardContent className="flex-1 pb-0">
-        <ChartContainer
-          config={chartConfig}
-          className="mx-auto aspect-square max-h-[250px]"
-        >
+      <CardContent className="flex flex-1 justify-between px-1 pb-0">
+        <ResponsiveContainer width="100%" height="100%">
           <PieChart>
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "rgba(255, 255, 255, 0.9)",
+                textTransform: "capitalize",
+              }}
+            />
+            <Legend
+              align="right"
+              verticalAlign="middle"
+              layout="vertical"
+              formatter={renderColorfulLegendText}
             />
             <Pie
-              data={chartData}
-              dataKey="visitors"
-              nameKey="browser"
+              data={data}
+              dataKey="count"
+              nameKey="_id"
               innerRadius={60}
-              strokeWidth={5}
+              outerRadius={90}
+              strokeWidth={0}
+              label={renderLabel}
             >
-              <Label
-                content={({ viewBox }) => {
-                  if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                    return (
-                      <text
-                        x={viewBox.cx}
-                        y={viewBox.cy}
-                        textAnchor="middle"
-                        dominantBaseline="middle"
-                      >
-                        <tspan
-                          x={viewBox.cx}
-                          y={viewBox.cy}
-                          className="text-3xl fill-foreground font-bold"
-                        >
-                          {totalVisitors.toLocaleString()}
-                        </tspan>
-                        <tspan
-                          x={viewBox.cx}
-                          y={(viewBox.cy || 0) + 24}
-                          className="fill-muted-foreground"
-                        >
-                          Visitors
-                        </tspan>
-                      </text>
-                    );
-                  }
-                }}
-              />
+              {data.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index % COLORS.length]}
+                />
+              ))}
             </Pie>
           </PieChart>
-        </ChartContainer>
+        </ResponsiveContainer>
+        <div className="flex w-1/2 flex-col items-center justify-center">
+          <div className="text-body-bold">Total Employees</div>
+          <div className="text-heading2-bold">{totalEmployees}</div>
+        </div>
       </CardContent>
-      <CardFooter className="text-sm flex-col gap-2">
-        <div className="flex items-center gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
-        </div>
-      </CardFooter>
     </Card>
   );
 }
+
+const renderLabel = (props: any) => {
+  const {
+    cx,
+    cy,
+    midAngle,
+    innerRadius,
+    outerRadius,
+    startAngle,
+    endAngle,
+    fill,
+    payload,
+    percent,
+    value,
+  } = props;
+
+  // Calculate the center position for the image
+  const imageWidth = 60;
+  const imageHeight = 60;
+  const x = cx - imageWidth / 2;
+  const y = cy - imageHeight / 2;
+
+  return (
+    <g>
+      <image
+        href="/assets/genders.svg"
+        width={imageWidth}
+        height={imageHeight}
+        x={x}
+        y={y}
+        dy={8}
+      />
+    </g>
+  );
+};
+const renderColorfulLegendText = (value: string, entry: any) => {
+  const { color } = entry;
+
+  return (
+    <span style={{ color }} className="text-tiny-semibold capitalize">
+      {value}
+    </span>
+  );
+};

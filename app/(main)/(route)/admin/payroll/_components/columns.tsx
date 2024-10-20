@@ -2,7 +2,6 @@
 
 import { Column, ColumnDef, Row } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "./data-table-column-header";
-import { DataTableRowActions } from "./data-table-row-actions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Payroll } from "@/types";
 import { Employee, PayrollType } from "@/lib/validations";
@@ -153,69 +152,4 @@ export const columns: ColumnDef<PayrollList>[] = [
     enableSorting: false,
     enableHiding: false,
   })),
-  // {
-  //   accessorKey: "position",
-  //   header: ({ column }) => (
-  //     <DataTableColumnHeader column={column} title="Position" />
-  //   ),
-  //   cell: ({ row }) => {
-  //     return (
-  //       <span className="max-w-[40px] truncate font-medium">
-  //         {row.getValue("position")}
-  //       </span>
-  //     );
-  //   },
-  // },
-  // {
-  //   accessorKey: "department",
-  //   header: ({ column }) => (
-  //     <DataTableColumnHeader column={column} title="Department" />
-  //   ),
-  //   cell: ({ row }) => {
-  //     return (
-  //       <span className="max-w-[200px] truncate font-medium">
-  //         {row.getValue("department")}
-  //       </span>
-  //     );
-  //   },
-  // },
-  // {
-  //   accessorKey: "month",
-  //   header: ({ column }) => (
-  //     <DataTableColumnHeader column={column} title="Month" />
-  //   ),
-  //   cell: ({ row }) => {
-  //     return (
-  //       <span className="max-w-[200px] truncate font-medium">
-  //         {row.getValue("month")}
-  //       </span>
-  //     );
-  //   },
-  //   sortDescFirst: true,
-  // },
-
-  // {
-  //   accessorKey: "income",
-  //   header: ({ column }) => (
-  //     <DataTableColumnHeader column={column} title="Income (VND)" />
-  //   ),
-  //   cell: ({ row }) => {
-  //     const salary_hour = row.original.gross_salary / 24 / 8;
-  //     const salary_overtime = salary_hour * row.original.overtime * 1.5;
-  //     const salary_worked =
-  //       row.original.gross_salary -
-  //       (row.original.unpaid_leave * row.original.gross_salary) / 24;
-  //     const income = salary_worked + salary_overtime;
-  //     return (
-  //       <span className="max-w-[200px] truncate font-medium">
-  //         {Math.floor(income).toLocaleString("en-US")}
-  //       </span>
-  //     );
-  //   },
-  // },
-
-  // {
-  //   id: "action",
-  //   cell: ({ row }) => <DataTableRowActions row={row} />,
-  // },
 ];

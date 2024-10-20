@@ -76,3 +76,41 @@ export async function deleteRecruit(recruitId: string) {
     handleError(error);
   }
 }
+
+export async function aggregateRecruitByDepartment() {
+  try {
+    await connectToDatabase();
+    const recruits = await Recruit.aggregate([
+      {
+        $group: {
+          _id: "$department",
+          request: { $sum: 1 },
+        },
+      },
+      {
+        $lookup: {
+          from: "departments",
+          localField: "_id",
+          foreignField: "_id",
+          as: "department",
+        },
+      },
+      {
+        $unwind: "$department",
+      },
+      {
+        $project: {
+          _id: 0,
+          unit: "$department.name",
+          request: 1,
+        },
+      },
+      {
+        $sort: { unit: 1 },
+      },
+    ]);
+    return recruits;
+  } catch (error) {
+    handleError(error);
+  }
+}

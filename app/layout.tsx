@@ -4,6 +4,11 @@ import "./globals.css";
 import { EdgeStoreProvider } from "@/lib/edgestore";
 import { Toaster } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import type { Viewport } from "next";
+
+export const viewport: Viewport = {
+  viewportFit: "cover",
+};
 
 const LGEI = createLocalFont({
   src: [
@@ -55,8 +60,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${LGEI.className}`}>
+    <html lang="en" suppressHydrationWarning className={`${LGEI.className}`}>
+      <body>
         <EdgeStoreProvider>
           <TooltipProvider>
             <Toaster position="bottom-center" />

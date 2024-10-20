@@ -27,11 +27,19 @@ export const Logo = ({ expanded, size }: props) => {
       />
       <p
         className={clsx(
-          "overflow-hidden text-heading4-bold transition-all duration-300 ease-out",
+          "hidden overflow-hidden text-heading4-bold transition-all duration-300 ease-out md:block",
           !expanded && "opacity-0",
         )}
       >
         Human Resource Management
+      </p>
+      <p
+        className={clsx(
+          "overflow-hidden text-heading4-bold transition-all duration-300 ease-out md:hidden",
+          !expanded && "opacity-0",
+        )}
+      >
+        HRM
       </p>
     </Link>
   );

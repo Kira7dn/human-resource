@@ -88,3 +88,38 @@ export async function deleteCandidate(candidateId: string) {
     handleError(error);
   }
 }
+
+export async function aggregateCandidateByLevel() {
+  // get level from model Recruit
+
+  try {
+    await connectToDatabase();
+    const candidates = await Candidate.aggregate([
+      {
+        $lookup: {
+          from: "recruits",
+          localField: "recruit",
+          foreignField: "_id",
+          as: "recruit",
+        },
+      },
+      {
+        $unwind: "$recruit",
+      },
+      {
+        $group: {
+          _id: "$recruit.level",
+          total: { $sum: 1 },
+        },
+      },
+      {
+        $sort: {
+          _id: 1,
+        },
+      },
+    ]);
+    return JSON.parse(JSON.stringify(candidates));
+  } catch (error) {
+    handleError(error);
+  }
+}

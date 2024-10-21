@@ -55,6 +55,9 @@ export const columns: ColumnDef<PayrollList>[] = [
       const cell_data = row.original[date.toISOString()];
       const employee = row.original.employee;
       const [open, setOpen] = useState(false);
+      if (!cell_data || !employee) {
+        return null;
+      }
       return (
         <>
           <HoverCard>

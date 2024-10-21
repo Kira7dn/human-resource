@@ -19,6 +19,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { decryptKey, encryptKey } from "@/lib/utils";
+import { X } from "lucide-react";
 
 export const PasskeyModal = () => {
   const router = useRouter();
@@ -66,14 +67,18 @@ export const PasskeyModal = () => {
   };
 
   return (
-    <AlertDialog open={open} onOpenChange={setOpen}>
+    <AlertDialog
+      open={open}
+      onOpenChange={(isOpen) => {
+        setOpen(isOpen);
+        if (!isOpen) closeModal();
+      }}
+    >
       <AlertDialogContent className="shad-alert-dialog">
         <AlertDialogHeader>
           <AlertDialogTitle className="flex items-start justify-between">
             Admin Access Verification
-            <Image
-              src="/assets/icons/close.svg"
-              alt="close"
+            <X
               width={20}
               height={20}
               onClick={() => closeModal()}
@@ -111,7 +116,7 @@ export const PasskeyModal = () => {
             onClick={(e) => validatePasskey(e)}
             className="shad-primary-btn w-full"
           >
-            Enter Admin Passkey
+            Enter Admin Passkey [123456]
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

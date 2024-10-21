@@ -128,6 +128,7 @@ export default function AnimatedContent() {
                     width={1200}
                     height={500}
                     sizes="100vw"
+                    priority
                   />
                 </div>
               </CarouselItem>

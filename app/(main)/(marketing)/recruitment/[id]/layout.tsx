@@ -1,5 +1,3 @@
-import { RecruitDialog } from "@/components/dialog/RecruitDialog";
-import { Button } from "@/components/ui/button";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -9,13 +7,13 @@ export const metadata: Metadata = {
     icon: [
       {
         media: "(prefers-color-scheme: light)",
-        url: "assets/logo.svg",
-        href: "assets/logo.svg",
+        url: "/assets/logo.svg",
+        href: "/assets/logo.svg",
       },
       {
         media: "(prefers-color-scheme: dark)",
-        url: "assets/logo-dark.svg",
-        href: "assets/logo-dark.svg",
+        url: "/assets/logo-dark.svg",
+        href: "/assets/logo-dark.svg",
       },
     ],
   },

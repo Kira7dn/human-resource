@@ -19,7 +19,7 @@ const Integrations = (): JSX.Element => {
       <StarBackground />
 
       <div className="relative">
-        <h2 className="text-heading3-bold md:text-heading2-semibold mx-auto max-w-2xl text-balance text-center">
+        <h2 className="mx-auto max-w-2xl text-balance text-center text-heading3-bold md:text-heading2-semibold">
           Integration more
         </h2>
         <div className="mx-auto mt-6 max-w-md text-balance text-center text-slate-300">

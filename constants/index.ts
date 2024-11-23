@@ -121,13 +121,13 @@ export const mainLinks = [
     label: "Payroll",
     component: MdPayments,
   },
-];
-export const otherLinks = [
   {
     route: "/admin/attendance",
     label: "Attendance",
     component: TbFingerprintScan,
   },
+];
+export const otherLinks = [
   {
     route: "/admin/events",
     label: "Events",

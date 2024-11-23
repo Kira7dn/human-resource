@@ -16,7 +16,7 @@ export default async function CandidatePage() {
     <div className="h-screen">
       <div className="flex flex-col justify-start space-y-2 py-4">
         <div className="flex h-8 items-center justify-between space-y-2">
-          <h2 className="text-large-semibold tracking-tight">Candidate List</h2>
+          <h2 className="text-large-semibold tracking-tight">Attendance</h2>
         </div>
         {data && <DataTable data={data} columns={columns} />}
       </div>

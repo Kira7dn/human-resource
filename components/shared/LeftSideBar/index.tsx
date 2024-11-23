@@ -22,14 +22,14 @@ const LeftSideBar = () => {
             <h1 className="pb-2">MAIN MENU</h1>
             <Links links={mainLinks} />
           </div>
-          <div className={cn("flex flex-col text-gray-500")}>
+          {/* <div className={cn("flex flex-col text-gray-500")}>
             <h1 className="pb-2">OTHER MENU</h1>
             <Links links={otherLinks} />
           </div>
           <div className={cn("flex flex-col text-gray-500")}>
             <h1 className="pb-2">PREFERENCE</h1>
             <Links links={preferenceLinks} />
-          </div>
+          </div> */}
         </section>
       </article>
     </div>
